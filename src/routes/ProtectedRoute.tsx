@@ -1,22 +1,23 @@
 import { Navigate, Outlet } from "react-router-dom";
+import { hasRole, isAuthenticated } from "../utils/auth";
+import { Role } from "../redux/auth/authTypes";
+
+interface ProtectedRouteProps {
+  allowedRoles?: Role | Role[];
+}
+
+const ProtectedRoute = ({ allowedRoles }: ProtectedRouteProps) => {
 
 
-const ProtectedRoute = () => {
+  if (!isAuthenticated()) {
+    return <Navigate to="/algosaathi" replace />;
+  }
 
+  if (allowedRoles && !hasRole(allowedRoles)) {
+    return <Navigate to="/home" replace />;
+  }
 
-    const token = localStorage.getItem("token");
-
-
-    if(!token){
-
-        return <Navigate to="/login" replace />;
-
-    }
-
-
-    return <Outlet />;
-
-
+  return <Outlet />;
 };
 
 

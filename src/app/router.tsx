@@ -5,14 +5,26 @@ import DashboardLayout from "../layOut/DashboardLayout";
 
 import ProtectedRoute from "../routes/ProtectedRoute";
 import PublicRoute from "../routes/PublicRoute";
+import AuthLayout from "../Modules/Auth/AuthLayOut";
+import { Roles } from "../redux/auth/authTypes";
 
 
 const Home = lazy(() => import("../Modules/Home/Home"));
-const Login = lazy(() => import("../Modules/Auth/Login"));
-const Signup = lazy(() => import("../Modules/Auth/Signup"));
+
+// const Signup = lazy(() => import("../Modules/Auth/Signup"));
+const LoginPageContent = lazy(() => import("../Modules/Auth/LoginPageContent"));
+const Feature = lazy(() => import("../Modules/Feature/Feature"));
+const Courses = lazy(() => import("../Modules/Courses/Courses"));
+const Contact = lazy(() => import("../Modules/Contact/Contact"));
+const News = lazy(() => import("../Modules/News/News"));
+const Profile = lazy(() => import("../Modules/Profile/Profile"));
 
 
 export const router = createBrowserRouter([
+    {
+        path: "/news",
+        element: <News />
+    },
 
 
     // Login / Signup
@@ -23,13 +35,18 @@ export const router = createBrowserRouter([
         children: [
 
             {
+                path: "/algosaathi",
+                element: <LoginPageContent />
+            },
+
+            {
                 path: "/login",
-                element: <Login />
+                element: <AuthLayout />
             },
 
             {
                 path: "/signup",
-                element: <Signup />
+                element: <AuthLayout />
             }
 
         ]
@@ -40,7 +57,7 @@ export const router = createBrowserRouter([
     // Dashboard
 
     {
-        element: <ProtectedRoute />,
+        element: <ProtectedRoute allowedRoles={[Roles.USERS, Roles.ADMIN]} />,
 
         children: [
 
@@ -58,6 +75,22 @@ export const router = createBrowserRouter([
                     {
                         path: "home",
                         element: <Home />
+                    },
+                    {
+                        path: "features",
+                        element: <Feature />
+                    },
+                    {
+                        path: "courses",
+                        element: <Courses />
+                    },
+                    {
+                        path: "contact",
+                        element: <Contact />
+                    },
+                    {
+                        path: "profile",
+                        element: <Profile />
                     }
 
                 ]

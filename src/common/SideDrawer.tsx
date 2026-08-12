@@ -5,242 +5,217 @@ import {
     ListItemIcon,
     ListItemText,
     Toolbar,
-    Box
+    Box,
+    IconButton
 } from "@mui/material";
 
-
 import DashboardIcon from "@mui/icons-material/Dashboard";
-import PeopleIcon from "@mui/icons-material/People";
-
+import StarIcon from "@mui/icons-material/Star";
+import BookIcon from "@mui/icons-material/Book";
+import ContactMailIcon from "@mui/icons-material/ContactMail";
 
 import { NavLink } from "react-router-dom";
+import { ArrowBack } from "@mui/icons-material";
+import { getUserRole } from "../utils/auth";
+import { type Role, Roles } from "../redux/auth/authTypes";
+import type { JSX } from "@emotion/react/jsx-runtime";
 
 
 const drawerWidth = 260;
 
 
 
-const menuItems = [
-
+const menuItems: Array<{
+    name: string;
+    path: string;
+    icon: JSX.Element;
+    allowedRoles?: Role[];
+}> = [
     {
-        name:"Home",
-        path:"/home",
-        icon:<DashboardIcon/>
+        name: "Home",
+        path: "/home",
+        icon: <DashboardIcon />,
+        allowedRoles: [Roles.USERS, Roles.ADMIN]
     },
-
     {
-        name:"Login",
-        path:"/login",
-        icon:<PeopleIcon/>
+        name: "Courses",
+        path: "/courses",
+        icon: <BookIcon />,
+        allowedRoles: [Roles.USERS, Roles.ADMIN]
+    },
+    {
+        name: "Features",
+        path: "/features",
+        icon: <StarIcon />,
+        allowedRoles: [Roles.USERS, Roles.ADMIN]
+    },
+    {
+        name: "Contact",
+        path: "/contact",
+        icon: <ContactMailIcon />,
+        allowedRoles: [Roles.USERS, Roles.ADMIN]
+    },
+    {
+        name: "Profile",
+        path: "/profile",
+        icon: <ContactMailIcon />,
+        allowedRoles: [Roles.USERS, Roles.ADMIN]
     }
-
 ];
 
 
 
 
 const Sidebar = ({
-    mobileOpen,
-    desktopOpen,
+    open,
     handleDrawerToggle
 
-}:any)=>{
+}: any) => {
 
 
-return (
+    return (
 
-<>
-
-
-{/* Mobile Drawer */}
-
-<Drawer
-
-variant="temporary"
-
-open={mobileOpen}
-
-onClose={handleDrawerToggle}
+        <>
 
 
-sx={{
-
-display:{
-    xs:"block",
-    md:"none"
-},
-
-
-"& .MuiDrawer-paper":{
-
-width:drawerWidth,
-
-background:"#111827",
-
-color:"#fff"
-
-}
-
-}}
-
->
-
-
-<DrawerContent/>
-
-</Drawer>
+            <Drawer
+                variant="temporary"
+                open={open}
+                onClose={handleDrawerToggle}
+                ModalProps={{ keepMounted: true }}
+                sx={{
+                    display: "block",
+                    "& .MuiDrawer-paper": {
+                        width: drawerWidth,
+                        overflowX: "hidden",
+                        transition: "0.3s",
+                        background: "linear-gradient(135deg, #075d7e 30%, #106477 60%, #096381 100%)",
+                        color: "#fff",
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        height: '100vh',
+                        boxSizing: 'border-box',
+                        zIndex: 1200
+                    }
+                }}
+            >
+                <DrawerContent handleDrawerToggle={handleDrawerToggle} />
+            </Drawer>
 
 
 
+        </>
 
-
-{/* Desktop Drawer */}
-
-
-<Drawer
-
-variant="permanent"
-
-open={desktopOpen}
-
-
-sx={{
-
-display:{
-    xs:"none",
-    md:"block"
-},
-
-
-width: desktopOpen ? drawerWidth : 0,
-
-
-"& .MuiDrawer-paper":{
-
-width: desktopOpen ? drawerWidth : 0,
-
-overflowX:"hidden",
-
-transition:"0.3s",
-
-background:"#111827",
-
-color:"#fff"
-
-}
-
-}}
-
->
-
-
-<DrawerContent/>
-
-
-</Drawer>
-
-
-
-</>
-
-)
+    )
 
 }
 
 
 
 
-const DrawerContent=()=>{
+const DrawerContent = ({ handleDrawerToggle }: any) => {
+    const userRole = getUserRole();
+    const visibleItems = menuItems.filter((item) => {
+        if (!item.allowedRoles) return true;
+        return userRole ? item.allowedRoles.includes(userRole) : false;
+    });
+
+    return (
+
+        <Box >
 
 
-return (
+            <Toolbar sx={{borderBottom:"1px solid white", borderRight:"1px solid grey", display:"flex", justifyContent:"space-between", alignItems:"center"}}>
 
-<Box>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <p style={{ fontSize: "20px", fontWeight: "bold", color: "#fff", margin: 0 }}>
+                        Algosaathi
+                    </p>
+                    <img src="./src/assets/gene-structure-svgrepo-com.svg" alt="Logo" style={{ width: "30px", height: "25px" }} />
+                </Box>
 
+                <IconButton onClick={handleDrawerToggle} sx={{ color: '#fff', border: "1px solid white", borderRadius: "50%" }}>
+                    <ArrowBack />
+                </IconButton>
 
-<Toolbar>
-
-<h2>
-Admin Panel
-</h2>
-
-</Toolbar>
-
-
-
-<List>
-
-
-{
-menuItems.map((item)=>(
-
-
-<ListItemButton
-
-
-key={item.path}
-
-
-component={NavLink}
-
-to={item.path}
-
-
-sx={{
-
-margin:"5px 10px",
-
-borderRadius:"10px",
-
-"&.active":{
-
-background:"#2563eb",
-
-color:"#fff"
-
-}
-
-}}
-
-
->
-
-
-<ListItemIcon
-
-sx={{
-color:"inherit"
-}}
-
->
-
-{item.icon}
-
-</ListItemIcon>
-
-
-<ListItemText
-
-primary={item.name}
-
-/>
-
-
-</ListItemButton>
-
-
-))
-
-}
+            </Toolbar>
 
 
 
-</List>
+            <List>
 
 
-</Box>
+                {
+                    visibleItems.map((item) => (
 
-)
+
+                        <ListItemButton
+
+
+                            key={item.path}
+
+
+                            component={NavLink}
+
+                            to={item.path}
+
+
+                            sx={{
+
+                                margin: "5px 10px",
+
+                                borderRadius: "10px",
+
+                                "&.active": {
+
+                                    background: "#f8f8f9",
+
+                                    color: "#1c0404"
+
+                                }
+
+                            }}
+
+
+                        >
+
+
+                            <ListItemIcon
+
+                                sx={{
+                                    color: "inherit"
+                                }}
+
+                            >
+
+                                {item.icon}
+
+                            </ListItemIcon>
+
+
+                            <ListItemText
+
+                                primary={item.name}
+
+                            />
+
+
+                        </ListItemButton>
+
+
+                    ))
+
+                }
+
+
+
+            </List>
+
+
+        </Box>
+
+    )
 
 }
 

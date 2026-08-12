@@ -1,0 +1,109 @@
+.animated-bg {
+    overflow: hidden;
+    background:
+        linear-gradient(
+            135deg,
+            #071431,
+            #0d47e7,
+            #02a105,
+            #e728bd
+        );
+
+    background-size: 300% 300%;
+    animation: gradientMove 12s ease infinite;
+}
+
+
+/* AI network style glowing circles */
+
+.animated-bg::before,
+.animated-bg::after {
+
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.5;
+    animation: float 8s infinite alternate;
+
+}
+
+
+.animated-bg::before {
+
+    width: 350px;
+    height: 350px;
+
+    background: #023348;
+
+    top: -100px;
+    left: -100px;
+
+}
+
+
+
+.animated-bg::after {
+
+    width: 400px;
+    height: 400px;
+
+    background: #22c55e;
+
+    bottom: -150px;
+    right: -120px;
+
+    animation-delay: 2s;
+
+}
+
+
+
+
+
+/* Gradient animation */
+
+@keyframes gradientMove {
+
+    0% {
+        background-position: 0% 50%;
+    }
+
+
+    50% {
+
+        background-position: 100% 50%;
+
+    }
+
+
+    100% {
+
+        background-position: 0% 50%;
+
+    }
+
+}
+
+
+
+
+
+/* Floating effect */
+
+@keyframes float {
+
+    from {
+
+        transform: translateY(0px) scale(1);
+
+    }
+
+
+    to {
+
+        transform: translateY(-40px) scale(1.1);
+
+    }
+
+}

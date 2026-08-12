@@ -28,8 +28,6 @@ import {
 
 import api from "../../API/api";
 import { getUser } from "../../utils/auth";
-import BubleComponent from "../../common/BubleComponent";
-
 
 const techStack = [
     "JavaScript",
@@ -74,7 +72,7 @@ const stats = [
 ];
 
 
-const Home = () => {
+const Profile = () => {
 
     const [profileImage, setProfileImage] = useState<string | null>(null);
 
@@ -171,12 +169,8 @@ const Home = () => {
         <Box
             sx={{
                 p: 3,
-                position: "relative",
-                overflow: "hidden",
             }}
-
         >
-             <BubleComponent />
 
             {/* =========================================================
                 HERO
@@ -835,4 +829,4 @@ const Home = () => {
     );
 };
 
-export default Home;
+export default Profile;
