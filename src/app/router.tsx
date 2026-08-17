@@ -8,8 +8,7 @@ import PublicRoute from "../routes/PublicRoute";
 import AuthLayout from "../Modules/Auth/AuthLayOut";
 import { Roles } from "../redux/auth/authTypes";
 
-
-const Home = lazy(() => import("../Modules/Home/Home"));
+const Dashboard = lazy(() => import("../Modules/Dashboards/Dashboard"));
 
 // const Signup = lazy(() => import("../Modules/Auth/Signup"));
 const LoginPageContent = lazy(() => import("../Modules/Auth/LoginPageContent"));
@@ -18,6 +17,7 @@ const Courses = lazy(() => import("../Modules/Courses/Courses"));
 const Contact = lazy(() => import("../Modules/Contact/Contact"));
 const News = lazy(() => import("../Modules/News/News"));
 const Profile = lazy(() => import("../Modules/Profile/Profile"));
+const YoutubePost = lazy(() => import("../Modules/AdminPannel/container/YoutubePost"));
 
 
 export const router = createBrowserRouter([
@@ -69,12 +69,12 @@ export const router = createBrowserRouter([
 
                     {
                         index: true,
-                        element: <Navigate to="/home" replace />
+                        element: <Navigate to="/dashboard" replace />
                     },
 
                     {
-                        path: "home",
-                        element: <Home />
+                        path: "dashboard",
+                        element: <Dashboard />
                     },
                     {
                         path: "features",
@@ -91,6 +91,10 @@ export const router = createBrowserRouter([
                     {
                         path: "profile",
                         element: <Profile />
+                    },
+                    {
+                        path: "youtubepost",
+                        element: <YoutubePost />
                     }
 
                 ]

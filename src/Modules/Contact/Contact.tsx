@@ -43,7 +43,7 @@ const contacts = [
 ];
 
 const Contact = () => {
-  const navigate = useNavigate();
+
 
   return (
     <Box

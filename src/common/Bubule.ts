@@ -1,7 +1,7 @@
 
    export const bubbles = [
         {
-            size: 30,
+            size: 50,
             left: "4%",
             top: "15%",
             duration: "11s",
@@ -43,35 +43,35 @@
             delay: "-6s"
         },
         {
-            size: 22,
+            size: 20,
             left: "57%",
             top: "75%",
             duration: "7s",
             delay: "-1s"
         },
         {
-            size: 12,
+            size: 50,
             left: "65%",
             top: "12%",
             duration: "12s",
             delay: "-9s"
         },
         {
-            size: 38,
+            size: 40,
             left: "73%",
             top: "62%",
             duration: "10s",
             delay: "-4s"
         },
         {
-            size: 20,
+            size: 38,
             left: "82%",
             top: "28%",
             duration: "8s",
             delay: "-3s"
         },
         {
-            size: 48,
+            size: 40,
             left: "88%",
             top: "78%",
             duration: "10s",
@@ -87,12 +87,12 @@
         {
             size: 14,
             left: "52%",
-            top: "92%",
+            top: "10%",
             duration: "6s",
             delay: "-2s"
         },
         {
-            size: 48,
+            size: 38,
             left: "7%",
             top: "91%",
             duration: "10s",

@@ -26,9 +26,9 @@ import {
     useState,
 } from "react";
 
-import api from "../../API/api";
-import { getUser } from "../../utils/auth";
-import BubleComponent from "../../common/BubleComponent";
+import api from "../../../API/api";
+import { getUser } from "../../../utils/auth";
+import BubleComponent from "../../../common/BubleComponent";
 
 
 const techStack = [
@@ -74,7 +74,7 @@ const stats = [
 ];
 
 
-const Home = () => {
+const NewsPost = () => {
 
     const [profileImage, setProfileImage] = useState<string | null>(null);
 
@@ -835,4 +835,5 @@ const Home = () => {
     );
 };
 
-export default Home;
+
+export default NewsPost;

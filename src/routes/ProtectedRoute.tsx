@@ -1,6 +1,6 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { hasRole, isAuthenticated } from "../utils/auth";
-import { Role } from "../redux/auth/authTypes";
+import { type Role } from "../redux/auth/authTypes";
 
 interface ProtectedRouteProps {
   allowedRoles?: Role | Role[];
@@ -14,7 +14,7 @@ const ProtectedRoute = ({ allowedRoles }: ProtectedRouteProps) => {
   }
 
   if (allowedRoles && !hasRole(allowedRoles)) {
-    return <Navigate to="/home" replace />;
+    return <Navigate to="/dashboard" replace />;
   }
 
   return <Outlet />;

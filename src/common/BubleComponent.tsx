@@ -26,13 +26,13 @@ const BubleComponent = () => {
                             left: bubble.left,
                             top: bubble.top,
                             borderRadius:  "50%",
-                            background:  "radial-gradient(circle at 30% 25%, rgba(4, 185, 235, 0.59), rgba(248, 140, 8, 0.5) 35%, rgba(0, 69, 97, 0.6) 50%)",
+                            background:  "radial-gradient(circle at 30% 25%, rgba(4, 185, 235, 0.78), rgba(248, 140, 8, 0.71) 35%, rgba(9, 152, 209, 0.9) 50%)",
 
                             border:"1px solid rgba(186,230,253,0.32)",
 
-                            backdropFilter:"blur(2px)",
+                            // backdropFilter:"blur(5spx)",
 
-                            opacity: 0.25,
+                            opacity: 0.5,
 
                             pointerEvents: "none",
 

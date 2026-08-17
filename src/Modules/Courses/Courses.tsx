@@ -28,7 +28,7 @@ const upcomingCourses = [
 ];
 
 const Courses = () => {
-  const navigate = useNavigate();
+ 
 
   return (
     <Box

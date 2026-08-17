@@ -13,6 +13,9 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import StarIcon from "@mui/icons-material/Star";
 import BookIcon from "@mui/icons-material/Book";
 import ContactMailIcon from "@mui/icons-material/ContactMail";
+import YouTubeIcon from '@mui/icons-material/YouTube';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+
 
 import { NavLink } from "react-router-dom";
 import { ArrowBack } from "@mui/icons-material";
@@ -32,8 +35,8 @@ const menuItems: Array<{
     allowedRoles?: Role[];
 }> = [
     {
-        name: "Home",
-        path: "/home",
+        name: "Dashboard",
+        path: "/dashboard",
         icon: <DashboardIcon />,
         allowedRoles: [Roles.USERS, Roles.ADMIN]
     },
@@ -41,13 +44,13 @@ const menuItems: Array<{
         name: "Courses",
         path: "/courses",
         icon: <BookIcon />,
-        allowedRoles: [Roles.USERS, Roles.ADMIN]
+        allowedRoles: [Roles.USERS]
     },
     {
         name: "Features",
         path: "/features",
         icon: <StarIcon />,
-        allowedRoles: [Roles.USERS, Roles.ADMIN]
+        allowedRoles: [Roles.USERS]
     },
     {
         name: "Contact",
@@ -58,8 +61,14 @@ const menuItems: Array<{
     {
         name: "Profile",
         path: "/profile",
-        icon: <ContactMailIcon />,
+        icon: <AccountCircleIcon />,
         allowedRoles: [Roles.USERS, Roles.ADMIN]
+    },
+    {
+        name: "You Tube",
+        path: "/youtubepost",
+        icon: <YouTubeIcon />,
+        allowedRoles: [ Roles.ADMIN, Roles.USERS]
     }
 ];
 

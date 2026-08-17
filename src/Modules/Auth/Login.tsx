@@ -145,15 +145,11 @@ const Login = () => {
     });
 
     const [loading, setLoading] = useState(false);
-    const [error, setError] =
-        useState<string | null>(null);
+    const [error, setError] =  useState<string | null>(null);
 
-    const [showPassword, setShowPassword] =
-        useState(false);
+    const [showPassword, setShowPassword] =    useState(false);
 
-    const handleChange = (
-        e: React.ChangeEvent<HTMLInputElement>
-    ) => {
+    const handleChange = (  e: React.ChangeEvent<HTMLInputElement>  ) => {
         setForm({
             ...form,
             [e.target.name]: e.target.value
@@ -192,7 +188,7 @@ const Login = () => {
                 response.data.user
             );
 
-            navigate("/home");
+            navigate("/dashboard");
 
         } catch (err: any) {
             console.error(err);

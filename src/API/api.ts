@@ -15,18 +15,6 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
-
-// File uploaded: {
-//   fieldname: 'file',
-//   originalname: 'WhatsApp Image 2026-07-13 at 18.09.12.jpeg',
-//   encoding: '7bit',
-//   mimetype: 'image/jpeg',
-//   path: 'C:\\Users\\Uday\\AppData\\Local\\Temp\\uploads\\file-1786439546778-629934114.jpeg',
-//   destination: 'C:\\Users\\Uday\\AppData\\Local\\Temp\\uploads',
-//   filename: 'file-1786439546778-629934114.jpeg',
-//   size: 61102
-// }
-
 api.interceptors.response.use(
     (response) => response,
 
