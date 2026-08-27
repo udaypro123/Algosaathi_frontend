@@ -18,6 +18,8 @@ const Contact = lazy(() => import("../Modules/Contact/Contact"));
 const News = lazy(() => import("../Modules/News/News"));
 const Profile = lazy(() => import("../Modules/Profile/Profile"));
 const YoutubePost = lazy(() => import("../Modules/AdminPannel/container/YoutubePost"));
+const SendQuery = lazy(() => import("../common/SendQuery"));
+
 
 
 export const router = createBrowserRouter([
@@ -42,6 +44,10 @@ export const router = createBrowserRouter([
             {
                 path: "/login",
                 element: <AuthLayout />
+            },
+            {
+                path: "/sendquery",
+                element: <SendQuery />
             },
 
             {

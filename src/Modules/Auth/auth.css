@@ -1,0 +1,21 @@
+.request-arrow {
+    display: inline-block;
+    font-size: 22px;
+    line-height: 1;
+    animation: arrowMove 1s ease-in-out infinite;
+    font-weight: bold;
+}
+
+@keyframes arrowMove {
+    0% {
+        transform: translateX(0);
+    }
+
+    50% {
+        transform: translateX(7px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}

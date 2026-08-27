@@ -34,9 +34,10 @@ import StorageIcon from "@mui/icons-material/Storage";
 
 import { useEffect, useState } from "react";
 
-import api from "../../API/api";
 import { getUserRole } from "../../utils/auth";
 import { useNavigate } from "react-router-dom";
+import { getAllUsers } from "./api";
+import { getAllYoutubePost } from "../AdminPannel/api/api";
 
 
 /* =========================================================
@@ -227,22 +228,19 @@ const useUserCount = () => {
     const [displayUsers, setDisplayUsers] = useState<number>(0);
 
     const [loadingUsers, setLoadingUsers] = useState<boolean>(true);
-
+   
 
     useEffect(() => {
         const fetchUserCount = async () => {
             try {
                 setLoadingUsers(true);
 
-                const response =
-                    await api.get("/users/count");
+                const response = await getAllUsers();
+                console.log("responce------------>", response)
 
-                const count =
-                    response?.data?.totalUsers ??
-                    response?.data?.count ??
-                    0;
+                const count = response?.pagination?.count ??  0;
 
-                setTotalUsers(Number(count));
+                setTotalUsers(Number(count)-1);
             } catch (error) {
                 console.error(
                     "Failed to fetch user count:",
@@ -272,18 +270,12 @@ const useUserCount = () => {
         const duration = 1500;
         const stepTime = 30;
 
-        const totalSteps =
-            Math.ceil(duration / stepTime);
+        const totalSteps =  Math.ceil(duration / stepTime);
 
-        const increment =
-            Math.max(
-                1,
-                Math.ceil(target / totalSteps)
-            );
+        const increment =   Math.max(  1,  Math.ceil(target / totalSteps) );
 
         const interval = setInterval(() => {
             current += increment;
-
             if (current >= target) {
                 current = target;
                 clearInterval(interval);
@@ -292,8 +284,7 @@ const useUserCount = () => {
             setDisplayUsers(current);
         }, stepTime);
 
-        return () =>
-            clearInterval(interval);
+        return () => clearInterval(interval);
     }, [totalUsers, loadingUsers]);
 
 
@@ -1241,6 +1232,31 @@ const AdminDashboard = () => {
         loadingUsers,
     } = useUserCount();
 
+     const [videoCount, setvideoCount]= useState<number>(0)
+     
+    useEffect(() => {
+        const fetchUserCount = async () => {
+            try {
+                
+
+                const allyoutubePost = await getAllYoutubePost()
+                console.log("response data ---------->", allyoutubePost)
+
+                setvideoCount(allyoutubePost?.data?.length || 0)
+            } catch (error) {
+                console.error(
+                    "Failed to fetch user count:",
+                    error
+                );
+            } finally {
+                
+            }
+        };
+
+        fetchUserCount();
+    }, []);
+
+
 
     return (
         <DashboardWrapper>
@@ -1401,21 +1417,16 @@ const AdminDashboard = () => {
                     },
 
                     {
-                        title:
-                            "Video Content",
-                        value:
-                            "100+",
-                        description:
-                            "Published videos",
-                        icon:
-                            <VideoLibraryIcon />,
+                        title:"Video Content",
+                        value:`${videoCount}+`,
+                        description:  "Published videos",
+                        icon: <VideoLibraryIcon />,
                     },
 
                     {
                         title:
                             "Learning Resources",
-                        value:
-                            "100+",
+                        value: "100+",
                         description:
                             "Available resources",
                         icon:
@@ -1425,8 +1436,7 @@ const AdminDashboard = () => {
                     {
                         title:
                             "Platform Activity",
-                        value:
-                            "Active",
+                        value: "Active",
                         description:
                             "System status",
                         icon:

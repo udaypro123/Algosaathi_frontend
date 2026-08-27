@@ -6,6 +6,7 @@ import {
 } from "@mui/material";
 
 import { Link, useNavigate } from "react-router-dom";
+import './auth.css'
 
 
 const LoginPageContent = () => {
@@ -126,6 +127,10 @@ const LoginPageContent = () => {
 
     const handleChangeLogin = () => {
         navigate("/signup")
+    }
+
+    const navigateSendQuerypage= () => {
+        navigate("/sendquery")
     }
 
     return (
@@ -424,9 +429,9 @@ const LoginPageContent = () => {
                             height: bubble.size,
                             left: bubble.left,
                             top: bubble.top,
-                            borderRadius:  "50%",
+                            borderRadius: "50%",
                             background: "radial-gradient(circle at 30% 25%, rgb(23, 38, 255), rgb(255, 82, 2) 35%, rgba(81, 1, 255, 1) 70%)",
-                            border:  "1px solid rgb(255, 152, 17)",
+                            border: "1px solid rgb(255, 152, 17)",
                             backdropFilter:
                                 "blur(2px)",
 
@@ -460,7 +465,7 @@ const LoginPageContent = () => {
                 LARGE WATER GLOW
             ====================================================== */}
 
-        
+
             <Box
                 sx={{
                     width: "100%",
@@ -579,7 +584,7 @@ const LoginPageContent = () => {
                                 sm: "repeat(2, minmax(0, 1fr))",
                             },
                             mt: 4,
-                            mb: 5,
+                            mb: 1,
                         }}
                     >
                         {[
@@ -618,6 +623,40 @@ const LoginPageContent = () => {
                             </Box>
                         ))}
                     </Box>
+
+                    <Button
+                        variant="outlined"
+                        onClick={navigateSendQuerypage}
+                        endIcon={
+                            <span className="request-arrow">
+                                →
+                            </span>
+                        }
+                        sx={{
+                            border: "1.5px solid #ea580c",
+                            outline: "none",
+                            px: 3,
+                            py: 1.2,
+                            mb:4,
+                            fontWeight: 700,
+                            color: "white",
+                            borderRadius: "50px",
+                            textTransform: "none",
+                            fontSize: "15px",
+                            transition: "all 0.3s ease",
+                            backgroundColor: "#ea580c",
+
+                            "&:hover": {
+                                border: "1.5px solid #ea580c",
+                                backgroundColor: "#ea580c",
+                                color: "white",
+                                transform: "translateY(-2px)",
+                                boxShadow: "0 8px 20px rgba(234, 88, 12, 0.25)",
+                            },
+                        }}
+                    >
+                        Send Your Request
+                    </Button>
 
                 </Box>
             </Box>
@@ -682,7 +721,7 @@ const LoginPageContent = () => {
                         >
                             Build the <span style={{ color: "#ea580c", padding: "0px 10px" }} >skills {" "}</span> that  <span style={{ color: "#ea580c", padding: "0px 10px" }}>make you</span> stand out as an <span style={{ color: "#ea580c", padding: "0px 10px" }} >SDE-1</span>.{" "}
 
-                          
+
                         </Typography>
 
 

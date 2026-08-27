@@ -2,6 +2,7 @@
 import api from "../../../API/api";
 import { ADD_YOUTUBE_POST, DELETE_YOUTUBE_POST, GET_ALL_YOUTUBE_POST, UPDATE_YOUTUBE_POST } from "./routes";
 
+// you tube modules routes and api
 
 export const addYoutubePost= async (data: any) => {
   const res = await api.post(ADD_YOUTUBE_POST, data);
