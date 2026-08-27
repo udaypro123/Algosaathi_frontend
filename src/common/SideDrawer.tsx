@@ -15,7 +15,7 @@ import BookIcon from "@mui/icons-material/Book";
 import ContactMailIcon from "@mui/icons-material/ContactMail";
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-
+import logo from "../assets/gene-structure-svgrepo-com.svg"
 
 import { NavLink } from "react-router-dom";
 import { ArrowBack } from "@mui/icons-material";
@@ -34,43 +34,43 @@ const menuItems: Array<{
     icon: JSX.Element;
     allowedRoles?: Role[];
 }> = [
-    {
-        name: "Dashboard",
-        path: "/dashboard",
-        icon: <DashboardIcon />,
-        allowedRoles: [Roles.USERS, Roles.ADMIN]
-    },
-    {
-        name: "Courses",
-        path: "/courses",
-        icon: <BookIcon />,
-        allowedRoles: [Roles.USERS]
-    },
-    {
-        name: "Features",
-        path: "/features",
-        icon: <StarIcon />,
-        allowedRoles: [Roles.USERS]
-    },
-    {
-        name: "Contact",
-        path: "/contact",
-        icon: <ContactMailIcon />,
-        allowedRoles: [Roles.USERS, Roles.ADMIN]
-    },
-    {
-        name: "Profile",
-        path: "/profile",
-        icon: <AccountCircleIcon />,
-        allowedRoles: [Roles.USERS, Roles.ADMIN]
-    },
-    {
-        name: "You Tube",
-        path: "/youtubepost",
-        icon: <YouTubeIcon />,
-        allowedRoles: [ Roles.ADMIN, Roles.USERS]
-    }
-];
+        {
+            name: "Dashboard",
+            path: "/dashboard",
+            icon: <DashboardIcon />,
+            allowedRoles: [Roles.USERS, Roles.ADMIN]
+        },
+        {
+            name: "Courses",
+            path: "/courses",
+            icon: <BookIcon />,
+            allowedRoles: [Roles.USERS]
+        },
+        {
+            name: "Features",
+            path: "/features",
+            icon: <StarIcon />,
+            allowedRoles: [Roles.USERS]
+        },
+        {
+            name: "Contact",
+            path: "/contact",
+            icon: <ContactMailIcon />,
+            allowedRoles: [Roles.USERS, Roles.ADMIN]
+        },
+        {
+            name: "Profile",
+            path: "/profile",
+            icon: <AccountCircleIcon />,
+            allowedRoles: [Roles.USERS, Roles.ADMIN]
+        },
+        {
+            name: "You Tube",
+            path: "/youtubepost",
+            icon: <YouTubeIcon />,
+            allowedRoles: [Roles.ADMIN, Roles.USERS]
+        }
+    ];
 
 
 
@@ -135,13 +135,17 @@ const DrawerContent = ({ handleDrawerToggle }: any) => {
         <Box >
 
 
-            <Toolbar sx={{borderBottom:"1px solid white", borderRight:"1px solid grey", display:"flex", justifyContent:"space-between", alignItems:"center"}}>
+            <Toolbar sx={{ borderBottom: "1px solid white", borderRight: "1px solid grey", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
 
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                     <p style={{ fontSize: "20px", fontWeight: "bold", color: "#fff", margin: 0 }}>
                         Algosaathi
                     </p>
-                    <img src="./src/assets/gene-structure-svgrepo-com.svg" alt="Logo" style={{ width: "30px", height: "25px" }} />
+                    <img
+                        src={logo}
+                        alt="Logo"
+                        style={{ width: "30px", height: "25px" }}
+                    />
                 </Box>
 
                 <IconButton onClick={handleDrawerToggle} sx={{ color: '#fff', border: "1px solid white", borderRadius: "50%" }}>
