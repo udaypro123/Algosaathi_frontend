@@ -222,7 +222,6 @@ const DashboardWrapper = ({
 
 const useUserCount = () => {
 
-    const navigate = useNavigate()
     const [totalUsers, setTotalUsers] = useState<number>(0);
 
     const [displayUsers, setDisplayUsers] = useState<number>(0);

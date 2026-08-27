@@ -52,7 +52,6 @@ const features = [
 ];
 
 const Feature = () => {
-  const navigate = useNavigate();
 
   return (
     <Box
