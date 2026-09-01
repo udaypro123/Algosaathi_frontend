@@ -8,6 +8,7 @@ import {
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { bubbles } from "./Bubule";
+import { sendQuery } from "../Modules/AdminPannel/api/api";
 
 const SendQuery = () => {
     const navigate = useNavigate();
@@ -17,6 +18,7 @@ const SendQuery = () => {
         mobile: "",
         email: "",
         educationLevel: "",
+        schoolname: "",
         message: "",
     });
 
@@ -31,56 +33,20 @@ const SendQuery = () => {
         });
     };
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    console.log("formadataaaa", formData)
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        console.log("Query Submitted:", formData);
+        const response = await sendQuery(formData)
+
+        navigate("/signup")
+
+        console.log("Query Submitted:", formData, response);
     };
 
     return (
         <>
-            {/* {bubbles.map(
-                (bubble, index) => (
-                    <Box
-                        key={index}
-                        sx={{
-                            position: "absolute",
-                            width: bubble.size,
-                            height: bubble.size,
-                            left: bubble.left,
-                            top: bubble.top,
-                            borderRadius: "50%",
-                            background: "radial-gradient(circle at 30% 25%, rgb(23, 38, 255), rgb(255, 82, 2) 35%, rgba(81, 1, 255, 1) 70%)",
-                            border: "1px solid rgb(255, 152, 17)",
-                            backdropFilter:
-                                "blur(2px)",
-
-                            opacity: 0.25,
-
-                            pointerEvents:
-                                "none",
-
-                            zIndex: 0,
-
-                            animation: `
-                                bubbleFloat ${bubble.duration}
-                                ease-in-out infinite,
-                                bubbleGlow 4s ease-in-out infinite
-                            `,
-
-                            animationDelay:
-                                `${bubble.delay}, ${bubble.delay}`,
-
-                            "@media (max-width: 600px)": {
-                                opacity: 0.16,
-                                transform:
-                                    "scale(0.7)"
-                            }
-                        }}
-                    />
-                )
-            )} */}
-
 
             <Box
                 sx={{
@@ -320,6 +286,16 @@ const SendQuery = () => {
                             type="email"
                             value={
                                 formData.email
+                            }
+                            onChange={handleChange}
+                        />
+                        <TextField
+                            required
+                            fullWidth
+                            label="Collage/School Name"
+                            name="schoolname"
+                            value={
+                                formData.schoolname
                             }
                             onChange={handleChange}
                         />

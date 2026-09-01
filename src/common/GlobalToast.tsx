@@ -69,15 +69,15 @@ export const GlobalToastProvider: React.FC<{
         open={open}
         autoHideDuration={toast.duration}
         onClose={handleClose}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-        sx={{ bottom: "2rem" }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+        sx={{ left: "5px !important", bottom: "5px !important" }}
       >
         <Alert
           onClose={handleClose}
           severity={toast.severity}
           elevation={6}
           variant="filled"
-          sx={{ minWidth: 300, borderRadius: 2 }}
+          sx={{ minWidth: 300, borderRadius: 2, boxShadow: 3 }}
         >
           {toast.message}
         </Alert>

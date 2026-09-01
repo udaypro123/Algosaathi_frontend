@@ -15,6 +15,7 @@ import BookIcon from "@mui/icons-material/Book";
 import ContactMailIcon from "@mui/icons-material/ContactMail";
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import PaletteIcon from '@mui/icons-material/Palette';
 import logo from "../assets/gene-structure-svgrepo-com.svg"
 
 import { NavLink } from "react-router-dom";
@@ -69,6 +70,12 @@ const menuItems: Array<{
             path: "/youtubepost",
             icon: <YouTubeIcon />,
             allowedRoles: [Roles.ADMIN, Roles.USERS]
+        },
+        {
+            name: "Template Manager",
+            path: "/admin/templates",
+            icon: <PaletteIcon />,
+            allowedRoles: [Roles.ADMIN]
         }
     ];
 

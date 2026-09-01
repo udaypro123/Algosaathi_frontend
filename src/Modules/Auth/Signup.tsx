@@ -8,7 +8,8 @@ import {
     InputAdornment,
     Alert,
     LinearProgress,
-    Divider
+    Divider,
+    MenuItem
 } from "@mui/material";
 
 import {
@@ -28,6 +29,7 @@ import api from "../../API/api";
 
 interface SignupForm {
     firstName: string;
+    Role: string;
     lastName: string;
     email: string;
     password: string;
@@ -41,6 +43,7 @@ const Signup = () => {
 
     const [form, setForm] = useState<SignupForm>({
         firstName: "",
+        Role: "",
         lastName: "",
         email: "",
         password: "",
@@ -57,9 +60,7 @@ const Signup = () => {
     const [showConfirmPassword, setShowConfirmPassword] =
         useState(false);
 
-    const handleChange = (
-        e: React.ChangeEvent<HTMLInputElement>
-    ) => {
+    const handleChange = ( e: React.ChangeEvent<HTMLInputElement>  ) => {
         setForm({
             ...form,
             [e.target.name]: e.target.value
@@ -109,9 +110,7 @@ const Signup = () => {
     const passwordStrength =
         getPasswordStrength();
 
-    const handleSubmit = async (
-        e: React.FormEvent
-    ) => {
+    const handleSubmit = async (  e: React.FormEvent ) => {
         e.preventDefault();
 
         setError(null);
@@ -119,6 +118,7 @@ const Signup = () => {
         if (
             !form.firstName ||
             !form.lastName ||
+            !form.Role ||
             !form.email ||
             !form.password ||
             !form.confirmPassword ||
@@ -131,19 +131,12 @@ const Signup = () => {
         }
 
         if (form.password.length < 6) {
-            setError(
-                "Password must be at least 6 characters."
-            );
+            setError( "Password must be at least 6 characters."  );
             return;
         }
 
-        if (
-            form.password !==
-            form.confirmPassword
-        ) {
-            setError(
-                "Password and confirm password do not match."
-            );
+        if (  form.password !==  form.confirmPassword ) {
+            setError( "Password and confirm password do not match."  );
             return;
         }
 
@@ -152,6 +145,7 @@ const Signup = () => {
         try {
             await api.post("/auth/register", {
                 firstName: form.firstName,
+                role: form.Role,
                 lastName: form.lastName,
                 email: form.email,
                 password: form.password,
@@ -207,10 +201,10 @@ const Signup = () => {
             },
 
             "&.Mui-focused": {
-                backgroundColor:"#2107cb5a",
+                backgroundColor: "#2107cb5a",
                 boxShadow:
                     "0 0 0 3px rgba(37,99,235,0.10)",
-                    border:"white",
+                border: "white",
             },
 
             "&.Mui-focused fieldset": {
@@ -381,10 +375,10 @@ const Signup = () => {
                 <Box
                     sx={{
                         mb: 5,
-                        display:"flex",
-                        justifyContent:"center",
-                        flexDirection:"column",
-                        alignItems:"center",
+                        display: "flex",
+                        justifyContent: "center",
+                        flexDirection: "column",
+                        alignItems: "center",
                     }}
                 >
                     <Typography
@@ -551,37 +545,93 @@ const Signup = () => {
 
                         {/* Phone */}
 
-                        <TextField
-                            label="Phone number"
-                            name="phoneNumber"
-                            type="tel"
-                            value={
-                                form.phoneNumber
-                            }
-                            onChange={
-                                handleChange
-                            }
-                            fullWidth
-                            required
-                            placeholder="+91 9876543210"
-                            sx={
-                                inputStyles
-                            }
-                            slotProps={{
-                                inputLabel: {
-                                    shrink: true
-                                },
 
-                                input: {
-                                    startAdornment:
-                                        (
-                                            <InputAdornment position="start">
-                                                <PhoneOutlined />
-                                            </InputAdornment>
-                                        )
-                                }
+
+
+                        <Stack
+                            direction={{
+                                xs: "column",
+                                sm: "row"
                             }}
-                        />
+                            spacing={1.4}
+                        >
+
+                            <TextField
+                                label="Phone number"
+                                name="phoneNumber"
+                                type="tel"
+                                value={
+                                    form.phoneNumber
+                                }
+                                onChange={
+                                    handleChange
+                                }
+                                fullWidth
+                                required
+                                placeholder="+91 9876543210"
+                                sx={
+                                    inputStyles
+                                }
+                                slotProps={{
+                                    inputLabel: {
+                                        shrink: true
+                                    },
+
+                                    input: {
+                                        startAdornment:
+                                            (
+                                                <InputAdornment position="start">
+                                                    <PhoneOutlined />
+                                                </InputAdornment>
+                                            )
+                                    }
+                                }}
+                            />
+                            <TextField
+                                select
+                                label="Select Role"
+                                name="Role"
+                                placeholder="Select Role"
+                                value={
+                                    form.Role
+                                }
+                                onChange={
+                                    handleChange
+                                }
+                                fullWidth
+                                required
+                                sx={
+                                    inputStyles
+                                }
+                                slotProps={{
+                                    inputLabel: {
+                                        shrink: true
+                                    },
+
+                                    input: {
+                                        startAdornment:
+                                            (
+                                                <InputAdornment position="start">
+                                                    <PersonOutlined />
+                                                </InputAdornment>
+                                            )
+                                    }
+                                }}
+
+
+                            >
+                                <MenuItem value="users">
+                                    user
+                                </MenuItem>
+
+                                <MenuItem value="student">
+                                    student
+                                </MenuItem>
+                            </TextField>
+
+
+                        </Stack>
+
 
                         {/* Password + Confirm */}
 
@@ -642,6 +692,12 @@ const Signup = () => {
                                                 (
                                                     <InputAdornment position="end">
                                                         <IconButton
+                                                            sx={{
+                                                                color: "#fff",
+                                                                "& svg": {
+                                                                    color: "#fff !important",
+                                                                },
+                                                            }}
                                                             type="button"
                                                             onClick={() =>
                                                                 setShowPassword(
@@ -752,6 +808,12 @@ const Signup = () => {
                                                 (
                                                     <InputAdornment position="end">
                                                         <IconButton
+                                                            sx={{
+                                                                color: "#fff",
+                                                                "& svg": {
+                                                                    color: "#fff !important",
+                                                                },
+                                                            }}
                                                             type="button"
                                                             onClick={() =>
                                                                 setShowConfirmPassword(
@@ -914,7 +976,7 @@ const Signup = () => {
 
                             fontWeight:
                                 800,
-                                fontSize:18,
+                            fontSize: 18,
 
                             cursor:
                                 "pointer",

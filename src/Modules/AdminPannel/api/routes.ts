@@ -9,3 +9,5 @@ export const UPDATE_YOUTUBE_POST= '/youtube/updateyoutubepost'
 // users realted routes  
 
 export const GET_ALL_USERS = "/users/"
+export const ADD_QUERY ="/user/sendquery"
+export const GET_ALL_QUERY ="/user/getquery"

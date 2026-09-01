@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import {
   Box,
   Button,
@@ -105,7 +104,6 @@ const truncate = (text: string, length: number) =>
   text.length <= length ? text : `${text.slice(0, length).trim()}...`;
 
 const News = () => {
-  const navigate = useNavigate();
   const [activeSlide, setActiveSlide] = useState(0);
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
   const [commentText, setCommentText] = useState("");
@@ -169,14 +167,7 @@ const News = () => {
     <Box sx={{ minHeight: "100vh", background: "#f8fafc", color: "#0f172a", pb: 10 }}>
       <Box sx={{ maxWidth: 1200, mx: "auto", px: { xs: 3, md: 4 }, pt: { xs: 12, md: 14 } }}>
         <Box sx={{ mb: 5, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 2, flexWrap: "wrap" }}>
-          <Button
-            variant="outlined"
-            startIcon={<KeyboardArrowLeftIcon />}
-            onClick={() => navigate(-1)}
-            sx={{ textTransform: "none" }}
-          >
-            Back
-          </Button>
+
           <Box sx={{ width: "90%", display: "flex", flexDirection: "column", textAlign: "center" }}>
             <Typography sx={{ fontSize: { xs: 24, md: 32 }, fontWeight: 900, flex: 1 }}>
               News hub for
