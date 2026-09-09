@@ -10,7 +10,6 @@ import {
 } from "@mui/material";
 
 import {
-    ArrowBack,
     ArrowForward,
     EmailOutlined,
     MessageOutlined,

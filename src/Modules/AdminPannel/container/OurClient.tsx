@@ -29,7 +29,6 @@ import {
     MenuItem,
     Select,
     FormControl,
-    InputLabel,
 } from "@mui/material";
 
 import AddIcon from "@mui/icons-material/Add";
@@ -53,7 +52,6 @@ import {
     useState,
 } from "react";
 
-import api from "../../../API/api";
 import { addClient, DeleteClient, getAllClient, UpdateClient } from "../api/api";
 import { useGlobalToast } from "../../../common/GlobalToast";
 

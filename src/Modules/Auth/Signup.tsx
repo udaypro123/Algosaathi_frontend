@@ -13,7 +13,6 @@ import {
 } from "@mui/material";
 
 import {
-    ArrowBackRounded,
     ArrowForwardRounded,
     CheckCircleRounded,
     CodeRounded,

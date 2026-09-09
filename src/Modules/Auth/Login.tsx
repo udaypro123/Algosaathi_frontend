@@ -11,7 +11,6 @@ import {
 } from "@mui/material";
 
 import {
-    ArrowBackRounded,
     ArrowForwardRounded,
     CodeRounded,
     EmailOutlined,
@@ -318,12 +317,6 @@ const Login = () => {
     const handleSignup = () => {
         navigate("/signup");
     };
-
-
-    const handleBack = () => {
-        navigate(-1);
-    };
-
 
     /* =========================================================
        UI
