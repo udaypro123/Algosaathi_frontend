@@ -1,31 +1,36 @@
 import {
+    Alert,
     Box,
     Button,
-    TextField,
-    Typography,
-    Stack,
+    Divider,
     IconButton,
     InputAdornment,
-    Alert,
     LinearProgress,
-    Divider,
-    MenuItem
+    MenuItem,
+    Stack,
+    TextField,
+    Typography,
 } from "@mui/material";
 
 import {
+    ArrowBackRounded,
+    ArrowForwardRounded,
+    CheckCircleRounded,
+    CodeRounded,
+    EmailOutlined,
+    LockOutlined,
+    PersonOutlined,
+    PhoneOutlined,
     Visibility,
     VisibilityOff,
-    PersonOutlined,
-    EmailOutlined,
-    PhoneOutlined,
-    LockOutlined,
-    CodeRounded,
-    ArrowForwardRounded
 } from "@mui/icons-material";
 
+import { motion, type Variants } from "framer-motion";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 import api from "../../API/api";
+
 
 interface SignupForm {
     firstName: string;
@@ -48,7 +53,7 @@ const Signup = () => {
         email: "",
         password: "",
         confirmPassword: "",
-        phoneNumber: ""
+        phoneNumber: "",
     });
 
     const [loading, setLoading] = useState(false);
@@ -60,14 +65,86 @@ const Signup = () => {
     const [showConfirmPassword, setShowConfirmPassword] =
         useState(false);
 
-    const handleChange = ( e: React.ChangeEvent<HTMLInputElement>  ) => {
-        setForm({
-            ...form,
-            [e.target.name]: e.target.value
-        });
+
+    /* =========================================================
+       FRAMER MOTION
+    ========================================================= */
+
+    const pageVariants: Variants = {
+        hidden: {
+            opacity: 0,
+            y: 25,
+        },
+
+        visible: {
+            opacity: 1,
+            y: 0,
+
+            transition: {
+                duration: 0.6,
+                ease: "easeOut",
+            },
+        },
+    };
+
+
+    const headerVariants: Variants = {
+        hidden: {
+            opacity: 0,
+            y: -15,
+        },
+
+        visible: {
+            opacity: 1,
+            y: 0,
+
+            transition: {
+                duration: 0.5,
+                ease: "easeOut",
+            },
+        },
+    };
+
+
+    const fieldVariants: Variants = {
+        hidden: {
+            opacity: 0,
+            y: 15,
+        },
+
+        visible: {
+            opacity: 1,
+            y: 0,
+
+            transition: {
+                duration: 0.4,
+                ease: "easeOut",
+            },
+        },
+    };
+
+
+    /* =========================================================
+       HANDLE CHANGE
+    ========================================================= */
+
+    const handleChange = (
+        e: React.ChangeEvent<HTMLInputElement>
+    ) => {
+        const { name, value } = e.target;
+
+        setForm((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
 
         setError(null);
     };
+
+
+    /* =========================================================
+       PASSWORD STRENGTH
+    ========================================================= */
 
     const getPasswordStrength = () => {
         const password = form.password;
@@ -75,7 +152,7 @@ const Signup = () => {
         if (!password) {
             return {
                 value: 0,
-                text: ""
+                text: "",
             };
         }
 
@@ -90,27 +167,35 @@ const Signup = () => {
         if (score <= 1) {
             return {
                 value: 25,
-                text: "Weak password"
+                text: "Weak password",
             };
         }
 
         if (score <= 3) {
             return {
                 value: 60,
-                text: "Medium password"
+                text: "Medium password",
             };
         }
 
         return {
             value: 100,
-            text: "Strong password"
+            text: "Strong password",
         };
     };
+
 
     const passwordStrength =
         getPasswordStrength();
 
-    const handleSubmit = async (  e: React.FormEvent ) => {
+
+    /* =========================================================
+       SUBMIT
+    ========================================================= */
+
+    const handleSubmit = async (
+        e: React.FormEvent<HTMLFormElement>
+    ) => {
         e.preventDefault();
 
         setError(null);
@@ -127,32 +212,70 @@ const Signup = () => {
             setError(
                 "Please fill in all required fields."
             );
+
             return;
         }
+
+
+        if (form.phoneNumber.length < 10) {
+            setError(
+                "Please enter a valid phone number."
+            );
+
+            return;
+        }
+
 
         if (form.password.length < 6) {
-            setError( "Password must be at least 6 characters."  );
+            setError(
+                "Password must be at least 6 characters."
+            );
+
             return;
         }
 
-        if (  form.password !==  form.confirmPassword ) {
-            setError( "Password and confirm password do not match."  );
+
+        if (
+            form.password !==
+            form.confirmPassword
+        ) {
+            setError(
+                "Password and confirm password do not match."
+            );
+
             return;
         }
+
 
         setLoading(true);
 
         try {
-            await api.post("/auth/register", {
-                firstName: form.firstName,
-                role: form.Role,
-                lastName: form.lastName,
-                email: form.email,
-                password: form.password,
-                confirmPassword:
-                    form.confirmPassword,
-                phoneNumber: form.phoneNumber
-            });
+            await api.post(
+                "/auth/register",
+                {
+                    firstName:
+                        form.firstName,
+
+                    role:
+                        form.Role,
+
+                    lastName:
+                        form.lastName,
+
+                    email:
+                        form.email,
+
+                    password:
+                        form.password,
+
+                    confirmPassword:
+                        form.confirmPassword,
+
+                    phoneNumber:
+                        form.phoneNumber,
+                }
+            );
+
 
             navigate("/login");
 
@@ -163,860 +286,1244 @@ const Signup = () => {
                 err?.response?.data?.message ||
                 "Unable to create account. Please try again."
             );
+
         } finally {
             setLoading(false);
         }
     };
 
-    const handlenaviagte = () => {
-        navigate("/login");
-    };
 
-    /*
-    |--------------------------------------------------------------------------
-    | INPUT STYLES
-    |--------------------------------------------------------------------------
-    */
+    /* =========================================================
+       INPUT STYLE
+    ========================================================= */
 
     const inputStyles = {
         "& .MuiOutlinedInput-root": {
-            height: 48,
-            borderRadius: "12px",
+            minHeight: 52,
 
-            backgroundColor:
-                "rgba(35, 31, 227, 0.17)",
+            borderRadius: "14px",
 
-            transition:
-                "all 0.25s ease",
+            backgroundColor: "rgb(247, 249, 251)",
+
+            transition: "all 0.25s ease",
 
             "& fieldset": {
-                borderColor:
-                    "rgba(63, 29, 230, 0.35)",
-                borderWidth: "1px"
+                borderColor: "#ffffff",
+                borderWidth: "2px",
             },
 
-            "&:hover fieldset": {
-                borderColor:
-                    "#280dd692"
+            "&:hover": {
+                backgroundColor: "rgb(247, 249, 251)",
+
+                "& fieldset": {
+                    borderColor: "#ffffff",
+                },
             },
 
             "&.Mui-focused": {
-                backgroundColor: "#2107cb5a",
-                boxShadow:
-                    "0 0 0 3px rgba(37,99,235,0.10)",
-                border: "white",
+                backgroundColor: "#ffffff",
             },
 
+            /* Focus hone par blue border nahi */
             "&.Mui-focused fieldset": {
-                borderColor:
-                    "#2563eb",
-                borderWidth: "2px"
-            }
+                borderColor: "#ffffff",
+                borderWidth: "2px",
+            },
         },
 
-        /*
-        |--------------------------------------------------------------------------
-        | LABEL
-        |--------------------------------------------------------------------------
-        */
-
         "& .MuiInputLabel-root": {
-            color: "#f1f3f6",
+            color: "#64748b",
             fontWeight: 500,
-
-            backgroundColor:
-                "#1a1accaa",
-
-            padding:
-                "0 5px",
-
-            borderRadius:
-                "4px"
         },
 
         "& .MuiInputLabel-root.Mui-focused": {
-            color: "#2563eb",
-            fontWeight: 600,
-
-            backgroundColor:
-                "#2b13e2a2"
+            color: "#000000",
         },
-
-        "& .MuiInputLabel-root.MuiInputLabel-shrink": {
-            color: "#475569",
-
-            backgroundColor:
-                "#f1f5f9",
-
-            padding:
-                "0 5px",
-
-            borderRadius:
-                "4px"
-        },
-
-        "& .MuiInputLabel-root.Mui-focused.MuiInputLabel-shrink": {
-            color: "#1049c2",
-
-            backgroundColor:
-                "#ffffff"
-        },
-
-        /*
-        |--------------------------------------------------------------------------
-        | INPUT TEXT
-        |--------------------------------------------------------------------------
-        */
 
         "& .MuiOutlinedInput-input": {
-            color: "#eff1f5",
-            fontSize: "14px"
+            color: "#030408",
+            fontSize: "14px",
+            fontWeight: 500,
         },
 
         "& .MuiOutlinedInput-input::placeholder": {
-            color: "#2171e1",
-            opacity: 1
+            color: "#080e1553",
+            opacity: 1,
         },
 
-
         "& .MuiInputAdornment-root svg": {
-            color: "#64748b"
-        }
+            color: "#64748b",
+            fontSize: 21,
+        },
+
+        /* Chrome Autofill / Suggestion Background */
+        "& input:-webkit-autofill": {
+            WebkitBoxShadow:
+                "0 0 0 1000px rgb(247, 249, 251) inset",
+
+            WebkitTextFillColor:
+                "#030408",
+
+            transition:
+                "background-color 9999s ease-in-out 0s",
+        },
+
+        "& input:-webkit-autofill:hover": {
+            WebkitBoxShadow:
+                "0 0 0 1000px rgb(247, 249, 251) inset",
+        },
+
+        "& input:-webkit-autofill:focus": {
+            WebkitBoxShadow:
+                "0 0 0 1000px #ffffff inset",
+
+            WebkitTextFillColor:
+                "#030408",
+        },
     };
 
-
+    /* =========================================================
+       PAGE
+    ========================================================= */
 
     return (
         <Box
             sx={{
-                height: "100%",
+                minHeight: "100vh",
+
                 width: "100%",
+
                 display: "flex",
 
                 alignItems: "center",
 
-                opacity: 0,
-                animation:
-                    "pageAppear 0.35s ease-out forwards",
+                justifyContent: "center",
 
-                "@keyframes pageAppear": {
-                    "0%": {
-                        opacity: 0,
-                        transform:
-                            "translateY(10px)"
-                    },
+                position: "relative",
 
-                    "100%": {
-                        opacity: 1,
-                        transform:
-                            "translateY(0)"
-                    }
-                },
+                overflow: "hidden",
 
-                p: {
+                px: {
                     xs: 2,
                     sm: 3,
-                    md: 4
+                    md: 4,
                 },
 
-                background: "transparent",
+                py: {
+                    xs: 4,
+                    md: 6,
+                },
 
-                // border: "1px solid rgba(255,255,255,0.18)",
-                // boxShadow:
-                //     "0 24px 80px rgba(15,23,42,0.14)",
-                borderRadius: 4
+                background:
+                    "linear-gradient(135deg,#f8fafc 0%,#eef2ff 48%,#f0f9ff 100%)",
+
+                "&::before": {
+                    content: '""',
+
+                    position:
+                        "absolute",
+
+                    width: {
+                        xs: 280,
+                        md: 500,
+                    },
+
+                    height: {
+                        xs: 280,
+                        md: 500,
+                    },
+
+                    borderRadius:
+                        "50%",
+
+                    background:
+                        "radial-gradient(circle,rgba(37,99,235,0.12),transparent 70%)",
+
+                    top: {
+                        xs: -140,
+                        md: -220,
+                    },
+
+                    right: {
+                        xs: -140,
+                        md: -200,
+                    },
+                },
+
+                "&::after": {
+                    content: '""',
+
+                    position:
+                        "absolute",
+
+                    width: {
+                        xs: 240,
+                        md: 400,
+                    },
+
+                    height: {
+                        xs: 240,
+                        md: 400,
+                    },
+
+                    borderRadius:
+                        "50%",
+
+                    background:
+                        "radial-gradient(circle,rgba(2,132,199,0.10),transparent 70%)",
+
+                    bottom: -180,
+
+                    left: -150,
+                },
             }}
         >
-            <Box
-                sx={{
+
+
+            {/* =================================================
+                MAIN CONTENT
+            ================================================= */}
+
+            <motion.div
+                variants={pageVariants}
+
+                initial="hidden"
+
+                animate="visible"
+
+                style={{
                     width: "100%",
-                    maxWidth: "100%",
-                    mx: "auto"
+                    maxWidth: 760,
+                    position: "relative",
+                    zIndex: 2,
                 }}
             >
-                {/* Mobile Logo */}
 
-                <Stack
-                    direction="row"
-                    spacing={1}
-
-                    sx={{
-                        display: {
-                            xs: "flex",
-                            md: "none"
-                        },
-                        alignItems: "center",
-                        justifyContent: "center",
-                        mb: 1.5
-                    }}
-                >
-                    <CodeRounded
-                        sx={{
-                            color:
-                                "#0284c7",
-                            fontSize: 29
-                        }}
-                    />
-
-                    <Typography
-                        sx={{
-                            fontSize: 23,
-                            fontWeight: 800,
-                            color:
-                                "#020617"
-                        }}
-                    >
-                        AlgoSaathi
-                    </Typography>
-                </Stack>
-
-                {/* Heading */}
+                {/* =================================================
+                    CARD
+                ================================================= */}
 
                 <Box
                     sx={{
-                        mb: 5,
-                        display: "flex",
-                        justifyContent: "center",
-                        flexDirection: "column",
-                        alignItems: "center",
+                        width:
+                            "100%",
+
+                        background: "white",
+
+                        backdropFilter:
+                            "blur(20px)",
+
+                        WebkitBackdropFilter:
+                            "blur(20px)",
+
+                        // border:  "1px solid rgba(148,163,184,0.25)",
+
+                        borderRadius: {
+                            xs: "22px",
+                            md: "30px",
+                        },
+
+                        p: {
+                            xs: 2.5,
+                            sm: 4,
+                            md: 5,
+                        },
+
+                        boxShadow:
+                            "0 30px 90px rgba(15,23,42,0.10)",
+
+                        position:
+                            "relative",
+
+                        overflow:
+                            "hidden",
+
+                        "&::before": {
+                            content:
+                                '""',
+
+                            position:
+                                "absolute",
+
+                            top: 0,
+
+                            left: 0,
+
+                            right: 0,
+
+                            height:
+                                "4px",
+
+                            // background:
+                            //     "linear-gradient(90deg,#2563eb,#0284c7,#06b6d4)",
+                        },
                     }}
                 >
-                    <Typography
-                        sx={{
-                            fontSize: {
-                                xs: 25,
-                                sm: 29
-                            },
 
-                            fontWeight:
-                                800,
+                    {/* =================================================
+                        LOGO / BRAND
+                    ================================================= */}
 
-                            color:
-                                "#efeff3",
-
-                            letterSpacing:
-                                "-0.8px",
-
-                            mb: 0.4
-                        }}
+                    <motion.div
+                        variants={headerVariants}
+                        initial="hidden"
+                        animate="visible"
                     >
-                        Create your account
-                    </Typography>
-
-                    <Typography
-                        sx={{
-                            color:
-                                "#8b9097",
-
-                            fontSize:
-                                13.5
-                        }}
-                    >
-                        Start your journey with
-                        AlgoSaathi today.
-                    </Typography>
-                </Box>
-
-                {/* Error */}
-
-                {error && (
-                    <Alert
-                        severity="error"
-                        sx={{
-                            mb: 1.5,
-                            py: 0.2,
-                            borderRadius:
-                                "10px",
-                            fontSize:
-                                12.5
-                        }}
-                    >
-                        {error}
-                    </Alert>
-                )}
-
-                {/* =================================================
-                            FORM
-                        ================================================== */}
-
-                <form
-                    onSubmit={
-                        handleSubmit
-                    }
-                >
-                    <Stack spacing={3}>
-
-                        {/* First + Last */}
-
                         <Stack
-                            direction={{
-                                xs: "column",
-                                sm: "row"
+                            direction="row"
+                            spacing={1}
+
+                            sx={{
+                                mb: 2,
+                                alignItems: "center",
+                                justifyContent: "center"
                             }}
-                            spacing={1.4}
                         >
-                            <TextField
-                                label="First name"
-                                name="firstName"
-                                placeholder="First Name"
-                                value={
-                                    form.firstName
-                                }
-                                onChange={
-                                    handleChange
-                                }
-                                fullWidth
-                                required
-                                sx={
-                                    inputStyles
-                                }
-                                slotProps={{
-                                    inputLabel: {
-                                        shrink: true
-                                    },
-
-                                    input: {
-                                        startAdornment:
-                                            (
-                                                <InputAdornment position="start">
-                                                    <PersonOutlined />
-                                                </InputAdornment>
-                                            )
-                                    }
+                            <Box
+                                sx={{
+                                    width: 42,
+                                    height: 42,
+                                    borderRadius: "12px",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    background: "linear-gradient(135deg,#2563eb,#0284c7)",
+                                    boxShadow:
+                                        "0 8px 20px rgba(37,99,235,0.22)",
                                 }}
-                            />
+                            >
+                                <CodeRounded
+                                    sx={{
+                                        color:
+                                            "#ffffff",
 
-                            <TextField
-                                label="Last name"
-                                name="lastName"
-                                placeholder="Last Name"
-                                value={
-                                    form.lastName
-                                }
-                                onChange={
-                                    handleChange
-                                }
-                                fullWidth
-                                required
-                                sx={
-                                    inputStyles
-                                }
-                                slotProps={{
-                                    inputLabel: {
-                                        shrink: true
-                                    }
+                                        fontSize:
+                                            25,
+                                    }}
+                                />
+                            </Box>
+
+                            <Typography
+                                sx={{
+                                    fontSize:
+                                        23,
+
+                                    fontWeight:
+                                        900,
+
+                                    color:
+                                        "#0f172a",
+
+                                    letterSpacing:
+                                        "-0.7px",
                                 }}
-                            />
+                            >
+                                Algo
+                                <Box
+                                    component="span"
+                                    sx={{
+                                        color:
+                                            "#2563eb",
+                                    }}
+                                >
+                                    Saathi
+                                </Box>
+                            </Typography>
                         </Stack>
+                    </motion.div>
 
-                        {/* Email */}
 
-                        <TextField
-                            label="Email address"
-                            name="email"
-                            placeholder="Please Enter Your Email"
-                            type="email"
-                            value={
-                                form.email
-                            }
-                            onChange={
-                                handleChange
-                            }
-                            fullWidth
-                            required
-                            sx={
-                                inputStyles
-                            }
-                            slotProps={{
-                                inputLabel: {
-                                    shrink: true
+                    {/* =================================================
+                        HEADING
+                    ================================================= */}
+
+                    <motion.div
+                        variants={headerVariants}
+                        initial="hidden"
+                        animate="visible"
+                    >
+                        <Typography
+                            sx={{
+                                textAlign:
+                                    "center",
+
+                                fontSize: {
+                                    xs: 27,
+                                    sm: 32,
+                                    md: 38,
                                 },
 
-                                input: {
-                                    startAdornment:
-                                        (
-                                            <InputAdornment position="start">
-                                                <EmailOutlined />
-                                            </InputAdornment>
-                                        )
-                                }
+                                fontWeight:
+                                    900,
+
+                                color:
+                                    "#0f172a",
+
+                                letterSpacing:
+                                    "-1.2px",
+
+                                lineHeight:
+                                    1.15,
                             }}
-                        />
-
-                        {/* Phone */}
-
-
-
-
-                        <Stack
-                            direction={{
-                                xs: "column",
-                                sm: "row"
-                            }}
-                            spacing={1.4}
                         >
-
-                            <TextField
-                                label="Phone number"
-                                name="phoneNumber"
-                                type="tel"
-                                value={
-                                    form.phoneNumber
-                                }
-                                onChange={
-                                    handleChange
-                                }
-                                fullWidth
-                                required
-                                placeholder="+91 9876543210"
-                                sx={
-                                    inputStyles
-                                }
-                                slotProps={{
-                                    inputLabel: {
-                                        shrink: true
-                                    },
-
-                                    input: {
-                                        startAdornment:
-                                            (
-                                                <InputAdornment position="start">
-                                                    <PhoneOutlined />
-                                                </InputAdornment>
-                                            )
-                                    }
-                                }}
-                            />
-                            <TextField
-                                select
-                                label="Select Role"
-                                name="Role"
-                                placeholder="Select Role"
-                                value={
-                                    form.Role
-                                }
-                                onChange={
-                                    handleChange
-                                }
-                                fullWidth
-                                required
-                                sx={
-                                    inputStyles
-                                }
-                                slotProps={{
-                                    inputLabel: {
-                                        shrink: true
-                                    },
-
-                                    input: {
-                                        startAdornment:
-                                            (
-                                                <InputAdornment position="start">
-                                                    <PersonOutlined />
-                                                </InputAdornment>
-                                            )
-                                    }
-                                }}
-
-
-                            >
-                                <MenuItem value="users">
-                                    user
-                                </MenuItem>
-
-                                <MenuItem value="student">
-                                    student
-                                </MenuItem>
-                            </TextField>
-
-
-                        </Stack>
-
-
-                        {/* Password + Confirm */}
-
-                        <Stack
-                            direction={{
-                                xs: "column",
-                                sm: "row",
-
-                            }}
-                            spacing={1.4}
-                            sx={{ alignItems: "flex-start" }}
-
-                        >
-                            {/* Password */}
-
+                            Create your{" "}
                             <Box
+                                component="span"
                                 sx={{
-                                    width: {
-                                        xs: "100%",
-                                        sm: "50%"
-                                    }
+                                    background:
+                                        "linear-gradient(135deg,#2563eb,#0284c7)",
+
+                                    backgroundClip:
+                                        "text",
+
+                                    WebkitBackgroundClip:
+                                        "text",
+
+                                    WebkitTextFillColor:
+                                        "transparent",
                                 }}
                             >
-                                <TextField
-                                    label="Password"
-                                    name="password"
-                                    placeholder="password"
-                                    type={
-                                        showPassword
-                                            ? "text"
-                                            : "password"
-                                    }
-                                    value={
-                                        form.password
-                                    }
-                                    onChange={
-                                        handleChange
-                                    }
-                                    fullWidth
-                                    required
-                                    sx={
-                                        inputStyles
-                                    }
-                                    slotProps={{
-                                        inputLabel: {
-                                            shrink: true
-                                        },
-
-                                        input: {
-                                            startAdornment:
-                                                (
-                                                    <InputAdornment position="start">
-                                                        <LockOutlined />
-                                                    </InputAdornment>
-                                                ),
-
-                                            endAdornment:
-                                                (
-                                                    <InputAdornment position="end">
-                                                        <IconButton
-                                                            sx={{
-                                                                color: "#fff",
-                                                                "& svg": {
-                                                                    color: "#fff !important",
-                                                                },
-                                                            }}
-                                                            type="button"
-                                                            onClick={() =>
-                                                                setShowPassword(
-                                                                    prev =>
-                                                                        !prev
-                                                                )
-                                                            }
-                                                            edge="end"
-                                                            size="small"
-                                                        >
-                                                            {showPassword ? (
-                                                                <VisibilityOff />
-                                                            ) : (
-                                                                <Visibility />
-                                                            )}
-                                                        </IconButton>
-                                                    </InputAdornment>
-                                                )
-                                        }
-                                    }}
-                                />
-
-                                {form.password && (
-                                    <Box
-                                        sx={{
-                                            mt: 0.5
-                                        }}
-                                    >
-                                        <LinearProgress
-                                            variant="determinate"
-                                            value={
-                                                passwordStrength.value
-                                            }
-                                            sx={{
-                                                height: 4,
-                                                borderRadius: 5,
-
-                                                backgroundColor:
-                                                    "rgba(148,163,184,0.25)"
-                                            }}
-                                        />
-
-                                        <Typography
-                                            sx={{
-                                                mt: 0.3,
-                                                fontSize: 10.5,
-                                                color:
-                                                    "#475569"
-                                            }}
-                                        >
-                                            {
-                                                passwordStrength.text
-                                            }
-                                        </Typography>
-                                    </Box>
-                                )}
+                                account
                             </Box>
+                        </Typography>
 
-                            {/* Confirm */}
 
-                            <Box
-                                sx={{
-                                    width: {
-                                        xs: "100%",
-                                        sm: "50%"
-                                    }
-                                }}
-                            >
-                                <TextField
-                                    label="Confirm password"
-                                    name="confirmPassword"
-                                    placeholder="Confirm password"
-                                    type={
-                                        showConfirmPassword
-                                            ? "text"
-                                            : "password"
-                                    }
-                                    value={
-                                        form.confirmPassword
-                                    }
-                                    onChange={
-                                        handleChange
-                                    }
-                                    fullWidth
-                                    required
-                                    error={
-                                        !!form.confirmPassword &&
-                                        form.password !==
-                                        form.confirmPassword
-                                    }
-                                    sx={
-                                        inputStyles
-                                    }
-                                    slotProps={{
-                                        inputLabel: {
-                                            shrink: true
-                                        },
-
-                                        input: {
-                                            startAdornment:
-                                                (
-                                                    <InputAdornment position="start">
-                                                        <LockOutlined />
-                                                    </InputAdornment>
-                                                ),
-
-                                            endAdornment:
-                                                (
-                                                    <InputAdornment position="end">
-                                                        <IconButton
-                                                            sx={{
-                                                                color: "#fff",
-                                                                "& svg": {
-                                                                    color: "#fff !important",
-                                                                },
-                                                            }}
-                                                            type="button"
-                                                            onClick={() =>
-                                                                setShowConfirmPassword(
-                                                                    prev =>
-                                                                        !prev
-                                                                )
-                                                            }
-                                                            edge="end"
-                                                            size="small"
-                                                        >
-                                                            {showConfirmPassword ? (
-                                                                <VisibilityOff />
-                                                            ) : (
-                                                                <Visibility />
-                                                            )}
-                                                        </IconButton>
-                                                    </InputAdornment>
-                                                )
-                                        }
-                                    }}
-                                />
-
-                                {form.confirmPassword &&
-                                    form.password !==
-                                    form.confirmPassword && (
-                                        <Typography
-                                            sx={{
-                                                color:
-                                                    "#ef4444",
-                                                fontSize:
-                                                    10.5,
-                                                mt: 0.3,
-                                                ml: 1
-                                            }}
-                                        >
-                                            Passwords
-                                            do not
-                                            match
-                                        </Typography>
-                                    )}
-                            </Box>
-                        </Stack>
-
-                        {/* Submit */}
-
-                        <Button
-                            type="submit"
-                            variant="contained"
-                            disabled={
-                                loading
-                            }
-                            endIcon={
-                                !loading && (
-                                    <ArrowForwardRounded />
-                                )
-                            }
+                        <Typography
                             sx={{
-                                mt: 0.3,
+                                textAlign:
+                                    "center",
 
-                                height: 48,
+                                color:
+                                    "#64748b",
+
+                                fontSize:
+                                    14,
+
+                                mt: 1,
+
+                                mb: 4,
+
+                                lineHeight:
+                                    1.6,
+                            }}
+                        >
+                            Start your journey with
+                            AlgoSaathi today.
+                        </Typography>
+                    </motion.div>
+
+
+                    {/* =================================================
+                        ERROR
+                    ================================================= */}
+
+                    {error && (
+                        <Alert
+                            severity="error"
+                            sx={{
+                                mb: 2.5,
 
                                 borderRadius:
                                     "12px",
 
-                                textTransform:
-                                    "none",
+                                fontSize:
+                                    13,
 
-                                fontSize: 15,
-
-                                fontWeight: 700,
-
-                                background:
-                                    "linear-gradient(135deg,#2563eb,#0284c7)",
-
-                                boxShadow:
-                                    "0 10px 25px rgba(37,99,235,0.25)",
-
-                                "&:hover": {
-                                    background:
-                                        "linear-gradient(135deg,#1d4ed8,#0369a1)",
-
-                                    transform:
-                                        "translateY(-1px)",
-
-                                    boxShadow:
-                                        "0 14px 30px rgba(37,99,235,0.32)"
-                                },
-
-                                transition:
-                                    "all 0.2s ease"
+                                alignItems:
+                                    "center",
                             }}
                         >
-                            {loading
-                                ? "Creating account..."
-                                : "Create account"}
-                        </Button>
-                    </Stack>
-                </form>
+                            {error}
+                        </Alert>
+                    )}
 
-                {/* Divider */}
 
-                <Stack
-                    direction="row"
-                    spacing={2}
+                    {/* =================================================
+                        FORM
+                    ================================================= */}
 
-                    sx={{
-                        my: 1.5,
-                        alignItems: "center"
-                    }}
-                >
-                    <Divider
+                    <Box
+                        component="form"
+                        onSubmit={handleSubmit}
+                    >
+
+                        <Stack
+                            spacing={2.2}
+                        >
+
+                            {/* FIRST + LAST */}
+
+                            <Stack
+                                direction={{
+                                    xs: "column",
+                                    sm: "row",
+                                }}
+                                spacing={2}
+                            >
+
+                                <motion.div
+                                    variants={fieldVariants}
+                                    initial="hidden"
+                                    animate="visible"
+                                    style={{
+                                        width: "100%",
+                                    }}
+                                >
+                                    <TextField
+                                        label="First name"
+                                        name="firstName"
+                                        placeholder="Enter first name"
+                                        value={
+                                            form.firstName
+                                        }
+                                        onChange={
+                                            handleChange
+                                        }
+                                        fullWidth
+                                        required
+                                        sx={
+                                            inputStyles
+                                        }
+                                        slotProps={{
+                                            inputLabel: {
+                                                shrink:
+                                                    true,
+                                            },
+
+                                            input: {
+                                                startAdornment:
+                                                    (
+                                                        <InputAdornment position="start">
+                                                            <PersonOutlined />
+                                                        </InputAdornment>
+                                                    ),
+                                            },
+                                        }}
+                                    />
+                                </motion.div>
+
+
+                                <motion.div
+                                    variants={fieldVariants}
+                                    initial="hidden"
+                                    animate="visible"
+                                    transition={{
+                                        delay:
+                                            0.05,
+                                    }}
+                                    style={{
+                                        width: "100%",
+                                    }}
+                                >
+                                    <TextField
+                                        label="Last name"
+                                        name="lastName"
+                                        placeholder="Enter last name"
+                                        value={
+                                            form.lastName
+                                        }
+                                        onChange={
+                                            handleChange
+                                        }
+                                        fullWidth
+                                        required
+                                        sx={
+                                            inputStyles
+                                        }
+                                        slotProps={{
+                                            inputLabel: {
+                                                shrink:
+                                                    true,
+                                            },
+                                        }}
+                                    />
+                                </motion.div>
+
+                            </Stack>
+
+
+                            {/* EMAIL */}
+
+                            <motion.div
+                                variants={fieldVariants}
+                                initial="hidden"
+                                animate="visible"
+                            >
+                                <TextField
+                                    label="Email address"
+                                    name="email"
+                                    type="email"
+                                    placeholder="you@example.com"
+                                    value={
+                                        form.email
+                                    }
+                                    onChange={
+                                        handleChange
+                                    }
+                                    fullWidth
+                                    required
+                                    sx={
+                                        inputStyles
+                                    }
+                                    slotProps={{
+                                        inputLabel: {
+                                            shrink:
+                                                true,
+                                        },
+
+                                        input: {
+                                            startAdornment:
+                                                (
+                                                    <InputAdornment position="start">
+                                                        <EmailOutlined />
+                                                    </InputAdornment>
+                                                ),
+                                        },
+                                    }}
+                                />
+                            </motion.div>
+
+
+                            {/* PHONE + ROLE */}
+
+                            <Stack
+                                direction={{
+                                    xs: "column",
+                                    sm: "row",
+                                }}
+                                spacing={2}
+                            >
+
+                                <motion.div
+                                    variants={fieldVariants}
+                                    initial="hidden"
+                                    animate="visible"
+                                    style={{
+                                        width: "100%",
+                                    }}
+                                >
+                                    <TextField
+                                        label="Phone number"
+                                        name="phoneNumber"
+                                        type="tel"
+                                        placeholder="+91 9876543210"
+                                        value={
+                                            form.phoneNumber
+                                        }
+                                        onChange={
+                                            handleChange
+                                        }
+                                        fullWidth
+                                        required
+                                        sx={
+                                            inputStyles
+                                        }
+                                        slotProps={{
+                                            inputLabel: {
+                                                shrink:
+                                                    true,
+                                            },
+
+                                            input: {
+                                                startAdornment:
+                                                    (
+                                                        <InputAdornment position="start">
+                                                            <PhoneOutlined />
+                                                        </InputAdornment>
+                                                    ),
+                                            },
+                                        }}
+                                    />
+                                </motion.div>
+
+
+                                <motion.div
+                                    variants={fieldVariants}
+                                    initial="hidden"
+                                    animate="visible"
+                                    transition={{
+                                        delay:
+                                            0.05,
+                                    }}
+                                    style={{
+                                        width: "100%",
+                                    }}
+                                >
+                                    <TextField
+                                        select
+                                        label="Select role"
+                                        name="Role"
+                                        value={
+                                            form.Role
+                                        }
+                                        onChange={
+                                            handleChange
+                                        }
+                                        fullWidth
+                                        required
+                                        sx={
+                                            inputStyles
+                                        }
+                                        slotProps={{
+                                            inputLabel: {
+                                                shrink:
+                                                    true,
+                                            },
+
+                                            input: {
+                                                startAdornment:
+                                                    (
+                                                        <InputAdornment position="start">
+                                                            <PersonOutlined />
+                                                        </InputAdornment>
+                                                    ),
+                                            },
+                                        }}
+                                    >
+                                        <MenuItem value="users">
+                                            User
+                                        </MenuItem>
+
+                                        <MenuItem value="student">
+                                            Student
+                                        </MenuItem>
+                                    </TextField>
+                                </motion.div>
+
+                            </Stack>
+
+
+                            {/* PASSWORDS */}
+
+                            <Stack
+                                direction={{
+                                    xs: "column",
+                                    sm: "row",
+                                }}
+                                spacing={2}
+                                sx={{ alignItems: "flex-start" }}
+                            >
+
+                                {/* PASSWORD */}
+
+                                <motion.div
+                                    variants={fieldVariants}
+                                    initial="hidden"
+                                    animate="visible"
+                                    style={{
+                                        width: "100%",
+                                    }}
+                                >
+                                    <TextField
+                                        label="Password"
+                                        name="password"
+                                        type={
+                                            showPassword
+                                                ? "text"
+                                                : "password"
+                                        }
+                                        placeholder="Create a password"
+                                        value={
+                                            form.password
+                                        }
+                                        onChange={
+                                            handleChange
+                                        }
+                                        fullWidth
+                                        required
+                                        sx={
+                                            inputStyles
+                                        }
+                                        slotProps={{
+                                            inputLabel: {
+                                                shrink:
+                                                    true,
+                                            },
+
+                                            input: {
+                                                startAdornment:
+                                                    (
+                                                        <InputAdornment position="start">
+                                                            <LockOutlined />
+                                                        </InputAdornment>
+                                                    ),
+
+                                                endAdornment:
+                                                    (
+                                                        <InputAdornment position="end">
+                                                            <IconButton
+                                                                type="button"
+                                                                size="small"
+                                                                onClick={() =>
+                                                                    setShowPassword(
+                                                                        (prev) =>
+                                                                            !prev
+                                                                    )
+                                                                }
+                                                                sx={{
+                                                                    color:
+                                                                        "#64748b",
+
+                                                                    "&:hover":
+                                                                    {
+                                                                        color:
+                                                                            "#2563eb",
+
+                                                                        backgroundColor:
+                                                                            "rgba(37,99,235,0.08)",
+                                                                    },
+                                                                }}
+                                                            >
+                                                                {showPassword ? (
+                                                                    <VisibilityOff />
+                                                                ) : (
+                                                                    <Visibility />
+                                                                )}
+                                                            </IconButton>
+                                                        </InputAdornment>
+                                                    ),
+                                            },
+                                        }}
+                                    />
+
+
+                                    {form.password && (
+                                        <Box
+                                            sx={{
+                                                mt:
+                                                    1,
+
+                                                px:
+                                                    0.5,
+                                            }}
+                                        >
+                                            <LinearProgress
+                                                variant="determinate"
+                                                value={
+                                                    passwordStrength.value
+                                                }
+                                                sx={{
+                                                    height:
+                                                        5,
+
+                                                    borderRadius:
+                                                        "10px",
+
+                                                    backgroundColor:
+                                                        "#f7f7f7",
+
+                                                    "& .MuiLinearProgress-bar":
+                                                    {
+                                                        borderRadius:
+                                                            "10px",
+
+                                                        backgroundColor:
+                                                            passwordStrength.value ===
+                                                                100
+                                                                ? "#16a34a"
+                                                                : passwordStrength.value >=
+                                                                    60
+                                                                    ? "#f59e0b"
+                                                                    : "#ef4444",
+                                                    },
+                                                }}
+                                            />
+
+                                            <Typography
+                                                sx={{
+                                                    mt:
+                                                        0.5,
+
+                                                    fontSize:
+                                                        11,
+
+                                                    color:
+                                                        passwordStrength.value ===
+                                                            100
+                                                            ? "#16a34a"
+                                                            : passwordStrength.value >=
+                                                                60
+                                                                ? "#d97706"
+                                                                : "#ef4444",
+
+                                                    fontWeight:
+                                                        600,
+                                                }}
+                                            >
+                                                {
+                                                    passwordStrength.text
+                                                }
+                                            </Typography>
+                                        </Box>
+                                    )}
+                                </motion.div>
+
+
+                                {/* CONFIRM PASSWORD */}
+
+                                <motion.div
+                                    variants={fieldVariants}
+                                    initial="hidden"
+                                    animate="visible"
+                                    transition={{
+                                        delay:
+                                            0.05,
+                                    }}
+                                    style={{
+                                        width: "100%",
+                                    }}
+                                >
+                                    <TextField
+                                        label="Confirm password"
+                                        name="confirmPassword"
+                                        type={
+                                            showConfirmPassword
+                                                ? "text"
+                                                : "password"
+                                        }
+                                        placeholder="Repeat your password"
+                                        value={
+                                            form.confirmPassword
+                                        }
+                                        onChange={
+                                            handleChange
+                                        }
+                                        fullWidth
+                                        required
+                                        error={
+                                            !!form.confirmPassword &&
+                                            form.password !==
+                                            form.confirmPassword
+                                        }
+                                        sx={
+                                            inputStyles
+                                        }
+                                        slotProps={{
+                                            inputLabel: {
+                                                shrink:
+                                                    true,
+                                            },
+
+                                            input: {
+                                                startAdornment:
+                                                    (
+                                                        <InputAdornment position="start">
+                                                            <LockOutlined />
+                                                        </InputAdornment>
+                                                    ),
+
+                                                endAdornment:
+                                                    (
+                                                        <InputAdornment position="end">
+                                                            <IconButton
+                                                                type="button"
+                                                                size="small"
+                                                                onClick={() =>
+                                                                    setShowConfirmPassword(
+                                                                        (prev) =>
+                                                                            !prev
+                                                                    )
+                                                                }
+                                                                sx={{
+                                                                    color:
+                                                                        "#64748b",
+
+                                                                    "&:hover":
+                                                                    {
+                                                                        color:
+                                                                            "#2563eb",
+
+                                                                        backgroundColor:
+                                                                            "rgba(37,99,235,0.08)",
+                                                                    },
+                                                                }}
+                                                            >
+                                                                {showConfirmPassword ? (
+                                                                    <VisibilityOff />
+                                                                ) : (
+                                                                    <Visibility />
+                                                                )}
+                                                            </IconButton>
+                                                        </InputAdornment>
+                                                    ),
+                                            },
+                                        }}
+                                    />
+
+
+                                    {form.confirmPassword &&
+                                        form.password ===
+                                        form.confirmPassword && (
+                                            <Stack
+                                                direction="row"
+                                                spacing={0.5}
+
+                                                sx={{
+                                                    mt:
+                                                        0.5,
+
+                                                    ml:
+                                                        0.5,
+                                                    alignItems: "center"
+                                                }}
+                                            >
+                                                <CheckCircleRounded
+                                                    sx={{
+                                                        fontSize:
+                                                            14,
+
+                                                        color:
+                                                            "#16a34a",
+                                                    }}
+                                                />
+
+                                                <Typography
+                                                    sx={{
+                                                        fontSize:
+                                                            11,
+
+                                                        color:
+                                                            "#16a34a",
+
+                                                        fontWeight:
+                                                            600,
+                                                    }}
+                                                >
+                                                    Passwords match
+                                                </Typography>
+                                            </Stack>
+                                        )}
+                                </motion.div>
+
+                            </Stack>
+
+
+                            {/* SUBMIT */}
+
+                            <motion.div
+                                initial={{
+                                    opacity: 0,
+                                    y: 15,
+                                }}
+                                animate={{
+                                    opacity: 1,
+                                    y: 0,
+                                }}
+                                transition={{
+                                    delay:
+                                        0.25,
+
+                                    duration:
+                                        0.5,
+                                }}
+                            >
+                                <Button
+                                    type="submit"
+                                    fullWidth
+                                    variant="contained"
+                                    disabled={
+                                        loading
+                                    }
+                                    endIcon={
+                                        !loading && (
+                                            <ArrowForwardRounded />
+                                        )
+                                    }
+                                    sx={{
+                                        height:
+                                            54,
+
+                                        mt:
+                                            0.5,
+
+                                        borderRadius:
+                                            "14px",
+
+                                        textTransform:
+                                            "none",
+
+                                        fontSize:
+                                            15,
+
+                                        fontWeight:
+                                            800,
+
+                                        background:
+                                            "linear-gradient(135deg,#2563eb,#0284c7)",
+
+                                        boxShadow:
+                                            "0 12px 28px rgba(37,99,235,0.22)",
+
+                                        transition:
+                                            "all 0.25s ease",
+
+                                        "&:hover": {
+                                            background:
+                                                "linear-gradient(135deg,#1d4ed8,#0369a1)",
+
+                                            transform:
+                                                "translateY(-2px)",
+
+                                            boxShadow:
+                                                "0 16px 35px rgba(37,99,235,0.28)",
+                                        },
+
+                                        "&:disabled": {
+                                            background:
+                                                "#93c5fd",
+
+                                            color:
+                                                "#ffffff",
+                                        },
+                                    }}
+                                >
+                                    {loading
+                                        ? "Creating account..."
+                                        : "Create account"}
+                                </Button>
+                            </motion.div>
+
+                        </Stack>
+                    </Box>
+
+
+                    {/* =================================================
+                        DIVIDER
+                    ================================================= */}
+
+                    <Stack
+                        direction="row"
+                        spacing={2}
+
                         sx={{
-                            flex: 1,
-                            borderColor:
-                                "rgb(231, 235, 238)"
+                            my:
+                                3,
+                            alignItems: "center"
                         }}
-                    />
+                    >
+                        <Divider
+                            sx={{
+                                flex:
+                                    1,
+
+                                borderColor:
+                                    "#e2e8f0",
+                            }}
+                        />
+
+                        <Typography
+                            sx={{
+                                fontSize:
+                                    11,
+
+                                color:
+                                    "#94a3b8",
+
+                                fontWeight:
+                                    600,
+                            }}
+                        >
+                            OR
+                        </Typography>
+
+                        <Divider
+                            sx={{
+                                flex:
+                                    1,
+
+                                borderColor:
+                                    "#e2e8f0",
+                            }}
+                        />
+                    </Stack>
+
+
+                    {/* =================================================
+                        LOGIN
+                    ================================================= */}
 
                     <Typography
                         sx={{
-                            fontSize: 11,
+                            textAlign:
+                                "center",
+
+                            fontSize:
+                                13.5,
+
                             color:
-                                "#c5cfdc"
+                                "#64748b",
                         }}
                     >
-                        OR
+                        Already have an account?{" "}
+
+                        <Box
+                            component="span"
+                            onClick={() =>
+                                navigate("/login")
+                            }
+                            sx={{
+                                color:
+                                    "#2563eb",
+
+                                fontWeight:
+                                    800,
+
+                                cursor:
+                                    "pointer",
+
+                                "&:hover": {
+                                    textDecoration:
+                                        "underline",
+
+                                    color:
+                                        "#1d4ed8",
+                                },
+                            }}
+                        >
+                            Sign in
+                        </Box>
                     </Typography>
 
-                    <Divider
+
+                    {/* =================================================
+                        TERMS
+                    ================================================= */}
+
+                    <Typography
                         sx={{
-                            flex: 1,
-                            borderColor:
-                                "rgb(224, 227, 234)"
-                        }}
-                    />
-                </Stack>
+                            textAlign:
+                                "center",
 
-                {/* Login */}
-
-                <Typography
-                    sx={{
-                        textAlign:
-                            "center",
-
-                        fontSize:
-                            13.5,
-
-                        color:
-                            "#f9fafc"
-                    }}
-                >
-                    Already have an account?{" "}
-
-                    <Box
-                        component="span"
-                        onClick={handlenaviagte}
-                        sx={{
                             color:
-                                "#ecf4ef",
+                                "#94a3b8",
 
-                            fontWeight:
-                                800,
-                            fontSize: 18,
+                            fontSize:
+                                10.5,
 
-                            cursor:
-                                "pointer",
+                            mt:
+                                1.5,
 
-                            "&:hover": {
-                                textDecoration:
-                                    "underline"
-                            }
+                            lineHeight:
+                                1.5,
+
+                            maxWidth:
+                                450,
+
+                            mx:
+                                "auto",
                         }}
                     >
-                        Sign in
-                    </Box>
-                </Typography>
+                        By creating an account, you agree
+                        to our terms and privacy policy.
+                    </Typography>
 
-                {/* Terms */}
+                </Box>
 
-                <Typography
-                    sx={{
-                        textAlign:
-                            "center",
+            </motion.div>
 
-                        color:
-                            "#94a3b8",
-
-                        fontSize:
-                            10.5,
-
-                        mt: 1,
-
-                        lineHeight:
-                            1.4
-                    }}
-                >
-                    By creating an account,
-                    you agree to our terms
-                    and privacy policy.
-                </Typography>
-            </Box>
         </Box>
     );
 };
+
 
 export default Signup;

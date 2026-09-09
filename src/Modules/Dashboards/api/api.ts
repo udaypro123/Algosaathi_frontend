@@ -1,5 +1,5 @@
-import api from "../../API/api";
-import { GET_ALL_USERS } from "../AdminPannel/api/routes";
+import api from "../../../API/api";
+import { GET_ALL_USERS } from "../../AdminPannel/api/routes";
 
 
 export const getAllUsers= async () => {

@@ -10,11 +10,11 @@ import {
 } from "@mui/material";
 
 import DashboardIcon from "@mui/icons-material/Dashboard";
-import StarIcon from "@mui/icons-material/Star";
+// import StarIcon from "@mui/icons-material/Star";
 import BookIcon from "@mui/icons-material/Book";
-import ContactMailIcon from "@mui/icons-material/ContactMail";
+// import ContactMailIcon from "@mui/icons-material/ContactMail";
 import YouTubeIcon from '@mui/icons-material/YouTube';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+// import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import PaletteIcon from '@mui/icons-material/Palette';
 import logo from "../assets/gene-structure-svgrepo-com.svg"
 
@@ -45,35 +45,29 @@ const menuItems: Array<{
             name: "Courses",
             path: "/courses",
             icon: <BookIcon />,
-            allowedRoles: [Roles.USERS]
+            allowedRoles: [Roles.STUDENT]
         },
-        {
-            name: "Features",
-            path: "/features",
-            icon: <StarIcon />,
-            allowedRoles: [Roles.USERS]
-        },
-        {
-            name: "Contact",
-            path: "/contact",
-            icon: <ContactMailIcon />,
-            allowedRoles: [Roles.USERS, Roles.ADMIN]
-        },
-        {
-            name: "Profile",
-            path: "/profile",
-            icon: <AccountCircleIcon />,
-            allowedRoles: [Roles.USERS, Roles.ADMIN]
-        },
+        // {
+        //     name: "Features",
+        //     path: "/features",
+        //     icon: <StarIcon />,
+        //     allowedRoles: [Roles.USERS, Roles.STUDENT]
+        // },
         {
             name: "You Tube",
             path: "/youtubepost",
             icon: <YouTubeIcon />,
-            allowedRoles: [Roles.ADMIN, Roles.USERS]
+            allowedRoles: [Roles.ADMIN, Roles.STUDENT]
         },
         {
             name: "Template Manager",
             path: "/admin/templates",
+            icon: <PaletteIcon />,
+            allowedRoles: [Roles.ADMIN]
+        },
+        {
+            name: "Our Client",
+            path: "/ourclient",
             icon: <PaletteIcon />,
             allowedRoles: [Roles.ADMIN]
         }
@@ -126,9 +120,6 @@ const Sidebar = ({
     )
 
 }
-
-
-
 
 const DrawerContent = ({ handleDrawerToggle }: any) => {
     const userRole = getUserRole();

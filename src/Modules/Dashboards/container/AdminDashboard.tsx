@@ -22,8 +22,8 @@ import StorageIcon from "@mui/icons-material/Storage";
 
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getAllUsers } from "./api";
-import { getAllUsersQuery, getAllYoutubePost } from "../AdminPannel/api/api";
+import { getAllUsers } from "../api/api";
+import { getAllUsersQuery, getAllYoutubePost } from "../../AdminPannel/api/api";
 
 
 const DashboardWrapper = ({
@@ -54,7 +54,7 @@ const DashboardWrapper = ({
                 position: "relative",
 
                 overflow: "hidden",
-                border: "1px solid rgba(0, 95, 132, 0.16)",
+                // border: "1px solid rgba(0, 95, 132, 0.16)",
 
                 "&::before": {
                     content: '""',
@@ -273,7 +273,7 @@ const AdminDashboard = () => {
 
                     color: "#fff",
 
-                    background: "linear-gradient(135deg,#172554,#075d7e)",
+                    background: "linear-gradient(135deg, #075d7e 30%, #106477 60%, #096381 100%)",
 
                     border: "3px solid rgba(10, 130, 177, 0.34)",
 

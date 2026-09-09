@@ -24,7 +24,7 @@ import QuizIcon from "@mui/icons-material/Quiz";
 import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getAllUsers } from "./api";
+import { getAllUsers } from "../api/api";
 
 
 /* =========================================================

@@ -488,25 +488,7 @@ const Contact = () => {
 
 
       </Paper>
-      <footer className="footer">
 
-        <Container maxWidth="lg" style={{border: "2px solid #004e64", padding:"20px", borderRadius:"10px",marginBottom:"0px"}}>
-
-          <Box className="footer-content">
-
-            <div className="footer-logo" style={{ fontSize:"20px",fontWeight:"bold"}}>
-              ✦ Algo<span style={{ color: "#ea580c" }}>Saathi</span>
-            </div>
-
-            <Typography >
-              Learn. Build. Grow. Together.
-            </Typography>
-
-          </Box>
-
-        </Container>
-
-      </footer>
     </Box>
   );
 };

@@ -10,10 +10,12 @@ import { Roles } from "../redux/auth/authTypes";
 import SEO from "../seo/SEO";
 import PublicHeader from "../common/PublicHeader";
 import AdminTemplateManager from "../Modules/Templates/container/AdminTemplateManager";
+import OurClient from "../Modules/AdminPannel/container/OurClient";
+import Footer from "../common/Footer";
 
 
 
-const Dashboard = lazy(() => import("../Modules/Dashboards/Dashboard"));
+const Dashboard = lazy(() => import("../Modules/Dashboards/container/Dashboard"));
 
 // const Signup = lazy(() => import("../Modules/Auth/Signup"));
 const LoginPageContent = lazy(() => import("../Modules/Auth/LoginPageContent"));
@@ -43,6 +45,7 @@ export const router = createBrowserRouter([
                 />
                 <PublicHeader />
                 <News />
+                <Footer />
             </>
         )
     },
@@ -57,6 +60,7 @@ export const router = createBrowserRouter([
                 />
                 <PublicHeader />
                 <Contact />
+                 <Footer />
             </>
         )
     },
@@ -89,6 +93,7 @@ export const router = createBrowserRouter([
                         />
                         <PublicHeader />
                         <LoginPageContent />
+                         <Footer />
                     </>
                 )
             },
@@ -114,7 +119,9 @@ export const router = createBrowserRouter([
                             description="Contact AlgoSaathi for collaborations, learning support, or project opportunities."
                             canonical="https://algosaathi.com/sendquery"
                         />
+                        <PublicHeader />
                         <SendQuery />
+                        <Footer />
                     </>
                 )
             },
@@ -246,6 +253,19 @@ export const router = createBrowserRouter([
                                     canonical="https://algosaathi.com/users-survey"
                                 />
                                 <CreateComplaint />
+                            </>
+                        )
+                    },
+                    {
+                        path: "ourclient",
+                        element: (
+                            <>
+                                <SEO
+                                    title="User Survey"
+                                    description="Review user survey insights and platform feedback for AlgoSaathi."
+                                    canonical="https://algosaathi.com/users-survey"
+                                />
+                                <OurClient />
                             </>
                         )
                     }

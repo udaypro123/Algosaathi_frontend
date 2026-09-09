@@ -293,6 +293,7 @@ const TemplateLibrary = () => {
                                             {item === "Business" && "📊"}
                                             {item === "Social" && "🌍"}
                                             {item === "Portfolio" && "🚀"}
+                                            {item === "Law" && "⚖️"}
                                         </div>
 
                                         <Typography className="category-name">
@@ -523,7 +524,7 @@ const TemplateLibrary = () => {
                         sx: {
                             borderRadius: 3,
                             overflow: "hidden",
-                            background: "#0f172a",
+                            background: "#06070a",
                             color: "#fff",
                             boxShadow: "0 24px 80px rgba(15, 23, 42, 0.45)",
                         },
@@ -616,7 +617,7 @@ const TemplateLibrary = () => {
                                         borderRadius: 1.5,
                                         border: index === previewIndex ? "2px solid #f97316" : "1px solid rgba(255,255,255,0.25)",
                                         cursor: "pointer",
-                                        opacity: index === previewIndex ? 1 : 0.7,
+                                        opacity: index === previewIndex ? 1 : 0.3,
                                     }}
                                 />
                             ))}

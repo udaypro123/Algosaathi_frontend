@@ -1,4 +1,4 @@
-import { getUserRole } from "../../utils/auth";
+import { getUserRole } from "../../../utils/auth";
 import AdminDashboard from "./AdminDashboard";
 import StudentDashboard from "./StudentDashboard";
 import UserDashboard from "./UserDashboard";

@@ -510,7 +510,7 @@ const AuthLayout = () => {
                         }}
                     />
 
-                    <Button variant="outlined" sx={{ width: "10%" ,color:"white", outline:"none", border:"1px solid white"}} onClick={handlBackHome}  >Back</Button>
+                    <Button variant="outlined" sx={{ width: "10%", color: "white", outline: "none", border: "1px solid white" }} onClick={handlBackHome}  >Back</Button>
 
                     {/* Logo */}
 
@@ -591,14 +591,14 @@ const AuthLayout = () => {
                         <Typography
                             sx={{
                                 fontSize: {
-                                    md: 40,
-                                    lg: 46
+                                    md: 30,
+                                    lg: 36
                                 },
 
                                 lineHeight:
                                     1.08,
 
-                                fontWeight: 800,
+                                fontWeight: 600,
 
                                 letterSpacing:
                                     "-1.5px",
@@ -606,9 +606,9 @@ const AuthLayout = () => {
                                 mb: 2
                             }}
                         >
-                            Learn.
+                            Build.
                             <br />
-                            Practice.
+                            Business/Career.
                             <br />
 
                             <Box
@@ -644,11 +644,7 @@ const AuthLayout = () => {
                                 mb: 3
                             }}
                         >
-                            Your personal coding
-                            companion for mastering
-                            DSA, improving problem
-                            solving and becoming a
-                            better developer.
+                            Your technology partner for building smarter digital solutions, growing your business, and creating real impact
                         </Typography>
 
                         <Stack spacing={1.5}>

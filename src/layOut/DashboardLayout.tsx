@@ -14,7 +14,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 import Sidebar from "../common/SideDrawer";
-import ThemeToggle from "../common/ThemeToggle";
+// import ThemeToggle from "../common/ThemeToggle";
 import { clearAuthData } from "../utils/auth";
 
 
@@ -82,7 +82,7 @@ const DashboardLayout = () => {
 
           </Box>
 
-          <ThemeToggle/>
+          {/* <ThemeToggle/> */}
 
           <Tooltip title="Logout">
             <IconButton
