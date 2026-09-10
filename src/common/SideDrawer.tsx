@@ -6,7 +6,6 @@ import {
     ListItemText,
     Toolbar,
     Box,
-    IconButton,
     Typography
 } from "@mui/material";
 
@@ -22,7 +21,6 @@ import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import logo from "../assets/gene-structure-svgrepo-com.svg"
 
 import { NavLink } from "react-router-dom";
-import { ArrowBack } from "@mui/icons-material";
 import { getUserRole } from "../utils/auth";
 import { type Role, Roles } from "../redux/auth/authTypes";
 import type { JSX } from "@emotion/react/jsx-runtime";
@@ -129,7 +127,7 @@ const Sidebar = ({
 
 }
 
-const DrawerContent = ({ handleDrawerToggle }: any) => {
+const DrawerContent = ({  }: any) => {
     const userRole = getUserRole();
     const visibleItems = menuItems.filter((item) => {
         if (!item.allowedRoles) return true;
