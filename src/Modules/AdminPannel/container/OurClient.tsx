@@ -623,9 +623,9 @@ const OurClient = () => {
              * );
              */
 
-            const id:any= selectedClient._id
+            const id: any = selectedClient._id
 
-            await DeleteClient( id);
+            await DeleteClient(id);
 
 
             setSnackbar({
@@ -847,8 +847,7 @@ const OurClient = () => {
 
                         color: "#fff",
 
-                        background:
-                            "linear-gradient(135deg, #064b66 0%, #087594 55%, #0a617b 100%)",
+                        background: "linear-gradient(90deg, rgba(0, 0, 82, 1) 0%, rgba(25, 25, 158, 1) 60%, rgba(0, 0, 82, 1) 100%)",
 
                         boxShadow:
                             "0 15px 40px rgba(6,75,102,0.20)",
@@ -2183,6 +2182,36 @@ const OurClient = () => {
                 </Alert>
 
             </Snackbar>
+
+            {/* =================================================
+                            ADMIN FOOTER
+                        ================================================= */}
+
+            <Box
+                sx={{
+                    py: 4,
+
+                    textAlign: "center",
+
+                }}
+            >
+
+                <Typography
+                    color="text.secondary"
+                    variant="body2"
+                >
+                    AlgoSaathi Administration Panel
+                </Typography>
+
+                <Typography
+                    color="text.secondary"
+                    variant="caption"
+                >
+                    © {new Date().getFullYear()} AlgoSaathi
+                </Typography>
+
+            </Box>
+
 
         </Box>
     );

@@ -32,7 +32,11 @@ export const AppThemeProvider: React.FC<any> = ({children}) => {
     () =>
       createTheme({
         palette: {
-          mode
+          mode,
+          background: {
+            default: "#f8fafc",
+            paper: "#ffffff"
+          }
         },
         typography: {
           fontFamily: "Verdana, Geneva, Tahoma, sans-serif"

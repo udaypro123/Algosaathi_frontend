@@ -35,7 +35,8 @@ const DashboardWrapper = ({
         <Box
             sx={{
                 minHeight: "100vh",
-
+                width:"80%",
+                margin:"0 auto",
                 px: {
                     xs: 1.5,
                     sm: 2,
@@ -49,7 +50,6 @@ const DashboardWrapper = ({
 
                 borderRadius: "2rem",
 
-                background: "linear-gradient(135deg,#f4f9fb 0%,#ffffff 45%,#f2f8fa 100%)",
 
                 position: "relative",
 
@@ -76,23 +76,7 @@ const DashboardWrapper = ({
                         "floatCircle 8s ease-in-out infinite",
                 },
 
-                "&::after": {
-                    content: '""',
-
-                    position: "absolute",
-
-                    width: 350,
-                    height: 350,
-
-                    borderRadius: "50%",
-
-                    // background: "rgba(5, 109, 132, 0.4)",
-                    border: "3px solid rgba(7, 92, 126, 0.81)",
-                    bottom: -180,
-                    left: -150,
-
-                    animation: "floatCircle 10s ease-in-out infinite reverse",
-                },
+          
 
                 "@keyframes floatCircle": {
                     "0%": {
@@ -112,9 +96,9 @@ const DashboardWrapper = ({
             <Box
                 sx={{
                     width: {
-                        xs: "95%",
-                        sm: "90%",
-                        md: "80%",
+                        xs: "100%",
+                        sm: "100%",
+                        md: "100%",
                     },
 
                     mx: "auto",
@@ -255,6 +239,7 @@ const AdminDashboard = () => {
 
 
     return (
+       <>
         <DashboardWrapper>
 
             {/* =================================================
@@ -268,12 +253,11 @@ const AdminDashboard = () => {
                         xs: 3,
                         md: 4,
                     },
-
                     borderRadius: 5,
 
                     color: "#fff",
 
-                    background: "linear-gradient(135deg, #075d7e 30%, #106477 60%, #096381 100%)",
+                    background: "linear-gradient(90deg, rgba(0, 0, 82, 1) 0%, rgba(25, 25, 158, 1) 60%, rgba(0, 0, 82, 1) 100%)",
 
                     border: "3px solid rgba(10, 130, 177, 0.34)",
 
@@ -392,7 +376,7 @@ const AdminDashboard = () => {
                     mt: 2.5,
                     p: 2,
                     borderRadius: ".5rem",
-                    border: "3px solid rgba(10, 130, 177, 0.34)"
+                    border: "3px solid rgba(18, 10, 177, 0.34)"
                 }}
             >
 
@@ -486,8 +470,7 @@ const AdminDashboard = () => {
 
                                 <Avatar
                                     sx={{
-                                        background:
-                                            "linear-gradient(135deg,#075d7e,#14b8a6)",
+                                        background: "linear-gradient(90deg, rgb(8, 8, 164) 0%, rgba(25, 25, 158, 1) 60%, rgb(14, 14, 153) 100%)",
                                     }}
                                 >
                                     {
@@ -499,7 +482,7 @@ const AdminDashboard = () => {
 
                                     <Typography
                                         variant="body2"
-                                        color="text.secondary"
+                                        color="#0f014e"
                                     >
                                         {
                                             item.title
@@ -515,7 +498,7 @@ const AdminDashboard = () => {
                                                 900,
 
                                             color:
-                                                "#075d7e",
+                                                "#12026e",
                                         }}
                                     >
                                         {
@@ -554,7 +537,7 @@ const AdminDashboard = () => {
                     mt: 5,
                     p: 2,
                     borderRadius: ".5rem",
-                    border: "3px solid rgba(10, 130, 177, 0.34)"
+                    border: "3px solid rgba(38, 10, 177, 0.34)"
                 }}
             >
 
@@ -673,8 +656,7 @@ const AdminDashboard = () => {
                                         width: 55,
                                         height: 55,
 
-                                        background:
-                                            "linear-gradient(135deg,#075d7e,#14b8a6)",
+                                        background: "linear-gradient(90deg, rgb(8, 8, 164) 0%, rgba(25, 25, 158, 1) 60%, rgb(14, 14, 153) 100%)",
 
                                         transition:
                                             "all 0.3s ease",
@@ -736,7 +718,7 @@ const AdminDashboard = () => {
                     mt: 5,
                     p: 2,
                     borderRadius: ".5rem",
-                    border: "3px solid rgba(10, 130, 177, 0.34)"
+                    border: "3px solid rgba(43, 10, 177, 0.34)"
                 }}
             >
 
@@ -775,10 +757,10 @@ const AdminDashboard = () => {
                             <Avatar
                                 sx={{
                                     background:
-                                        "#e8f7f1",
+                                        "#ece8fb",
 
                                     color:
-                                        "#059669",
+                                        "#180596",
                                 }}
                             >
                                 <TrendingUpIcon />
@@ -905,8 +887,7 @@ const AdminDashboard = () => {
                                             borderRadius:
                                                 10,
 
-                                            background:
-                                                "linear-gradient(90deg,#075d7e,#14b8a6)",
+                                           background: "linear-gradient(90deg, rgb(8, 8, 164) 0%, rgba(25, 25, 158, 1) 60%, rgb(14, 14, 153) 100%)",
                                         }}
                                     />
 
@@ -942,8 +923,7 @@ const AdminDashboard = () => {
                             color:
                                 "#fff",
 
-                            background:
-                                "linear-gradient(135deg,#043b52,#075d7e)",
+                            background: "linear-gradient(90deg, rgb(8, 8, 164) 0%, rgba(25, 25, 158, 1) 60%, rgb(14, 14, 153) 100%)",
                         }}
                     >
 
@@ -952,7 +932,7 @@ const AdminDashboard = () => {
                                 fontSize: 45,
 
                                 color:
-                                    "#7de3df",
+                                    "#e7e1fe",
                             }}
                         />
 
@@ -1016,7 +996,7 @@ const AdminDashboard = () => {
                                                 18,
 
                                             color:
-                                                "#7de3df",
+                                                "#fafbfb",
                                         }}
                                     />
 
@@ -1071,6 +1051,7 @@ const AdminDashboard = () => {
             </Box>
 
         </DashboardWrapper>
+       </>
     );
 };
 

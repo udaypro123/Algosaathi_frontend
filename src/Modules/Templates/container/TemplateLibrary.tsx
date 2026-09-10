@@ -166,7 +166,7 @@ const TemplateLibrary = () => {
         }
 
         setToast("Please contact admin for template access.");
-      
+
     };
 
     const previewImages = previewTemplate ? getTemplateImages(previewTemplate) : [];
@@ -186,11 +186,11 @@ const TemplateLibrary = () => {
         <Box className="template-page">
 
             {/* Animated Background */}
-            <div className="background-effects">
+            {/* <div className="background-effects">
                 <div className="glow glow-one"></div>
                 <div className="glow glow-two"></div>
                 <div className="glow glow-three"></div>
-            </div>
+            </div> */}
 
             {/* HERO */}
             <Box className="hero-section">
@@ -232,6 +232,7 @@ const TemplateLibrary = () => {
 
                         <Button
                             className="hero-secondary-btn"
+                            endIcon={<ArrowForwardIcon />}
                             onClick={() =>
                                 document
                                     .getElementById("categories")
@@ -601,7 +602,7 @@ const TemplateLibrary = () => {
                     </Box>
 
                     <Box sx={{ p: 3 }}>
-                      
+
                         <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
                             {previewImages?.map((image: string, index: number) => (
                                 <Box
@@ -666,28 +667,6 @@ const TemplateLibrary = () => {
                 </Box>
 
             </Container>
-
-
-            {/* FOOTER */}
-            <footer className="footer">
-
-                <Container maxWidth="lg">
-
-                    <Box className="footer-content">
-
-                        <div className="footer-logo">
-                            ✦ Algo<span style={{ color: "#ea580c" }}>Saathi</span>
-                        </div>
-
-                        <Typography>
-                            Learn. Build. Grow. Together.
-                        </Typography>
-
-                    </Box>
-
-                </Container>
-
-            </footer>
 
         </Box>
     );

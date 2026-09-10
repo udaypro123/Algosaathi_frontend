@@ -12,6 +12,7 @@ import PublicHeader from "../common/PublicHeader";
 import AdminTemplateManager from "../Modules/Templates/container/AdminTemplateManager";
 import OurClient from "../Modules/AdminPannel/container/OurClient";
 import Footer from "../common/Footer";
+import AddNews from "../Modules/News/AddNews";
 
 
 
@@ -60,7 +61,7 @@ export const router = createBrowserRouter([
                 />
                 <PublicHeader />
                 <Contact />
-                 <Footer />
+                <Footer />
             </>
         )
     },
@@ -76,6 +77,7 @@ export const router = createBrowserRouter([
                 />
                 <PublicHeader />
                 <TemplateLibrary />
+                <Footer />
             </>
         )
     },
@@ -93,7 +95,7 @@ export const router = createBrowserRouter([
                         />
                         <PublicHeader />
                         <LoginPageContent />
-                         <Footer />
+                        <Footer />
                     </>
                 )
             },
@@ -162,6 +164,7 @@ export const router = createBrowserRouter([
                                     canonical="https://algosaathi.com/dashboard"
                                 />
                                 <Dashboard />
+                              
                             </>
                         )
                     },
@@ -268,7 +271,8 @@ export const router = createBrowserRouter([
                                 <OurClient />
                             </>
                         )
-                    }
+                    },
+
                 ]
             }
         ]
@@ -292,7 +296,20 @@ export const router = createBrowserRouter([
                                 <AdminTemplateManager />
                             </>
                         )
-                    }
+                    },
+                    {
+                        path: "addNews",
+                        element: (
+                            <>
+                                <SEO
+                                    title="User Survey"
+                                    description="Review user survey insights and platform feedback for AlgoSaathi."
+                                    canonical="https://algosaathi.com/users-survey"
+                                />
+                                <AddNews />
+                            </>
+                        )
+                    },
                 ]
             }
         ]

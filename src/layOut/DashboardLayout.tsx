@@ -42,7 +42,7 @@ const DashboardLayout = () => {
         sx={{
           width: "100%",
           transition: "0.3s",
-          background: "linear-gradient(135deg, #075d7e 30%, #106477 60%, #096381 100%)"
+           background: "linear-gradient(90deg, rgba(0, 0, 82, 1) 0%, rgba(25, 25, 158, 1) 60%, rgba(0, 0, 82, 1) 100%)",
         }}
 
       >

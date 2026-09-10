@@ -715,8 +715,7 @@ const YoutubePost = () => {
                     minHeight: "fit-content",
                     display: "flex",
                     margin: "0 auto",
-                    background:
-                        "linear-gradient(135deg,#075d7e,#106477,#096381)",
+                    background: "linear-gradient(90deg, rgb(7, 7, 131) 0%, rgba(25, 25, 158, 1) 60%, rgb(14, 14, 153) 100%)",
                     color: "#fff",
                 }}
             >
@@ -885,8 +884,7 @@ const YoutubePost = () => {
                                     handleAddPost
                                 }
                                 sx={{
-                                    background:
-                                        "linear-gradient(135deg,#075d7e,#106477,#096381)",
+                                    background: "linear-gradient(90deg, rgba(0, 0, 82, 1) 0%, rgba(25, 25, 158, 1) 60%, rgba(0, 0, 82, 1) 100%)",
                                     borderRadius: 2,
                                     px: 2.5,
                                 }}
@@ -1043,7 +1041,7 @@ const YoutubePost = () => {
                         posts?.length > 0 && <Divider
                             sx={{
                                 flex: 1,
-                                borderColor: "rgba(0, 60, 95, 0.97)",
+                                borderColor: "rgba(6, 0, 95, 0.97)",
                                 mb: 2,
                                 mt: 2,
                                 opacity: .3,
@@ -1108,7 +1106,7 @@ const YoutubePost = () => {
                                                     sx={{
                                                         height: 190,
                                                         position: "relative",
-                                                        background: "linear-gradient(135deg,#075d7e,#106477)",
+                                                        background: "linear-gradient(90deg, rgb(3, 3, 128) 0%, rgba(25, 25, 158, 1) 60%, rgb(14, 14, 153) 100%)",
                                                         display: "flex",
                                                         alignItems: "center",
                                                         justifyContent: "center",
@@ -1568,6 +1566,36 @@ const YoutubePost = () => {
 
                 </Dialog>
             }
+
+            {/* =================================================
+                ADMIN FOOTER
+            ================================================= */}
+
+            <Box
+                sx={{
+                    py: 4,
+
+                    textAlign: "center",
+
+                }}
+            >
+
+                <Typography
+                    color="text.secondary"
+                    variant="body2"
+                >
+                    AlgoSaathi Administration Panel
+                </Typography>
+
+                <Typography
+                    color="text.secondary"
+                    variant="caption"
+                >
+                    © {new Date().getFullYear()} AlgoSaathi
+                </Typography>
+
+            </Box>
+
 
         </Box>
     );

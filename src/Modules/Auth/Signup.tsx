@@ -413,8 +413,8 @@ const Signup = () => {
                     md: 6,
                 },
 
-                background:
-                    "linear-gradient(135deg,#f8fafc 0%,#eef2ff 48%,#f0f9ff 100%)",
+                // background:
+                    // "linear-gradient(135deg,#f8fafc 0%,#eef2ff 48%,#f0f9ff 100%)",
 
                 "&::before": {
                     content: '""',
@@ -986,6 +986,9 @@ const Signup = () => {
                                         <MenuItem value="student">
                                             Student
                                         </MenuItem>
+                                        {/* <MenuItem value="student">
+                                            admin
+                                        </MenuItem> */}
                                     </TextField>
                                 </motion.div>
 

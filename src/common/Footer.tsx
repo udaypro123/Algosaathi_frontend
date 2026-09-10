@@ -14,13 +14,11 @@ const Footer = () => {
         <Box
             component="footer"
             sx={{
-                mt: 10,
                 position: "relative",
                 overflow: "hidden",
                 color: "#fff",
-                background:
-                    "linear-gradient(135deg, #0f172a 0%, #111827 50%, #020617 100%)",
-                borderRadius: "32px 32px 0 0",
+                background: "linear-gradient(90deg, rgba(0, 0, 82, 1) 0%, rgba(25, 25, 158, 1) 60%, rgba(0, 0, 82, 1) 100%)",
+                // borderRadius: "32px 32px 0 0",
             }}
         >
             {/* Decorative Glow */}
@@ -30,7 +28,7 @@ const Footer = () => {
                     width: 350,
                     height: 350,
                     borderRadius: "50%",
-                    background: "rgba(59, 130, 246, 0.12)",
+                    // background: "rgba(59, 130, 246, 0.12)",
                     filter: "blur(90px)",
                     top: -180,
                     right: -100,
@@ -92,7 +90,7 @@ const Footer = () => {
                         <Typography
                             sx={{
                                 maxWidth: 500,
-                                color: "#94a3b8",
+                                color: "#ffffff",
                                 fontSize: 15,
                                 lineHeight: 1.8,
                             }}
@@ -106,7 +104,7 @@ const Footer = () => {
                         <Typography
                             sx={{
                                 mt: 3,
-                                fontSize: 15,
+                                fontSize: 18,
                                 fontWeight: 600,
                                 color: "#e2e8f0",
                             }}
@@ -119,7 +117,7 @@ const Footer = () => {
                     <Box>
                         <Typography
                             sx={{
-                                fontSize: 16,
+                                fontSize: 18,
                                 fontWeight: 700,
                                 mb: 2.5,
                             }}
@@ -132,7 +130,7 @@ const Footer = () => {
                                 key={item}
                                 sx={{
                                     mb: 1.4,
-                                    color: "#94a3b8",
+                                    color: "#dde2e8",
                                     fontSize: 14,
                                     cursor: "pointer",
                                     width: "fit-content",
@@ -164,30 +162,31 @@ const Footer = () => {
 
                         <Typography
                             sx={{
-                                color: "#64748b",
-                                fontSize: 13,
+                                color: "#d6dce4",
+                                fontSize: 16,
+                                fontWeight: 600,
                                 mb: 0.5,
                             }}
                         >
-                            Owner
+                            Owner :  <span
+                                style={{
+                                    fontSize: 18,
+                                    fontWeight: 600,
+                                    color:"white"
+                                }}
+                            >
+                                Uday Chauhan
+                            </span>
                         </Typography>
 
-                        <Typography
-                            sx={{
-                                fontSize: 16,
-                                fontWeight: 600,
-                                mb: 2,
-                            }}
-                        >
-                            Uday Chauhan
-                        </Typography>
+
 
                         <Link
                             href="mailto:chauhanuday842@gmail.com"
                             underline="none"
                             sx={{
                                 color: "#60a5fa",
-                                fontSize: 14,
+                                fontSize: 12,
                                 wordBreak: "break-word",
                                 transition: "color 0.2s ease",
 
@@ -197,7 +196,7 @@ const Footer = () => {
                                 },
                             }}
                         >
-                            chauhanuday842@gmail.com
+                          email :  chauhanuday842@gmail.com
                         </Link>
                     </Box>
                 </Box>

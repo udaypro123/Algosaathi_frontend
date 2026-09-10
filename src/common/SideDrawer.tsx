@@ -6,7 +6,8 @@ import {
     ListItemText,
     Toolbar,
     Box,
-    IconButton
+    IconButton,
+    Typography
 } from "@mui/material";
 
 import DashboardIcon from "@mui/icons-material/Dashboard";
@@ -16,6 +17,8 @@ import BookIcon from "@mui/icons-material/Book";
 import YouTubeIcon from '@mui/icons-material/YouTube';
 // import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import PaletteIcon from '@mui/icons-material/Palette';
+import NewspaperIcon from '@mui/icons-material/Newspaper';
+import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import logo from "../assets/gene-structure-svgrepo-com.svg"
 
 import { NavLink } from "react-router-dom";
@@ -25,7 +28,7 @@ import { type Role, Roles } from "../redux/auth/authTypes";
 import type { JSX } from "@emotion/react/jsx-runtime";
 
 
-const drawerWidth = 260;
+const drawerWidth = 300;
 
 
 
@@ -68,7 +71,13 @@ const menuItems: Array<{
         {
             name: "Our Client",
             path: "/ourclient",
-            icon: <PaletteIcon />,
+            icon: <GroupAddIcon />,
+            allowedRoles: [Roles.ADMIN]
+        },
+        {
+            name: "News",
+            path: "/addNews",
+            icon: <NewspaperIcon />,
             allowedRoles: [Roles.ADMIN]
         }
     ];
@@ -87,7 +96,6 @@ const Sidebar = ({
 
         <>
 
-
             <Drawer
                 variant="temporary"
                 open={open}
@@ -99,7 +107,7 @@ const Sidebar = ({
                         width: drawerWidth,
                         overflowX: "hidden",
                         transition: "0.3s",
-                        background: "linear-gradient(135deg, #075d7e 30%, #106477 60%, #096381 100%)",
+                        background: "white",
                         color: "#fff",
                         position: 'fixed',
                         top: 0,
@@ -133,22 +141,73 @@ const DrawerContent = ({ handleDrawerToggle }: any) => {
         <Box >
 
 
-            <Toolbar sx={{ borderBottom: "1px solid white", borderRight: "1px solid grey", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <Toolbar sx={{ background: "linear-gradient(90deg, rgba(0, 0, 82, 1) 0%, rgba(25, 25, 158, 1) 60%, rgba(0, 0, 82, 1) 100%)", borderBottom: "1px solid white", borderRight: "1px solid grey", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
 
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <p style={{ fontSize: "20px", fontWeight: "bold", color: "#fff", margin: 0 }}>
-                        Algosaathi
-                    </p>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, }}>
+                    <Typography
+                        variant="h5"
+                        sx={{
+                            fontWeight: 900,
+                            letterSpacing: 1,
+                            display: "flex",
+                            overflow: "hidden",
+                            textDecoration: "none",
+
+                            fontSize: { xs: 20, md: 25 },
+                            color: "inherit",
+                            whiteSpace: "nowrap",
+                        }}
+                    >
+                        {"AlgoSaathi".split("").map((char, index) => {
+                            const isAlgo = index < 4;
+
+                            return (
+                                <Box
+                                    component="span"
+                                    key={index}
+                                    sx={{
+                                        display: "inline-block",
+                                        color: isAlgo ? "#fefefe" : "#ea580c",
+                                        opacity: 0,
+                                        fontStyle: "italic",
+                                        transform: "translateY(18px)",
+                                        animation: "letterAppear 3s ease-in-out infinite",
+                                        animationDelay: `${index * 0.15}s`,
+                                        "@keyframes letterAppear": {
+                                            "0%": {
+                                                opacity: 0,
+                                                transform: "translateY(18px)",
+                                            },
+                                            "15%": {
+                                                opacity: 1,
+                                                transform: "translateY(0)",
+                                            },
+                                            "70%": {
+                                                opacity: 1,
+                                                transform: "translateY(0)",
+                                            },
+                                            "100%": {
+                                                opacity: 0,
+                                                transform: "translateY(-18px)",
+                                            },
+                                        },
+                                    }}
+                                >
+                                    {char}
+                                </Box>
+                            );
+                        })}
+                    </Typography>
                     <img
                         src={logo}
                         alt="Logo"
-                        style={{ width: "30px", height: "25px" }}
+                        style={{ width: "2.5rem", height: "2.5rem", marginLeft: "3rem" }}
                     />
                 </Box>
 
-                <IconButton onClick={handleDrawerToggle} sx={{ color: '#fff', border: "1px solid white", borderRadius: "50%" }}>
+                {/* <IconButton onClick={handleDrawerToggle} sx={{ color: '#fff', border: "1px solid white", borderRadius: "50%" ,  marginLeft: "1rem" }}>
                     <ArrowBack />
-                </IconButton>
+                </IconButton> */}
 
             </Toolbar>
 
@@ -180,9 +239,9 @@ const DrawerContent = ({ handleDrawerToggle }: any) => {
 
                                 "&.active": {
 
-                                    background: "#f8f8f9",
+                                    background: "#e9e9f9",
 
-                                    color: "#1c0404"
+                                    color: "#010020"
 
                                 }
 
@@ -195,7 +254,7 @@ const DrawerContent = ({ handleDrawerToggle }: any) => {
                             <ListItemIcon
 
                                 sx={{
-                                    color: "inherit"
+                                    color: "#010020"
                                 }}
 
                             >
@@ -206,7 +265,9 @@ const DrawerContent = ({ handleDrawerToggle }: any) => {
 
 
                             <ListItemText
-
+                                sx={{
+                                    color: "#010020"
+                                }}
                                 primary={item.name}
 
                             />

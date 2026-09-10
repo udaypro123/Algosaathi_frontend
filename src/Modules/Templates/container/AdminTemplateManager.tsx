@@ -259,7 +259,7 @@ const AdminTemplateManager = () => {
                         sx={{
                             p: 3,
                             borderRadius: 4,
-                            background: "linear-gradient(135deg, #0a4550 0%, #10435b 40%, #0e77a1 100%)",
+                            background: "linear-gradient(90deg, rgba(0, 0, 82, 1) 0%, rgba(25, 25, 158, 1) 60%, rgba(0, 0, 82, 1) 100%)",
                             color: "#fff",
                         }}
                     >
@@ -644,6 +644,36 @@ const AdminTemplateManager = () => {
                     </Stack>
                 </Stack>
             </Container>
+
+            {/* =================================================
+                ADMIN FOOTER
+            ================================================= */}
+
+            <Box
+                sx={{
+                    py: 4,
+
+                    textAlign: "center",
+
+                }}
+            >
+
+                <Typography
+                    color="text.secondary"
+                    variant="body2"
+                >
+                    AlgoSaathi Administration Panel
+                </Typography>
+
+                <Typography
+                    color="text.secondary"
+                    variant="caption"
+                >
+                    © {new Date().getFullYear()} AlgoSaathi
+                </Typography>
+
+            </Box>
+
         </Box>
     );
 };

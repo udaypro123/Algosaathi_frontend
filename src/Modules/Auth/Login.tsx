@@ -364,8 +364,9 @@ const Login = () => {
                    GREY BACKGROUND
                 ============================================= */
 
-                background:
-                    "linear-gradient(135deg,#f1f5f9 0%,#e2e8f0 50%,#f8fafc 100%)",
+                // background:
+                //     "linear-gradient(135deg,#f1f5f9 0%,#e2e8f0 50%,#f8fafc 100%)",
+                // background: "linear-gradient(90deg, rgba(0, 0, 82, 1) 0%, rgba(25, 25, 158, 1) 60%, rgba(0, 0, 82, 1) 100%)",
 
 
                 /* =============================================

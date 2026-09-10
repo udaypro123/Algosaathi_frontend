@@ -13,6 +13,7 @@ import {
 import { useLocation, useNavigate } from "react-router-dom";
 import Signup from "./Signup";
 import Login from "./Login";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 
 const AuthLayout = () => {
@@ -151,8 +152,7 @@ const AuthLayout = () => {
 
                 boxSizing: "border-box",
 
-                background:
-                    "linear-gradient(135deg, #020617 0%, #0f172a 42%, #075985 75%, #0c4a6e 100%)",
+                background: "linear-gradient(90deg, rgba(0, 0, 82, 1) 0%, rgba(25, 25, 158, 1) 60%, rgba(0, 0, 82, 1) 100%)",
 
                 px: {
                     xs: 1.5,
@@ -244,7 +244,7 @@ const AuthLayout = () => {
                                 "radial-gradient(circle at 30% 25%, rgba(255,255,255,0.55), rgba(125,211,252,0.12) 35%, rgba(14,165,233,0.04) 70%)",
 
                             border:
-                                "1px solid rgba(186,230,253,0.32)",
+                                "1px solid rgba(233, 244, 250, 0.97)",
 
                             backdropFilter:
                                 "blur(2px)",
@@ -457,13 +457,13 @@ const AuthLayout = () => {
                             lg: 6
                         },
 
-                        position:
-                            "relative",
+                        position: "relative",
 
                         color: "#ffffff",
+                        height:"90%",
+                        // borderRight:"3px solid white",
 
-                        background:
-                            "linear-gradient(145deg, rgba(15,23,42,0.72), rgba(12,74,110,0.50), rgba(3,105,161,0.38))",
+                        //  background: "linear-gradient(90deg, rgba(0, 0, 82, 1) 0%, rgba(25, 25, 158, 1) 60%, rgba(0, 0, 82, 1) 100%)",
 
                         overflow: "hidden"
                     }}
@@ -482,7 +482,7 @@ const AuthLayout = () => {
                                 "50%",
 
                             border:
-                                "1px solid rgba(186,230,253,0.20)",
+                                "1px solid rgba(255, 255, 255, 0.82)",
 
                             right: -100,
                             top: 80,
@@ -510,7 +510,7 @@ const AuthLayout = () => {
                         }}
                     />
 
-                    <Button variant="outlined" sx={{ width: "10%", color: "white", outline: "none", border: "1px solid white" }} onClick={handlBackHome}  >Back</Button>
+                    <Button startIcon={<ArrowBackIcon />}  variant="outlined" sx={{ width: "30%", color: "white", outline: "none", border: "1px solid white" }} onClick={handlBackHome}  >Back</Button>
 
                     {/* Logo */}
 

@@ -76,7 +76,7 @@ const Contact = () => {
           borderRadius: { xs: 4, md: 6 },
           p: { xs: 3, sm: 5, md: 7 },
           color: "#fff",
-          background: "linear-gradient(135deg,#075d7e 0%,#106477 50%,#096381 100%)",
+          background: "linear-gradient(90deg, rgba(0, 0, 82, 1) 0%, rgba(25, 25, 158, 1) 60%, rgba(0, 0, 82, 1) 100%)",
           boxShadow: "0 25px 70px rgba(7,93,126,0.28)",
         }}
       >
@@ -423,7 +423,7 @@ const Contact = () => {
           p: { xs: 3.5, md: 5 },
           borderRadius: 5,
           color: "#fff",
-          background: "linear-gradient(135deg,#075d7e,#106477,#096381)",
+          background: "linear-gradient(90deg, rgba(0, 0, 82, 1) 0%, rgba(25, 25, 158, 1) 60%, rgba(0, 0, 82, 1) 100%)",
           boxShadow: "0 20px 55px rgba(7,93,126,0.2)",
         }}
       >
