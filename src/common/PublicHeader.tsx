@@ -32,9 +32,9 @@ const PublicHeader = () => {
 
     const navLinkStyles = (isActive: boolean) => ({
         fontSize:{
-            md:16,
-            xs:16,
-            lg:22
+            md:15,
+            xs:15,
+            lg:18
         },
         color: "#fefefe",
         cursor: "pointer",

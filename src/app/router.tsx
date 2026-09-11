@@ -32,7 +32,10 @@ const PublicHeader = lazyWithRetry(() => import("../common/PublicHeader"));
 
 
 export const router = createBrowserRouter([
-
+    {
+        path: "/",
+        element: <Home />
+    },
     {
         element: <PublicRoute />,
         children: [
@@ -147,10 +150,6 @@ export const router = createBrowserRouter([
             {
                 element: <DashboardLayout />,
                 children: [
-                    {
-                        index: true,
-                        element: <Navigate to="/dashboard" replace />
-                    },
                     {
                         path: "dashboard",
                         element: (
