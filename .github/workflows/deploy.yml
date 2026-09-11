@@ -25,6 +25,17 @@ jobs:
       - name: Build frontend
         run: npm run build
 
+      - name: Clean frontend directory
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            sudo rm -rf /var/www/frontend/*
+            sudo mkdir -p /var/www/frontend
+            sudo chown -R ubuntu:ubuntu /var/www/frontend
+
       - name: Deploy dist to EC2
         uses: appleboy/scp-action@v1
         with:
@@ -45,6 +56,22 @@ jobs:
             sudo nginx -t
             sudo systemctl reload nginx
 
+      - name: Verify deployed files
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            echo "=== Frontend files ==="
+            ls -lah /var/www/frontend
+
+            echo "=== Referenced JS ==="
+            grep -oE 'index-[A-Za-z0-9_-]+\.js' /var/www/frontend/index.html || true
+
+            echo "=== Old LoginPageContent check ==="
+            find /var/www/frontend -name '*LoginPageContent*' -print
+
       - name: Health check
         uses: appleboy/ssh-action@v1.2.0
         with:
@@ -53,3 +80,4 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             curl -f https://algosaathi.com
+            curl -f https://algosaathi.com/login
