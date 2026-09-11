@@ -7,16 +7,14 @@ import {
 
 import { useNavigate } from "react-router-dom";
 import { motion, type Variants } from "framer-motion";
-
-import "./auth.css";
-
+import "../Auth/auth.css"
 import logo from "../../assets/AhaConvert_Software Solutions That Make You Stand Out.png";
 import imageOne from "../../assets/cardone.png";
 import Imagetwo from "../../assets/cardtwo.png";
 import Imagethree from "../../assets/cardthree.png";
 
 
-const LoginPageContent = () => {
+const Home = () => {
 
     const navigate = useNavigate();
 
@@ -28,7 +26,7 @@ const LoginPageContent = () => {
        FRAMER MOTION VARIANTS
     ============================================================ */
 
-    const containerVariants:Variants  = {
+    const containerVariants: Variants = {
         hidden: {},
         visible: {
             transition: {
@@ -38,7 +36,7 @@ const LoginPageContent = () => {
     };
 
 
-    const fadeUp:Variants  = {
+    const fadeUp: Variants = {
         hidden: {
             opacity: 0,
             y: 35,
@@ -56,7 +54,7 @@ const LoginPageContent = () => {
     };
 
 
-    const fadeLeft :Variants = {
+    const fadeLeft: Variants = {
         hidden: {
             opacity: 0,
             x: -60,
@@ -74,7 +72,7 @@ const LoginPageContent = () => {
     };
 
 
-    const fadeRight :Variants = {
+    const fadeRight: Variants = {
         hidden: {
             opacity: 0,
             x: 60,
@@ -92,7 +90,7 @@ const LoginPageContent = () => {
     };
 
 
-    const cardVariants :Variants = {
+    const cardVariants: Variants = {
         hidden: {
             opacity: 0,
             y: 50,
@@ -174,7 +172,7 @@ const LoginPageContent = () => {
                     maxWidth: 1400,
                     mx: "auto",
 
-    
+
 
                     borderRadius: "1rem",
 
@@ -325,16 +323,8 @@ const LoginPageContent = () => {
                             }}
                         >
 
-                            A platform for ideas, skills, opportunities,
-                            and meaningful impact. Whether you’re here
-                            to learn something new, build a project,
-                            explore technology, grow your career, access
-                            useful resources, or create a positive impact
-                            in society — this is a place to move forward.
-
-                            Discover knowledge. Develop skills. Turn ideas
-                            into action. Connect with opportunities. And
-                            keep growing — one step at a time.
+                            Turning Ideas into Digital Solutions That Make an Impact.
+                            We build modern websites, mobile apps, web applications, and custom software solutions tailored to real-world needs. From AI integration and intelligent automation to scalable digital products, we combine technology, creativity, and practical problem-solving to help businesses and individuals build, automate, and grow. Your idea. Our technology. Real-world impact.
 
                         </Typography>
 
@@ -538,7 +528,7 @@ const LoginPageContent = () => {
 
                     mt: 2,
 
-    
+
 
                     borderRadius: "1rem",
 
@@ -1024,4 +1014,4 @@ const LoginPageContent = () => {
     );
 };
 
-export default LoginPageContent;
+export default Home;

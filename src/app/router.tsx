@@ -1,91 +1,43 @@
-import { lazy } from "react";
+import lazyWithRetry from "../utils/lazyWithRetry";
 import { createBrowserRouter, Navigate } from "react-router-dom";
-
 import DashboardLayout from "../layOut/DashboardLayout";
-
 import ProtectedRoute from "../routes/ProtectedRoute";
 import PublicRoute from "../routes/PublicRoute";
 import AuthLayout from "../Modules/Auth/AuthLayOut";
 import { Roles } from "../redux/auth/authTypes";
-import SEO from "../seo/SEO";
-import PublicHeader from "../common/PublicHeader";
-import AdminTemplateManager from "../Modules/Templates/container/AdminTemplateManager";
-import OurClient from "../Modules/AdminPannel/container/OurClient";
-import Footer from "../common/Footer";
-import AddNews from "../Modules/News/AddNews";
 
 
 
-const Dashboard = lazy(() => import("../Modules/Dashboards/container/Dashboard"));
+const Dashboard = lazyWithRetry(() => import("../Modules/Dashboards/container/Dashboard"));
 
 // const Signup = lazy(() => import("../Modules/Auth/Signup"));
-const LoginPageContent = lazy(() => import("../Modules/Auth/LoginPageContent"));
-const Feature = lazy(() => import("../Modules/Feature/Feature"));
-const Courses = lazy(() => import("../Modules/Courses/Courses"));
-const Contact = lazy(() => import("../Modules/Contact/Contact"));
-const News = lazy(() => import("../Modules/News/News"));
-const Profile = lazy(() => import("../Modules/Profile/Profile"));
-const YoutubePost = lazy(() => import("../Modules/AdminPannel/container/YoutubePost"));
-const SendQuery = lazy(() => import("../common/SendQuery"));
-const AdminSurveyPage = lazy(() => import("../Modules/AdminPannel/container/AdminSurveyPage"));
-const CreateComplaint = lazy(() => import("../Modules/ComplaintGOV_PRIVATE/CreateComplaint"));
-const TemplateLibrary = lazy(() => import("../Modules/Templates/container/TemplateLibrary"));
 
+const AdminTemplateManager = lazyWithRetry(() => import("../Modules/Templates/container/AdminTemplateManager"));
+const OurClient = lazyWithRetry(() => import("../Modules/AdminPannel/container/OurClient"));
+const AddNews = lazyWithRetry(() => import("../Modules/News/AddNews"));
+const Feature = lazyWithRetry(() => import("../Modules/Feature/Feature"));
+const Courses = lazyWithRetry(() => import("../Modules/Courses/Courses"));
+const Contact = lazyWithRetry(() => import("../Modules/Contact/Contact"));
+const News = lazyWithRetry(() => import("../Modules/News/News"));
+const Profile = lazyWithRetry(() => import("../Modules/Profile/Profile"));
+const YoutubePost = lazyWithRetry(() => import("../Modules/AdminPannel/container/YoutubePost"));
+const SendQuery = lazyWithRetry(() => import("../common/SendQuery"));
+const AdminSurveyPage = lazyWithRetry(() => import("../Modules/AdminPannel/container/AdminSurveyPage"));
+const CreateComplaint = lazyWithRetry(() => import("../Modules/ComplaintGOV_PRIVATE/CreateComplaint"));
+const TemplateLibrary = lazyWithRetry(() => import("../Modules/Templates/container/TemplateLibrary"));
+const Home = lazyWithRetry(() => import("../Modules/Home/Home"));
+const Footer = lazyWithRetry(() => import("../common/Footer"));
+const SEO = lazyWithRetry(() => import("../seo/SEO"));
+const PublicHeader = lazyWithRetry(() => import("../common/PublicHeader"));
 
 
 export const router = createBrowserRouter([
 
     {
-        path: "/news",
-        element: (
-            <>
-                <SEO
-                    title="News & Insights"
-                    description="Explore developer news, AI trends, cloud updates, and software engineering stories from AlgoSaathi."
-                    canonical="https://algosaathi.com/news"
-                />
-                <PublicHeader />
-                <News />
-                <Footer />
-            </>
-        )
-    },
-    {
-        path: "contact",
-        element: (
-            <>
-                <SEO
-                    title="Contact"
-                    description="Connect with AlgoSaathi for collaborations, freelance opportunities, and software engineering conversations."
-                    canonical="https://algosaathi.com/contact"
-                />
-                <PublicHeader />
-                <Contact />
-                <Footer />
-            </>
-        )
-    },
-
-    {
-        path: "/templates",
-        element: (
-            <>
-                <SEO
-                    title="Templates"
-                    description="Explore our collection of professionally designed templates for various industries and use cases."
-                    canonical="https://algosaathi.com/templates"
-                />
-                <PublicHeader />
-                <TemplateLibrary />
-                <Footer />
-            </>
-        )
-    },
-    {
         element: <PublicRoute />,
         children: [
             {
-                path: "/algosaathi",
+                path: "/home",
                 element: (
                     <>
                         <SEO
@@ -94,7 +46,7 @@ export const router = createBrowserRouter([
                             canonical="https://algosaathi.com/algosaathi"
                         />
                         <PublicHeader />
-                        <LoginPageContent />
+                        <Home />
                         <Footer />
                     </>
                 )
@@ -139,7 +91,53 @@ export const router = createBrowserRouter([
                         <AuthLayout />
                     </>
                 )
-            }
+            },
+            {
+                path: "/news",
+                element: (
+                    <>
+                        <SEO
+                            title="News & Insights"
+                            description="Explore developer news, AI trends, cloud updates, and software engineering stories from AlgoSaathi."
+                            canonical="https://algosaathi.com/news"
+                        />
+                        <PublicHeader />
+                        <News />
+                        <Footer />
+                    </>
+                )
+            },
+            {
+                path: "/contact",
+                element: (
+                    <>
+                        <SEO
+                            title="Contact"
+                            description="Connect with AlgoSaathi for collaborations, freelance opportunities, and software engineering conversations."
+                            canonical="https://algosaathi.com/contact"
+                        />
+                        <PublicHeader />
+                        <Contact />
+                        <Footer />
+                    </>
+                )
+            },
+
+            {
+                path: "/templates",
+                element: (
+                    <>
+                        <SEO
+                            title="Templates"
+                            description="Explore our collection of professionally designed templates for various industries and use cases."
+                            canonical="https://algosaathi.com/templates"
+                        />
+                        <PublicHeader />
+                        <TemplateLibrary />
+                        <Footer />
+                    </>
+                )
+            },
         ]
     },
 
@@ -147,7 +145,6 @@ export const router = createBrowserRouter([
         element: <ProtectedRoute allowedRoles={[Roles.USERS, Roles.ADMIN, Roles.STUDENT]} />,
         children: [
             {
-                path: "/",
                 element: <DashboardLayout />,
                 children: [
                     {
@@ -164,7 +161,7 @@ export const router = createBrowserRouter([
                                     canonical="https://algosaathi.com/dashboard"
                                 />
                                 <Dashboard />
-                              
+
                             </>
                         )
                     },
@@ -281,7 +278,6 @@ export const router = createBrowserRouter([
         element: <ProtectedRoute allowedRoles={[Roles.ADMIN]} />,
         children: [
             {
-                path: "/",
                 element: <DashboardLayout />,
                 children: [
                     {

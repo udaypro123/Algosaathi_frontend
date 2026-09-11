@@ -5,6 +5,11 @@ import App from './App'
 import {Provider} from "react-redux";
 import {store} from "./app/store";
 
+window.addEventListener('vite:preloadError', (event) => {
+  event.preventDefault();
+  window.location.reload();
+});
+
 
 ReactDOM.createRoot(
 document.getElementById('root')!

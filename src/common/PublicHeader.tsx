@@ -31,11 +31,15 @@ const PublicHeader = () => {
     };
 
     const navLinkStyles = (isActive: boolean) => ({
-        fontSize: 18,
+        fontSize:{
+            md:16,
+            xs:16,
+            lg:22
+        },
         color: "#fefefe",
         cursor: "pointer",
         fontStyle: "italic",
-        fontWeight: isActive ? 700 : 500,
+        fontWeight: isActive ? 600 : 400,
         textDecoration: "none",
         paddingBottom: isActive ? "2px" : 0,
         borderBottom: isActive ? "3px solid #fd5000" : "3px solid transparent",
@@ -105,6 +109,11 @@ const PublicHeader = () => {
                     fontStyle: "italic",
                     borderRadius: 2,
                     textTransform: "none",
+                    fontSize:{
+                        md:20,
+                        sx:16,
+                        lg:22
+                    },
                     py: 1.2,
                     "&:hover": {
                         bgcolor: "#c2410c",

@@ -10,7 +10,7 @@ const ProtectedRoute = ({ allowedRoles }: ProtectedRouteProps) => {
 
 
   if (!isAuthenticated()) {
-    return <Navigate to="/algosaathi" replace />;
+    return <Navigate to="/home" replace />;
   }
 
   if (allowedRoles && !hasRole(allowedRoles)) {
