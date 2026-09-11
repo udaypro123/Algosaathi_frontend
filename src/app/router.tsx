@@ -34,7 +34,18 @@ const PublicHeader = lazyWithRetry(() => import("../common/PublicHeader"));
 export const router = createBrowserRouter([
     {
         path: "/",
-        element: <Home />
+        element: (
+            <>
+                <SEO
+                    title="Welcome to AlgoSaathi"
+                    description="Start your learning journey with AlgoSaathi and unlock coding, AI, and career-focused growth resources."
+                    canonical="https://algosaathi.com/algosaathi"
+                />
+                <PublicHeader />
+                <Home />
+                <Footer />
+            </>
+        )
     },
     {
         element: <PublicRoute />,
