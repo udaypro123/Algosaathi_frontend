@@ -448,8 +448,11 @@ const UserDashboard = () => {
                         </Stack>
 
                         <Stack spacing={2} sx={{display:"flex", flexDirection:"column", gap: ".5rem", alignItems:"center", border:"1px solid #fcfdfd", borderRadius:"1rem", padding: "1rem", backgroundColor:"#f8f8f9", }}>
-                            {posts?.map((post: any) => (
+                            {posts?.map((post: any, index:any) => (
+                                <Box key={index}>
                                 <PostCard postData={post}/>
+                                </Box>
+                                
                             ))}
                         </Stack>
                     </Box>
