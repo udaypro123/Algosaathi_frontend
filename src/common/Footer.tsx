@@ -26,7 +26,7 @@ const Footer = () => {
                 sx={{
                     position: "absolute",
                     width: 350,
-                    height: 350,
+                    height: 300,
                     borderRadius: "50%",
                     // background: "rgba(59, 130, 246, 0.12)",
                     filter: "blur(90px)",

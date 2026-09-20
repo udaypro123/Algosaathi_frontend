@@ -9,5 +9,6 @@ body,
 #root {
   min-height: 100%;
   width: 100%;
+  background-color: var(--global-bg, #f8fafc);
+  color: var(--global-text, #0f172a);
 }
-

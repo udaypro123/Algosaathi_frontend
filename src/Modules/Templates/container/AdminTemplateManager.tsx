@@ -39,6 +39,7 @@ import {
     updateTemplate,
 } from "../api/api";
 import type { TemplateFormData, TemplateItem } from "../api/interface";
+import "../../../css/pagesUnique.css"
 
 const initialForm: TemplateFormData = {
     title: "",
@@ -78,6 +79,8 @@ const AdminTemplateManager = () => {
     const [form, setForm] = useState<TemplateFormData>(initialForm);
     const [search, setSearch] = useState("");
     const [deleteTarget, setDeleteTarget] = useState<TemplateItem | null>(null);
+    const [descriptionTarget, setDescriptionTarget] = useState<TemplateItem | null>(null);
+    const [openTemplateDialog, setOpenTemplateDialog] = useState(false);
     const { showToast } = useGlobalToast();
 
     const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -142,6 +145,7 @@ const AdminTemplateManager = () => {
     const resetForm = () => {
         setForm(initialForm);
         setEditingId(null);
+        setOpenTemplateDialog(false);
     };
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -219,6 +223,7 @@ const AdminTemplateManager = () => {
             url: template.url || "",
             images: Array.isArray(template.images) ? [...template.images, "", "", ""].slice(0, 3) : ["", "", ""],
         });
+        setOpenTemplateDialog(true);
     };
 
     const handleDelete = async (template: TemplateItem) => {
@@ -250,430 +255,520 @@ const AdminTemplateManager = () => {
         }
     };
 
+    // const handleOpenTemplateDialog = () => {
+    //     resetForm();
+    //     setOpenTemplateDialog(true);
+    // };
+
+    const handleCloseTemplateDialog = () => {
+        setOpenTemplateDialog(false);
+    };
+
     return (
-        <Box sx={{ minHeight: "100vh", background: "linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%)", py: 4 }}>
-            <Container maxWidth="lg">
-                <Stack spacing={3}>
-                    <Paper
-                        elevation={0}
-                        sx={{
-                            p: 3,
-                            borderRadius: 4,
-                            background: "linear-gradient(90deg, rgba(0, 0, 82, 1) 0%, rgba(25, 25, 158, 1) 60%, rgba(0, 0, 82, 1) 100%)",
-                            color: "#fff",
-                        }}
-                    >
-                        <Stack direction={{ xs: "column", md: "row" }} spacing={2} sx={{ justifyContent: "space-between" }}>
-                            <Box>
-                                <Typography variant="overline" sx={{ letterSpacing: 2, opacity: 0.8 }}>
-                                    Admin panel
-                                </Typography>
-                                <Typography variant="h3" sx={{ fontWeight: 800 }}>
-                                    Template Management
-                                </Typography>
-                            </Box>
-
-                            <Button
-                                variant="outlined"
-                                color="inherit"
-                                startIcon={<RefreshIcon />}
-                                onClick={() => void fetchTemplates()}
-                                sx={{ borderColor: "rgba(255,255,255,0.4)", color: "#fff" }}
-                            >
-                                Refresh
-                            </Button>
-                        </Stack>
-                    </Paper>
-
+        <Box className="containerClass">
+            <Box className="SubContainerClass" >
+                <Container >
                     <Stack spacing={3}>
-                        <Dialog
-                            open={Boolean(deleteTarget)}
-                            onClose={() => setDeleteTarget(null)}
-                            maxWidth="xs"
-                            fullWidth
-                            slotProps={{ paper: { sx: { borderRadius: 3, p: 1 } } }}
+                        <Paper
+                            elevation={0}
+                            sx={{
+                                p: 3,
+                                borderRadius: 4,
+                                background: "linear-gradient(90deg, rgba(0, 0, 82, 1) 0%, rgba(25, 25, 158, 1) 60%, rgba(0, 0, 82, 1) 100%)",
+                                color: "#fff",
+                            }}
                         >
-                            <DialogTitle sx={{ pb: 1, fontWeight: 700 }}>Delete Template?</DialogTitle>
-                            <DialogContent>
-                                <DialogContentText>
-                                    Are you sure you want to delete <strong>{deleteTarget?.title || "this template"}</strong>? This action cannot be undone.
-                                </DialogContentText>
-                            </DialogContent>
-                            <DialogActions sx={{ px: 3, pb: 2 }}>
-                                <Button onClick={() => setDeleteTarget(null)} variant="outlined" size="small">
-                                    Cancel
+                            <Stack direction={{ xs: "column", md: "row" }} spacing={2} sx={{ justifyContent: "space-between" }}>
+                                <Box>
+                                    <Typography variant="overline" sx={{ letterSpacing: 2, opacity: 0.8 }}>
+                                        Admin panel
+                                    </Typography>
+                                    <Typography variant="h3" sx={{ fontWeight: 800 }}>
+                                        Template Management
+                                    </Typography>
+                                </Box>
+
+                                <Button
+                                    variant="outlined"
+                                    color="inherit"
+                                    startIcon={<CloudUploadIcon />}
+                                    onClick={() => {
+                                        resetForm();
+                                        setOpenTemplateDialog(true);
+                                    }}
+                                    sx={{ borderColor: "rgba(255,255,255,0.4)", color: "#fff",  }}
+                                >
+                                    Add Template
                                 </Button>
-                                <Button onClick={() => void confirmDelete()} color="error" variant="contained" size="small">
-                                    Delete
+
+                                <Button
+                                    variant="outlined"
+                                    color="inherit"
+                                    startIcon={<RefreshIcon />}
+                                    onClick={() => void fetchTemplates()}
+                                    sx={{ borderColor: "rgba(255,255,255,0.4)", color: "#fff" }}
+                                >
+                                    Refresh
+                                </Button>
+                            </Stack>
+                        </Paper>
+
+                        <Stack spacing={3}>
+                            <Dialog
+                                open={Boolean(deleteTarget)}
+                                onClose={() => setDeleteTarget(null)}
+                                maxWidth="xs"
+                                fullWidth
+                                slotProps={{ paper: { sx: { borderRadius: 3, p: 1 } } }}
+                            >
+                                <DialogTitle sx={{ pb: 1, fontWeight: 700 }}>Delete Template?</DialogTitle>
+                                <DialogContent>
+                                    <DialogContentText>
+                                        Are you sure you want to delete <strong>{deleteTarget?.title || "this template"}</strong>? This action cannot be undone.
+                                    </DialogContentText>
+                                </DialogContent>
+                                <DialogActions sx={{ px: 3, pb: 2 }}>
+                                    <Button onClick={() => setDeleteTarget(null)} variant="outlined" size="small">
+                                        Cancel
+                                    </Button>
+                                    <Button onClick={() => void confirmDelete()} color="error" variant="contained" size="small">
+                                        Delete
+                                    </Button>
+                            </DialogActions>
+                        </Dialog>
+
+                        <Dialog
+                            open={openTemplateDialog}
+                            onClose={handleCloseTemplateDialog}
+                            maxWidth="md"
+                            fullWidth
+                            slotProps={{ paper: { sx: { borderRadius: 3, maxHeight: "90vh" } } }}
+                        >
+                            <DialogTitle
+                                sx={{
+                                    background: "linear-gradient(90deg, rgba(0, 0, 82, 1) 0%, rgba(25, 25, 158, 1) 60%, rgba(0, 0, 82, 1) 100%)",
+                                    color: "#fff",
+                                    fontWeight: 700,
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 1,
+                                }}
+                            >
+                                <CloudUploadIcon sx={{ color: "#fff" }} />
+                                {editingId ? "Edit Template" : "Add New Template"}
+                            </DialogTitle>
+
+                            <Paper sx={{ p: { xs: 2, sm: 3, md: 4 }, maxHeight: "80vh", overflow: "auto", borderRadius: 0 }}>
+                                <Stack spacing={2} component="form" onSubmit={handleSubmit}>
+                                    <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                                        <Typography variant="h5" sx={{ fontWeight: 700 }}>
+                                            {editingId ? "Edit Template" : "Add New Template"}
+                                        </Typography>
+                                        {editingId && (
+                                            <Button variant="text" onClick={resetForm}>
+                                                Cancel
+                                            </Button>
+                                        )}
+                                    </Box>
+
+                                    <TextField
+                                        label="Template title"
+                                        value={form.title}
+                                        onChange={(event) => setForm((prev) => ({ ...prev, title: event.target.value }))}
+                                        fullWidth
+                                        required
+                                    />
+
+                                    <Grid container spacing={2}>
+                                        <Grid size={{ xs: 12, sm: 6 }}>
+                                            <FormControl fullWidth>
+                                                <InputLabel>Category</InputLabel>
+                                                <Select
+                                                    value={form.category}
+                                                    label="Category"
+                                                    onChange={(event) => setForm((prev) => ({ ...prev, category: event.target.value }))}
+                                                >
+                                                    {categoryOptions.map((category) => (
+                                                        <MenuItem key={category} value={category}>
+                                                            {category}
+                                                        </MenuItem>
+                                                    ))}
+                                                </Select>
+                                            </FormControl>
+                                        </Grid>
+                                        <Grid size={{ xs: 12, sm: 6 }}>
+                                            <FormControl fullWidth>
+                                                <InputLabel>Gradient</InputLabel>
+                                                <Select
+                                                    value={form.gradient}
+                                                    label="Gradient"
+                                                    onChange={(event) => setForm((prev) => ({ ...prev, gradient: event.target.value }))}
+                                                >
+                                                    {gradientOptions.map((gradient) => (
+                                                        <MenuItem key={gradient.value} value={gradient.value}>
+                                                            {gradient.label}
+                                                        </MenuItem>
+                                                    ))}
+                                                </Select>
+                                            </FormControl>
+                                        </Grid>
+                                    </Grid>
+
+                                    <TextField
+                                        label="Icon"
+                                        value={form.icon}
+                                        onChange={(event) => setForm((prev) => ({ ...prev, icon: event.target.value }))}
+                                        fullWidth
+                                        placeholder="🎓"
+                                    />
+
+                                    <Box>
+                                        <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 700 }}>
+                                            Template gallery (2–3 images)
+                                        </Typography>
+
+                                        <Button
+                                            component="label"
+                                            variant="outlined"
+                                            fullWidth
+                                            size="small"
+                                            startIcon={<CloudUploadIcon />}
+                                            sx={{ justifyContent: "center", py: 1.3, fontWeight: 700, letterSpacing: 0.6, minHeight: 56 }}
+                                        >
+                                            Select 1–3 images
+                                            <input
+                                                hidden
+                                                type="file"
+                                                accept="image/*"
+                                                multiple
+                                                onChange={(event) => void handleImageUpload(event)}
+                                            />
+                                        </Button>
+
+                                        <Stack direction="row" spacing={2} sx={{ mt: 2, flexWrap: "wrap" }}>
+                                            {Array.from({ length: 3 }).map((_, index) => {
+                                                const imageValue = form.images[index];
+                                                const previewSrc =
+                                                    typeof imageValue === "string"
+                                                        ? imageValue
+                                                        : imageValue instanceof File
+                                                            ? URL.createObjectURL(imageValue)
+                                                            : "";
+                                                const hasImage = Boolean(imageValue);
+
+                                                return (
+                                                    <Box
+                                                        key={`image-slot-${index}`}
+                                                        sx={{
+                                                            flex: "1 1 180px",
+                                                            minWidth: 180,
+                                                            border: "1px dashed rgba(148, 163, 184, 0.75)",
+                                                            borderRadius: 2,
+                                                            p: 1.5,
+                                                            backgroundColor: "rgba(248, 250, 252, 0.8)",
+                                                        }}
+                                                    >
+                                                        <Stack direction="row" sx={{ justifyContent: "space-between", alignItems: "center", mb: 1.25 }}>
+                                                            <Typography variant="caption" sx={{ fontWeight: 700, color: "text.secondary" }}>
+                                                                Image {index + 1}
+                                                            </Typography>
+                                                            {hasImage && (
+                                                                <Button
+                                                                    size="small"
+                                                                    color="error"
+                                                                    variant="text"
+                                                                    sx={{ minWidth: 0, px: 0.75, py: 0.25 }}
+                                                                    onClick={() =>
+                                                                        setForm((prev) => {
+                                                                            const nextImages = [...prev.images];
+                                                                            nextImages[index] = "";
+                                                                            return { ...prev, images: nextImages };
+                                                                        })
+                                                                    }
+                                                                >
+                                                                    Remove
+                                                                </Button>
+                                                            )}
+                                                        </Stack>
+
+                                                        {hasImage ? (
+                                                            <Box
+                                                                component="img"
+                                                                src={previewSrc}
+                                                                alt={`Template preview ${index + 1}`}
+                                                                sx={{
+                                                                    width: "100%",
+                                                                    height: 220,
+                                                                    objectFit: "cover",
+                                                                    borderRadius: 1.5,
+                                                                    border: "1px solid rgba(148,163,184,0.4)",
+                                                                    display: "block",
+                                                                }}
+                                                            />
+                                                        ) : (
+                                                            <Box
+                                                                sx={{
+                                                                    width: "100%",
+                                                                    height: 220,
+                                                                    display: "grid",
+                                                                    placeItems: "center",
+                                                                    borderRadius: 1.5,
+                                                                    border: "1px dashed rgba(148,163,184,0.6)",
+                                                                    color: "text.secondary",
+                                                                    backgroundColor: "#fff",
+                                                                    fontSize: 13,
+                                                                }}
+                                                            >
+                                                                No image
+                                                            </Box>
+                                                        )}
+                                                    </Box>
+                                                );
+                                            })}
+                                        </Stack>
+                                    </Box>
+
+                                    <TextField
+                                        label="Template URL"
+                                        value={form.url}
+                                        onChange={(event) => setForm((prev) => ({ ...prev, url: event.target.value }))}
+                                        fullWidth
+                                        placeholder="https://example.com/template"
+                                        required
+                                    />
+
+                                    <TextField
+                                        label="Description"
+                                        value={form.description}
+                                        onChange={(event) => setForm((prev) => ({ ...prev, description: event.target.value }))}
+                                        fullWidth
+                                        multiline
+                                        minRows={4}
+                                        required
+                                    />
+
+                                    <TextField
+                                        label="Tags (comma separated)"
+                                        value={form.tags}
+                                        onChange={(event) => setForm((prev) => ({ ...prev, tags: event.target.value }))}
+                                        fullWidth
+                                        placeholder="Education, Learning, Startup"
+                                    />
+
+                                    <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                                        <Button
+                                            type="submit"
+                                            variant="contained"
+                                            startIcon={<SaveIcon />}
+                                            disabled={saving}
+                                            size="small"
+                                            sx={{
+                                                background: "linear-gradient(135deg, #ea580c, #f97316)",
+                                                borderRadius: 2,
+                                                px: 2,
+                                                py: 0.8,
+                                                minWidth: 0,
+                                                fontWeight: 700,
+                                            }}
+                                        >
+                                            {saving ? "Saving..." : editingId ? "Update Template" : "Add Template"}
+                                        </Button>
+                                    </Box>
+                                </Stack>
+                            </Paper>
+
+                            <DialogActions sx={{ px: 3, pb: 2, justifyContent: "flex-end" }}>
+                                <Button onClick={handleCloseTemplateDialog} variant="outlined" disabled={saving}>
+                                    Close
                                 </Button>
                             </DialogActions>
                         </Dialog>
 
-                        <Paper sx={{ p: 3, borderRadius: 4, height: "100%" }}>
-                            <Stack spacing={2} component="form" onSubmit={handleSubmit}>
-                                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                                    <Typography variant="h5" sx={{ fontWeight: 700 }}>
-                                        {editingId ? "Edit Template" : "Add New Template"}
-                                    </Typography>
-                                    {editingId && (
-                                        <Button variant="text" onClick={resetForm}>
-                                            Cancel
-                                        </Button>
-                                    )}
-                                </Box>
-
-                                <TextField
-                                    label="Template title"
-                                    value={form.title}
-                                    onChange={(event) => setForm((prev) => ({ ...prev, title: event.target.value }))}
-                                    fullWidth
-                                    required
-                                />
-
-                                <Grid container spacing={2}>
-                                    <Grid size={{ xs: 12, sm: 6 }}>
-                                        <FormControl fullWidth>
-                                            <InputLabel>Category</InputLabel>
-                                            <Select
-                                                value={form.category}
-                                                label="Category"
-                                                onChange={(event) => setForm((prev) => ({ ...prev, category: event.target.value }))}
-                                            >
-                                                {categoryOptions.map((category) => (
-                                                    <MenuItem key={category} value={category}>
-                                                        {category}
-                                                    </MenuItem>
-                                                ))}
-                                            </Select>
-                                        </FormControl>
-                                    </Grid>
-                                    <Grid size={{ xs: 12, sm: 6 }}>
-                                        <FormControl fullWidth>
-                                            <InputLabel>Gradient</InputLabel>
-                                            <Select
-                                                value={form.gradient}
-                                                label="Gradient"
-                                                onChange={(event) => setForm((prev) => ({ ...prev, gradient: event.target.value }))}
-                                            >
-                                                {gradientOptions.map((gradient) => (
-                                                    <MenuItem key={gradient.value} value={gradient.value}>
-                                                        {gradient.label}
-                                                    </MenuItem>
-                                                ))}
-                                            </Select>
-                                        </FormControl>
-                                    </Grid>
-                                </Grid>
-
-                                <TextField
-                                    label="Icon"
-                                    value={form.icon}
-                                    onChange={(event) => setForm((prev) => ({ ...prev, icon: event.target.value }))}
-                                    fullWidth
-                                    placeholder="🎓"
-                                />
-
-                                <Box>
-                                    <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 700 }}>
-                                        Template gallery (2–3 images)
-                                    </Typography>
-
-                                    <Button
-                                        component="label"
-                                        variant="outlined"
-                                        fullWidth
-                                        size="small"
-                                        startIcon={<CloudUploadIcon />}
-                                        sx={{ justifyContent: "center", py: 1.3, fontWeight: 700, letterSpacing: 0.6, minHeight: 56 }}
-                                    >
-                                        Select 1–3 images
-                                        <input
-                                            hidden
-                                            type="file"
-                                            accept="image/*"
-                                            multiple
-                                            onChange={(event) => void handleImageUpload(event)}
-                                        />
-                                    </Button>
-
-                                    <Stack direction="row" spacing={2} sx={{ mt: 2, flexWrap: "wrap" }}>
-                                        {Array.from({ length: 3 }).map((_, index) => {
-                                            const imageValue = form.images[index];
-                                            const previewSrc =
-                                                typeof imageValue === "string"
-                                                    ? imageValue
-                                                    : imageValue instanceof File
-                                                        ? URL.createObjectURL(imageValue)
-                                                        : "";
-                                            const hasImage = Boolean(imageValue);
-
-                                            return (
-                                                <Box
-                                                    key={`image-slot-${index}`}
-                                                    sx={{
-                                                        flex: "1 1 180px",
-                                                        minWidth: 180,
-                                                        border: "1px dashed rgba(148, 163, 184, 0.75)",
-                                                        borderRadius: 2,
-                                                        p: 1.5,
-                                                        backgroundColor: "rgba(248, 250, 252, 0.8)",
-                                                    }}
-                                                >
-                                                    <Stack direction="row" sx={{ justifyContent: "space-between", alignItems: "center", mb: 1.25 }}>
-                                                        <Typography variant="caption" sx={{ fontWeight: 700, color: "text.secondary" }}>
-                                                            Image {index + 1}
-                                                        </Typography>
-                                                        {hasImage && (
-                                                            <Button
-                                                                size="small"
-                                                                color="error"
-                                                                variant="text"
-                                                                sx={{ minWidth: 0, px: 0.75, py: 0.25 }}
-                                                                onClick={() =>
-                                                                    setForm((prev) => {
-                                                                        const nextImages = [...prev.images];
-                                                                        nextImages[index] = "";
-                                                                        return { ...prev, images: nextImages };
-                                                                    })
-                                                                }
-                                                            >
-                                                                Remove
-                                                            </Button>
-                                                        )}
-                                                    </Stack>
-
-                                                    {hasImage ? (
-                                                        <Box
-                                                            component="img"
-                                                            src={previewSrc}
-                                                            alt={`Template preview ${index + 1}`}
-                                                            sx={{
-                                                                width: "100%",
-                                                                height: 220,
-                                                                objectFit: "cover",
-                                                                borderRadius: 1.5,
-                                                                border: "1px solid rgba(148,163,184,0.4)",
-                                                                display: "block",
-                                                            }}
-                                                        />
-                                                    ) : (
-                                                        <Box
-                                                            sx={{
-                                                                width: "100%",
-                                                                height: 220,
-                                                                display: "grid",
-                                                                placeItems: "center",
-                                                                borderRadius: 1.5,
-                                                                border: "1px dashed rgba(148,163,184,0.6)",
-                                                                color: "text.secondary",
-                                                                backgroundColor: "#fff",
-                                                                fontSize: 13,
-                                                            }}
-                                                        >
-                                                            No image
-                                                        </Box>
-                                                    )}
-                                                </Box>
-                                            );
-                                        })}
-                                    </Stack>
-                                </Box>
-
-                                <TextField
-                                    label="Template URL"
-                                    value={form.url}
-                                    onChange={(event) => setForm((prev) => ({ ...prev, url: event.target.value }))}
-                                    fullWidth
-                                    placeholder="https://example.com/template"
-                                    required
-                                />
-
-                                <TextField
-                                    label="Description"
-                                    value={form.description}
-                                    onChange={(event) => setForm((prev) => ({ ...prev, description: event.target.value }))}
-                                    fullWidth
-                                    multiline
-                                    minRows={4}
-                                    required
-                                />
-
-                                <TextField
-                                    label="Tags (comma separated)"
-                                    value={form.tags}
-                                    onChange={(event) => setForm((prev) => ({ ...prev, tags: event.target.value }))}
-                                    fullWidth
-                                    placeholder="Education, Learning, Startup"
-                                />
-
-                                <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                                    <Button
-                                        type="submit"
-                                        variant="contained"
-                                        startIcon={<SaveIcon />}
-                                        disabled={saving}
-                                        size="small"
-                                        sx={{
-                                            background: "linear-gradient(135deg, #ea580c, #f97316)",
-                                            borderRadius: 2,
-                                            px: 2,
-                                            py: 0.8,
-                                            minWidth: 0,
-                                            fontWeight: 700,
-                                        }}
-                                    >
-                                        {saving ? "Saving..." : editingId ? "Update Template" : "Add Template"}
-                                    </Button>
-                                </Box>
-                            </Stack>
-                        </Paper>
+                        <Dialog
+                            open={Boolean(descriptionTarget)}
+                            onClose={() => setDescriptionTarget(null)}
+                            maxWidth="sm"
+                            fullWidth
+                            slotProps={{ paper: { sx: { borderRadius: 3, p: 3 } } }}
+                        >
+                            <DialogTitle sx={{ pb: 1, fontWeight: 700 }}>
+                                {descriptionTarget?.title || "Template Description"}
+                            </DialogTitle>
+                            <DialogContent>
+                                <Typography variant="body1" sx={{ whiteSpace: "pre-wrap", lineHeight: 1.7 }}>
+                                    {descriptionTarget?.description}
+                                </Typography>
+                            </DialogContent>
+                            <DialogActions sx={{ px: 3, pb: 2 }}>
+                                <Button onClick={() => setDescriptionTarget(null)} variant="contained">
+                                    Close
+                                </Button>
+                            </DialogActions>
+                        </Dialog>
 
                         <Paper sx={{ p: 3, borderRadius: 4 }}>
-                            <Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ justifyContent: "space-between", alignItems: { xs: "stretch", sm: "center" } }}>
-                                <Typography variant="h5" sx={{ fontWeight: 700 }}>
-                                    All Templates
-                                </Typography>
-                                <TextField
-                                    size="small"
-                                    placeholder="Search templates"
-                                    value={search}
-                                    onChange={(event) => setSearch(event.target.value)}
-                                    sx={{ minWidth: { xs: "100%", sm: 260 } }}
-                                />
-                            </Stack>
-
-                            <Divider sx={{ my: 2 }} />
-
-                            {loading ? (
-                                <Typography color="text.secondary">Loading templates...</Typography>
-                            ) : filteredTemplates.length === 0 ? (
-                                <Box sx={{ p: 3, textAlign: "center" }}>
-                                    <Typography variant="h6" color="text.secondary">
-                                        No templates available yet.
+                                <Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ justifyContent: "space-between", alignItems: { xs: "stretch", sm: "center" } }}>
+                                    <Typography variant="h5" sx={{ fontWeight: 700 }}>
+                                        All Templates
                                     </Typography>
-                                </Box>
-                            ) : (
-                                <Stack spacing={2}>
-                                    {filteredTemplates.map((template) => (
-                                        <Card key={template._id || template.id} sx={{ borderRadius: 3, border: "1px solid rgba(148,163,184,0.2)" }}>
-                                            <CardContent>
-                                                <Stack direction={{ xs: "column", md: "row" }} spacing={2} sx={{ justifyContent: "space-between" }}>
-                                                    <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-                                                        <Box
-                                                            sx={{
-                                                                width: 54,
-                                                                height: 54,
-                                                                borderRadius: 2,
-                                                                display: "grid",
-                                                                placeItems: "center",
-                                                                background: template.gradient || "linear-gradient(135deg, #dbeafe, #ede9fe)",
-                                                                fontSize: 26,
-                                                            }}
-                                                        >
-                                                            {template.icon || "🎓"}
-                                                        </Box>
-                                                        <Box>
-                                                            <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                                                                {template.title}
-                                                            </Typography>
-                                                            <Stack direction="row" spacing={1} sx={{ flexWrap: "wrap" }}>
-                                                                <Chip label={template.category} size="small" />
-                                                                {Array.isArray(template.tags) && template.tags.map((tag) => (
-                                                                    <Chip key={`${template._id || template.id}-${tag}`} label={tag} size="small" variant="outlined" />
-                                                                ))}
-                                                            </Stack>
-                                                        </Box>
-                                                    </Box>
-
-                                                    <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
-                                                        <IconButton color="primary" onClick={() => handleEdit(template)}>
-                                                            <EditIcon />
-                                                        </IconButton>
-                                                        <IconButton color="error" onClick={() => handleDelete(template)}>
-                                                            <DeleteIcon />
-                                                        </IconButton>
-                                                    </Stack>
-                                                </Stack>
-
-                                                {Array.isArray(template.images) && template.images.length > 0 && (
-                                                    <Box sx={{ mt: 2, display: "flex", gap: 1, overflowX: "auto", pb: 0.5 }}>
-                                                        {template.images.map((image, index) => (
-                                                            <Box
-                                                                key={`${template._id || template.id}-image-${index}`}
-                                                                component="img"
-                                                                src={image}
-                                                                alt={`${template.title} preview ${index + 1}`}
-                                                                sx={{
-                                                                    width: 120,
-                                                                    height: 82,
-                                                                    objectFit: "cover",
-                                                                    borderRadius: 2,
-                                                                    border: "1px solid rgba(148,163,184,0.4)",
-                                                                    flexShrink: 0,
-                                                                }}
-                                                            />
-                                                        ))}
-                                                    </Box>
-                                                )}
-
-                                                {template.url && (
-                                                    <Box sx={{ mt: 2 }}>
-                                                        <Button
-                                                            component="a"
-                                                            href={template.url}
-                                                            target="_blank"
-                                                            rel="noreferrer"
-                                                            variant="outlined"
-                                                            size="small"
-                                                            sx={{ borderRadius: 2 }}
-                                                        >
-                                                            Visit Template
-                                                        </Button>
-                                                    </Box>
-                                                )}
-
-                                                <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
-                                                    {template.description}
-                                                </Typography>
-                                            </CardContent>
-                                        </Card>
-                                    ))}
+                                    <TextField
+                                        size="small"
+                                        placeholder="Search templates"
+                                        value={search}
+                                        onChange={(event) => setSearch(event.target.value)}
+                                        sx={{ minWidth: { xs: "100%", sm: 260 } }}
+                                    />
                                 </Stack>
-                            )}
-                        </Paper>
-                    </Stack>
-                </Stack>
-            </Container>
 
-            {/* =================================================
+                                <Divider sx={{ my: 2 }} />
+
+                                {loading ? (
+                                    <Typography color="text.secondary">Loading templates...</Typography>
+                                ) : filteredTemplates.length === 0 ? (
+                                    <Box sx={{ p: 3, textAlign: "center" }}>
+                                        <Typography variant="h6" color="text.secondary">
+                                            No templates available yet.
+                                        </Typography>
+                                    </Box>
+                                ) : (
+                                    <Stack spacing={2}>
+                                        {filteredTemplates.map((template) => (
+                                            <Card key={template._id || template.id} sx={{ borderRadius: 3, border: "1px solid rgba(148,163,184,0.2)" }}>
+                                                <CardContent>
+                                                    <Stack direction={{ xs: "column", md: "row" }} spacing={2} sx={{ justifyContent: "space-between" }}>
+                                                        <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+                                                            <Box
+                                                                sx={{
+                                                                    width: 54,
+                                                                    height: 54,
+                                                                    borderRadius: 2,
+                                                                    display: "grid",
+                                                                    placeItems: "center",
+                                                                    background: template.gradient || "linear-gradient(135deg, #dbeafe, #ede9fe)",
+                                                                    fontSize: 26,
+                                                                }}
+                                                            >
+                                                                {template.icon || "🎓"}
+                                                            </Box>
+                                                            <Box>
+                                                                <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                                                                    {template.title}
+                                                                </Typography>
+                                                                <Stack direction="row" spacing={1} sx={{ flexWrap: "wrap" }}>
+                                                                    <Chip label={template.category} size="small" />
+                                                                    {Array.isArray(template.tags) && template.tags.map((tag) => (
+                                                                        <Chip key={`${template._id || template.id}-${tag}`} label={tag} size="small" variant="outlined" />
+                                                                    ))}
+                                                                </Stack>
+                                                            </Box>
+                                                        </Box>
+
+                                                        <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
+                                                            <IconButton color="primary" onClick={() => handleEdit(template)}>
+                                                                <EditIcon />
+                                                            </IconButton>
+                                                            <IconButton color="error" onClick={() => handleDelete(template)}>
+                                                                <DeleteIcon />
+                                                            </IconButton>
+                                                        </Stack>
+                                                    </Stack>
+
+                                                    {Array.isArray(template.images) && template.images.length > 0 && (
+                                                        <Box sx={{ mt: 2, display: "flex", gap: 1, overflowX: "auto", pb: 0.5 }}>
+                                                            {template.images.map((image, index) => (
+                                                                <Box
+                                                                    key={`${template._id || template.id}-image-${index}`}
+                                                                    component="img"
+                                                                    src={image}
+                                                                    alt={`${template.title} preview ${index + 1}`}
+                                                                    sx={{
+                                                                        width: 120,
+                                                                        height: 82,
+                                                                        objectFit: "cover",
+                                                                        borderRadius: 2,
+                                                                        border: "1px solid rgba(148,163,184,0.4)",
+                                                                        flexShrink: 0,
+                                                                    }}
+                                                                />
+                                                            ))}
+                                                        </Box>
+                                                    )}
+
+                                                    {template.url && (
+                                                        <Box sx={{ mt: 2 }}>
+                                                            <Button
+                                                                component="a"
+                                                                href={template.url}
+                                                                target="_blank"
+                                                                rel="noreferrer"
+                                                                variant="outlined"
+                                                                size="small"
+                                                                sx={{ borderRadius: 2 }}
+                                                            >
+                                                                Visit Template
+                                                            </Button>
+                                                        </Box>
+                                                    )}
+
+                                                    <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+                                                        {template.description && template.description.length > 250
+                                                            ? `${template.description.slice(0, 250)}... `
+                                                            : template.description}
+                                                        {template.description && template.description.length > 250 && (
+                                                            <Box
+                                                                component="span"
+                                                                sx={{
+                                                                    color: "#2563eb",
+                                                                    fontWeight: 700,
+                                                                    cursor: "pointer",
+                                                                    "&:hover": { textDecoration: "underline" },
+                                                                }}
+                                                                onClick={() => setDescriptionTarget(template)}
+                                                            >
+                                                                Read more
+                                                            </Box>
+                                                        )}
+                                                    </Typography>
+                                                </CardContent>
+                                            </Card>
+                                        ))}
+                                    </Stack>
+                                )}
+                            </Paper>
+                        </Stack>
+                    </Stack>
+                </Container>
+
+                {/* =================================================
                 ADMIN FOOTER
             ================================================= */}
 
-            <Box
-                sx={{
-                    py: 4,
+                <Box
+                    sx={{
+                        py: 4,
 
-                    textAlign: "center",
+                        textAlign: "center",
 
-                }}
-            >
-
-                <Typography
-                    color="text.secondary"
-                    variant="body2"
+                    }}
                 >
-                    AlgoSaathi Administration Panel
-                </Typography>
 
-                <Typography
-                    color="text.secondary"
-                    variant="caption"
-                >
-                    © {new Date().getFullYear()} AlgoSaathi
-                </Typography>
+                    <Typography
+                        color="text.secondary"
+                        variant="body2"
+                    >
+                        AlgoSaathi Administration Panel
+                    </Typography>
+
+                    <Typography
+                        color="text.secondary"
+                        variant="caption"
+                    >
+                        © {new Date().getFullYear()} AlgoSaathi
+                    </Typography>
+
+                </Box>
 
             </Box>
-
         </Box>
     );
 };

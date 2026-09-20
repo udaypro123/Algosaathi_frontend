@@ -16,391 +16,1919 @@ import {
   Chip,
   Divider,
 } from "@mui/material";
+
 import ShareIcon from "@mui/icons-material/Share";
 import CommentIcon from "@mui/icons-material/Comment";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import { getAllNews } from "./api.ts/api";
 
-interface Article {
-  id: number;
+
+
+// ======================================================
+// TYPES
+// ======================================================
+
+interface NewsItem {
+  _id: string;
+  id: string;
+
   title: string;
-  summary: string;
+  shortDescription: string;
   content: string;
-  image: string;
+
   category: string;
-  date: string;
+  subCategory?: string;
+
+  // IMPORTANT: API is returning string[]
+  images: string[];
+
+  tags?: string[];
+
+  slug: string;
+
+  isPublished: boolean;
+
+  publishedAt?: string;
+  createdAt: string;
+  updatedAt: string;
+
+  views: number;
+
+  author?: {
+    name: string;
+    profileImage: string;
+  };
+
+  source?: {
+    name: string;
+    url: string;
+  };
+
+  video?: {
+    url: string;
+    thumbnail: string;
+  };
+
+  seo?: {
+    metaTitle: string;
+    metaDescription: string;
+    keywords: string[];
+    canonicalUrl: string;
+  };
 }
 
-const sliderItems = [
-  {
-    id: 1,
-    tag: "Developer news",
-    headline: "Engineering stories that shape your next sprint.",
-    description:
-      "Catch the biggest updates in AI tooling, cloud APIs, and frontend performance — all written for software engineers.",
-    image:
-      "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80",
-  },
-  {
-    id: 2,
-    tag: "Career insights",
-    headline: "From code reviews to launch day, stay informed.",
-    description:
-      "Read actionable news about system design, team workflows, and production-ready software that matters for SDE roles.",
-    image:
-      "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&q=80",
-  },
-  {
-    id: 3,
-    tag: "Product pulse",
-    headline: "How modern teams ship software smarter.",
-    description:
-      "Explore the latest ideas in API design, deployment, and developer productivity through short, sharp headlines.",
-    image:
-      "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1200&q=80",
-  },
-];
 
-const articles: Article[] = [
-  {
-    id: 1,
-    title: "AI-assisted debugging reshapes developer workflows",
-    summary:
-      "Developers are using AI tools to catch bugs faster, write better tests, and keep production systems stable.",
-    content:
-      "AI-assisted debugging is improving developer productivity by surfacing code smells, recommending fixes, and suggesting test cases. Teams are now pairing with code intelligence to reduce cycle time while keeping review quality high. This trend is particularly strong in frontend and backend stacks where observability and error tracing combine with smart automation.",
-    image:
-      "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80",
-    category: "Developer Tools",
-    date: "Aug 9, 2026",
-  },
-  {
-    id: 2,
-    title: "Cloud-native APIs power next-gen product launches",
-    summary:
-      "Modern APIs, serverless patterns, and edge delivery are enabling faster release cycles for software teams.",
-    content:
-      "Cloud-native API design is now the foundation for scalable product launches. Teams are moving away from monolithic backends and embracing microservices, GraphQL, and event-driven work streams. The result is faster iteration, greater reliability, and a tighter feedback loop between product and engineering.",
-    image:
-      "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=900&q=80",
-    category: "Cloud",
-    date: "Aug 8, 2026",
-  },
-  {
-    id: 3,
-    title: "Frontend performance wins: build for speed",
-    summary:
-      "Smaller bundles, smarter caching, and responsive animations are the real differentiators in web experiences.",
-    content:
-      "Performance matters more than ever. Teams are optimizing bundle size, prioritizing critical rendering paths, and using modern image formats to keep pages fast. The best frontend experiences balance speed with polish, delivering interfaces that feel instant across mobile and desktop.",
-    image:
-      "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=900&q=80",
-    category: "Frontend",
-    date: "Aug 7, 2026",
-  },
-];
+// ======================================================
+// HELPERS
+// ======================================================
 
-const truncate = (text: string, length: number) =>
-  text.length <= length ? text : `${text.slice(0, length).trim()}...`;
+const truncate = (
+  text: string = "",
+  length: number
+) => {
+  return text.length <= length
+    ? text
+    : `${text.slice(0, length).trim()}...`;
+};
+
+
+const formatDate = (date?: string) => {
+  if (!date) return "";
+
+  return new Date(date).toLocaleDateString(
+    "en-IN",
+    {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    }
+  );
+};
+
+
+// ======================================================
+// COMPONENT
+// ======================================================
 
 const News = () => {
-  const [activeSlide, setActiveSlide] = useState(0);
-  const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
-  const [commentText, setCommentText] = useState("");
-  const [comments, setComments] = useState<string[]>([]);
-  const [shareMessage, setShareMessage] = useState("");
 
-  const handlePrevSlide = () => {
-    setActiveSlide((current) => (current - 1 + sliderItems.length) % sliderItems.length);
-  };
+  // ==================================================
+  // STATES
+  // ==================================================
 
-  const handleNextSlide = () => {
-    setActiveSlide((current) => (current + 1) % sliderItems.length);
-  };
+  const [newsList, setNewsList] =
+    useState<NewsItem[]>([]);
 
-  useEffect(() => {
-    const interval = window.setInterval(handleNextSlide, 3000);
-    return () => window.clearInterval(interval);
-  }, []);
+  const [fetchingNews, setFetchingNews] =
+    useState(false);
 
-  const handleOpenArticle = (article: Article) => {
-    setSelectedArticle(article);
-    setCommentText("");
-    setComments([]);
-    setShareMessage("");
-  };
+  const [error, setError] =
+    useState("");
 
-  const handleCloseArticle = () => {
-    setSelectedArticle(null);
-  };
+  // Which news is active in main hero
+  const [activeSlide, setActiveSlide] =
+    useState(0);
 
-  const handlePostComment = () => {
-    if (!commentText.trim()) return;
-    setComments((prev) => [commentText.trim(), ...prev]);
-    setCommentText("");
-  };
+  const carouselNews =
+    newsList.slice(0, 5);
 
-  const handleShare = async () => {
-    if (!selectedArticle) return;
-    const url = window.location.href;
-    const payload = {
-      title: selectedArticle.title,
-      text: selectedArticle.summary,
-      url,
-    };
+  const carouselCount =
+    carouselNews.length;
 
-    if (navigator.share) {
-      try {
-        await navigator.share(payload);
-        setShareMessage("Shared successfully.");
-        return;
-      } catch {
-        // ignore share failure
+  // Which image of current hero news
+  const [activeImage, setActiveImage] =
+    useState(0);
+
+  // Selected news for Read More
+  const [selectedArticle, setSelectedArticle] =
+    useState<NewsItem | null>(null);
+
+  // Image inside Read More dialog
+  const [selectedImage, setSelectedImage] =
+    useState(0);
+
+  const [commentText, setCommentText] =
+    useState("");
+
+  const [comments, setComments] =
+    useState<string[]>([]);
+
+  const [shareMessage, setShareMessage] =
+    useState("");
+
+
+  // ==================================================
+  // FETCH NEWS
+  // ==================================================
+
+  const fetchNews = async () => {
+
+    try {
+
+      setFetchingNews(true);
+
+      setError("");
+
+      const response = await getAllNews();
+
+      console.log(
+        "NEWS RESPONSE:",
+        response
+      );
+
+
+      if (!response.success) {
+
+        throw new Error(
+          response?.message ||
+          "Failed to fetch news"
+        );
+
       }
+
+
+      const news =
+        response?.data || [];
+
+
+      console.log(
+        "NEWS DATA:",
+        news
+      );
+
+
+      setNewsList(
+        Array.isArray(news)
+          ? news
+          : []
+      );
+
+    } catch (err) {
+
+      const message =
+        err instanceof Error
+          ? err.message
+          : "Failed to fetch news";
+
+      setError(message);
+
+    } finally {
+
+      setFetchingNews(false);
+
     }
 
-    navigator.clipboard.writeText(`${selectedArticle.title} - ${url}`);
-    setShareMessage("Link copied to clipboard.");
   };
 
-  return (
-    <Box sx={{ minHeight: "100vh", background: "#f8fafc", color: "#0f172a", pb: 10 }}>
-      <Box sx={{ maxWidth: 1200, mx: "auto", px: { xs: 3, md: 4 }, pt: { xs: 12, md: 14 } }}>
-        <Box sx={{ mb: 5, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 2, flexWrap: "wrap" }}>
 
-          <Box sx={{ width: "90%", display: "flex", flexDirection: "column", textAlign: "center" }}>
-            <Typography sx={{ fontSize: { xs: 24, md: 32 }, fontWeight: 900, flex: 1 }}>
+  // ==================================================
+  // FETCH ON MOUNT
+  // ==================================================
+
+  useEffect(() => {
+
+    fetchNews();
+
+  }, []);
+
+
+  // ==================================================
+  // MAIN HERO NEWS AUTO SLIDER
+  // ==================================================
+
+  useEffect(() => {
+
+    if (carouselCount <= 1) {
+      return;
+    }
+
+
+    const interval =
+      window.setInterval(() => {
+
+        setActiveSlide(
+          (current) =>
+            (current + 1) %
+            carouselCount
+        );
+
+        setActiveImage(0);
+
+      }, 3000);
+
+
+    return () => {
+
+      window.clearInterval(
+        interval
+      );
+
+    };
+
+  }, [carouselCount]);
+
+
+  // ==================================================
+  // MAIN HERO NEXT NEWS
+  // ==================================================
+
+  const handleNextNews = () => {
+
+    if (!carouselCount) {
+      return;
+    }
+
+
+    setActiveSlide(
+      (current) =>
+        (current + 1) %
+        carouselCount
+    );
+
+
+    setActiveImage(0);
+
+  };
+
+
+  // ==================================================
+  // MAIN HERO PREVIOUS NEWS
+  // ==================================================
+
+  const handlePreviousNews = () => {
+
+    if (!carouselCount) {
+      return;
+    }
+
+
+    setActiveSlide(
+      (current) =>
+        (current -
+          1 +
+          carouselCount) %
+        carouselCount
+    );
+
+
+    setActiveImage(0);
+
+  };
+
+
+  // ==================================================
+  // OPEN ARTICLE
+  // ==================================================
+
+  const handleOpenArticle = (
+    article: NewsItem
+  ) => {
+
+    setSelectedArticle(article);
+
+    // Always start dialog from first image
+    setSelectedImage(0);
+
+    setCommentText("");
+
+    setComments([]);
+
+    setShareMessage("");
+
+  };
+
+
+  // ==================================================
+  // CLOSE ARTICLE
+  // ==================================================
+
+  const handleCloseArticle = () => {
+
+    setSelectedArticle(null);
+
+    setSelectedImage(0);
+
+  };
+
+
+  // ==================================================
+  // NEXT IMAGE IN DIALOG
+  // ==================================================
+
+  const handleNextSelectedImage = () => {
+
+    if (!selectedArticle) {
+      return;
+    }
+
+
+    if (
+      selectedArticle.images.length <= 1
+    ) {
+      return;
+    }
+
+
+    setSelectedImage(
+      (current) =>
+        (current + 1) %
+        selectedArticle.images.length
+    );
+
+  };
+
+
+  // ==================================================
+  // PREVIOUS IMAGE IN DIALOG
+  // ==================================================
+
+  const handlePreviousSelectedImage = () => {
+
+    if (!selectedArticle) {
+      return;
+    }
+
+
+    if (
+      selectedArticle.images.length <= 1
+    ) {
+      return;
+    }
+
+
+    setSelectedImage(
+      (current) =>
+        (current -
+          1 +
+          selectedArticle.images.length) %
+        selectedArticle.images.length
+    );
+
+  };
+
+
+  // ==================================================
+  // POST COMMENT
+  // ==================================================
+
+  const handlePostComment = () => {
+
+    if (!commentText.trim()) {
+      return;
+    }
+
+
+    setComments((previous) => [
+      commentText.trim(),
+      ...previous,
+    ]);
+
+
+    setCommentText("");
+
+  };
+
+
+  // ==================================================
+  // SHARE
+  // ==================================================
+
+  const handleShare = async () => {
+
+    if (!selectedArticle) {
+      return;
+    }
+
+
+    const url =
+      window.location.href;
+
+
+    const payload = {
+
+      title:
+        selectedArticle.title,
+
+      text:
+        selectedArticle.shortDescription,
+
+      url,
+
+    };
+
+
+    // Native share
+    if (navigator.share) {
+
+      try {
+
+        await navigator.share(
+          payload
+        );
+
+
+        setShareMessage(
+          "Shared successfully."
+        );
+
+
+        return;
+
+      } catch {
+        // User cancelled share
+      }
+
+    }
+
+
+    // Clipboard fallback
+    try {
+
+      await navigator.clipboard.writeText(
+        `${selectedArticle.title} - ${url}`
+      );
+
+
+      setShareMessage(
+        "Link copied to clipboard."
+      );
+
+    } catch {
+
+      setShareMessage(
+        "Unable to copy link."
+      );
+
+    }
+
+  };
+
+
+  // ==================================================
+  // LOADING
+  // ==================================================
+
+  if (fetchingNews) {
+
+    return (
+
+      <Box
+        sx={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background:
+            "var(--global-bg)",
+        }}
+      >
+
+        <Typography>
+          Loading news...
+        </Typography>
+
+      </Box>
+
+    );
+
+  }
+
+
+  // ==================================================
+  // ERROR
+  // ==================================================
+
+  if (error) {
+
+    return (
+
+      <Box
+        sx={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background:
+            "var(--global-bg)",
+          px: 3,
+        }}
+      >
+
+        <Typography
+          color="error"
+          sx={{ textAlign: "center" }}
+        >
+          {error}
+        </Typography>
+
+      </Box>
+
+    );
+
+  }
+
+
+  // ==================================================
+  // EMPTY NEWS
+  // ==================================================
+
+  if (!newsList.length) {
+
+    return (
+
+      <Box
+        sx={{
+          minHeight: "100vh",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          background:
+            "var(--global-bg)",
+        }}
+      >
+        <Box
+          sx={{
+            width: "100%",
+            display: "flex",
+            flexDirection:
+              "column",
+            textAlign: "center",
+          }}
+        >
+
+          <Typography
+            sx={{
+              fontSize: {
+                xs: 24,
+                md: 32,
+              },
+              fontWeight: 900,
+            }}
+          >
+
+            News hub for
+
+            <Box
+              component="span"
+              sx={{
+                color:
+                  "#ea580c",
+                ml: "5px",
+              }}
+            >
+              Everyone
+            </Box>
+
+          </Typography>
+
+
+          <Typography
+            sx={{
+              fontSize: {
+                xs: 16,
+                md: 18,
+              },
+              color: "grey",
+              textAlign:
+                "center",
+              mt: 0.5,
+            }}
+          >
+
+            Everyone deserves to
+            know what's going on
+            in real time.
+
+          </Typography>
+
+        </Box>
+
+        <Typography variant="h3" sx={{ mt: 5 }}>
+          No news available.
+        </Typography>
+
+      </Box>
+
+    );
+
+  }
+
+
+  // ==================================================
+  // ACTIVE NEWS
+  // ==================================================
+
+  const activeNews =
+    carouselNews[activeSlide] ||
+    carouselNews[0];
+
+
+  const latestNews =
+    newsList[0];
+
+
+  // ==================================================
+  // RETURN
+  // ==================================================
+
+  return (
+
+    <Box
+      sx={{
+        minHeight: "100vh",
+        background:
+          "var(--global-bg)",
+        color:
+          "var(--global-text)",
+        pb: 10,
+      }}
+    >
+
+      <Box
+        sx={{
+          maxWidth: 1200,
+          mx: "auto",
+          px: {
+            xs: 2,
+            sm: 3,
+            md: 4,
+          },
+          pt: {
+            xs: 12,
+            md: 14,
+          },
+        }}
+      >
+
+        {/* ==================================================
+                    HEADER
+                ================================================== */}
+
+        <Box
+          sx={{
+            mb: 5,
+            display: "flex",
+            justifyContent:
+              "space-between",
+            alignItems: "center",
+          }}
+        >
+
+          <Box
+            sx={{
+              width: "100%",
+              display: "flex",
+              flexDirection:
+                "column",
+              textAlign: "center",
+            }}
+          >
+
+            <Typography
+              sx={{
+                fontSize: {
+                  xs: 24,
+                  md: 32,
+                },
+                fontWeight: 900,
+              }}
+            >
+
               News hub for
+
               <Box
                 component="span"
                 sx={{
-                  color: "#ea580c",
-                  marginLeft:"5px"
+                  color:
+                    "#ea580c",
+                  ml: "5px",
                 }}
               >
                 Everyone
-              </Box>{" "}
+              </Box>
+
             </Typography>
-            <Typography sx={{ fontSize: { xs: 16, md: 18, color: "grey", textAlign: "center" }, flex: 1 }}>
-              Everyone deserves to know what going on in real time.
+
+
+            <Typography
+              sx={{
+                fontSize: {
+                  xs: 16,
+                  md: 18,
+                },
+                color: "grey",
+                textAlign:
+                  "center",
+                mt: 0.5,
+              }}
+            >
+
+              Everyone deserves to
+              know what's going on
+              in real time.
+
             </Typography>
+
           </Box>
 
         </Box>
 
 
-        <Box sx={{ mb: 6, display: "grid", gap: 3, gridTemplateColumns: { md: "2fr 1fr" }, alignItems: "stretch" }}>
-          <Box sx={{ position: "relative", borderRadius: 4, overflow: "hidden", minHeight: { xs: 260, md: 300 } }}>
+        {/* ==================================================
+                    HERO + LATEST
+                ================================================== */}
+
+        <Box
+          sx={{
+            mb: 6,
+            display: "grid",
+            gap: 3,
+            gridTemplateColumns: {
+              xs: "1fr",
+              md: "2fr 1fr",
+            },
+            alignItems: "stretch",
+          }}
+        >
+
+          {/* ==================================================
+                        HERO NEWS
+                    ================================================== */}
+
+          <Box
+            sx={{
+              position:
+                "relative",
+              borderRadius: 4,
+              overflow: "hidden",
+              minHeight: {
+                xs: 420,
+                md: 470,
+              },
+            }}
+          >
+
+            {/* HERO IMAGE */}
+
             <Box
               component="img"
-              src={sliderItems[activeSlide].image}
-              alt={sliderItems[activeSlide].headline}
-              sx={{ width: "100%", height: "100%", objectFit: "cover" }}
+              src={
+                activeNews
+                  .images?.[
+                activeImage
+                ] || ""
+              }
+              alt={
+                activeNews.title
+              }
+              sx={{
+                width: "100%",
+                height: "100%",
+                minHeight: {
+                  xs: 420,
+                  md: 470,
+                },
+                maxHeight: {
+                  xs: 420,
+                  md: 470,
+                },
+                objectFit:
+                  "cover",
+                display:
+                  "block",
+                transition:
+                  "opacity 0.4s ease",
+              }}
             />
+
+
+            {/* DARK OVERLAY */}
+
+            <Box
+              sx={{
+                position:
+                  "absolute",
+                inset: 0,
+                background: "linear-gradient(180deg, rgba(229, 131, 25, 0.04) 0%, rgba(15, 23, 42, 0.6) 65%)",
+              }}
+            />
+
+
+            {/* HERO CONTENT */}
+
             <Box
               sx={{
                 position: "absolute",
-                inset: 0,
-                background: "linear-gradient(180deg, rgba(15, 23, 42, 0.15) 0%, rgba(15, 23, 42, 0.78) 70%)",
+                left: {
+                  xs: 20,
+                  md: 40,
+                },
+                right: {
+                  xs: 20,
+                  md: 40,
+                },
+                bottom: {
+                  xs: 50,
+                  md: 55,
+                },
               }}
-            />
-            <Box sx={{ position: "absolute", left: { xs: 3, md: 6 }, bottom: { xs: 3, md: 6 }, right: { xs: 3, md: "auto" }, maxWidth: { xs: "unset", md: 520 } }}>
-              <Chip label={sliderItems[activeSlide].tag} sx={{ mb: 2, bgcolor: "rgba(255,255,255,0.16)", color: "#f8fafc", border: "1px solid rgba(255,255,255,0.2)" }} />
-              <Typography sx={{ color: "#fff", fontSize: { xs: 24, md: 34 }, fontWeight: 900, lineHeight: 1.05, mb: 2 }}>
-                {sliderItems[activeSlide].headline}
+            >
+
+
+              <Typography
+                sx={{
+                  color: "#fff",
+                  fontSize: {
+                    xs: 20,
+                    sm: 24,
+                    md: 30,
+                  },
+                  fontWeight: 600,
+                  lineHeight: 1.1,
+                  mb: 2,
+                }}
+              >
+
+                {
+                  activeNews.title
+                }
+
               </Typography>
-              <Typography sx={{ color: "#e2e8f0", fontSize: { xs: 14, md: 16 }, maxWidth: 560, mb: 3, lineHeight: 1.7 }}>
-                {sliderItems[activeSlide].description}
-              </Typography>
-              <Button variant="contained" onClick={() => handleOpenArticle(articles[activeSlide] ?? articles[0])}>
+
+
+              <Button
+                variant="contained"
+                sx={{borderRadius:"30%",boxShadow: "rgba(241, 236, 236, 0.81) 0px 22px 70px 4px", border:"1px solid white"}}
+                onClick={() =>
+                  handleOpenArticle(
+                    activeNews
+                  )
+                }
+              >
                 Read full story
               </Button>
+
             </Box>
-            <Box sx={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "space-between", px: 2 }}>
-              <IconButton
-                onClick={handlePrevSlide}
-                sx={{ bgcolor: "rgba(255,255,255,0.88)", '&:hover': { bgcolor: "rgba(255,255,255,1)" } }}
-              >
-                <KeyboardArrowLeftIcon />
-              </IconButton>
-              <IconButton
-                onClick={handleNextSlide}
-                sx={{ bgcolor: "rgba(255,255,255,0.88)", '&:hover': { bgcolor: "rgba(255,255,255,1)" } }}
-              >
-                <KeyboardArrowRightIcon />
-              </IconButton>
-            </Box>
-            <Box sx={{ position: "absolute", bottom: 16, left: "50%", transform: "translateX(-50%)", display: "flex", gap: 1 }}>
-              {sliderItems.map((item, index) => (
-                <Box
-                  key={item.id}
-                  onClick={() => setActiveSlide(index)}
+
+
+            {/* ==================================================
+                            CHANGE NEWS
+                        ================================================== */}
+
+            {newsList.length > 1 && (
+              <>
+                <IconButton
+                  onClick={
+                    handlePreviousNews
+                  }
                   sx={{
-                    width: 12,
-                    height: 12,
-                    borderRadius: "50%",
-                    bgcolor: index === activeSlide ? "#ea580c" : "rgba(255,255,255,0.55)",
-                    cursor: "pointer",
+                    position:
+                      "absolute",
+                    left: {
+                      xs: 55,
+                      md: 70,
+                    },
+                    top: "95%",
+                    transform:
+                      "translateY(-50%)",
+                    bgcolor: "rgb(255, 255, 255)",
+                    color: "#00083d",
+                    zIndex: 4,
+                    "&:hover":
+                    {
+                      bgcolor: "rgba(12, 3, 139, 0.7)",
+                      color: "white",
+                      border: "1px solid white"
+                    },
+                  }}
+                >
+                  <KeyboardArrowLeftIcon />
+                </IconButton>
+
+
+                <IconButton
+                  onClick={
+                    handleNextNews
+                  }
+                  sx={{
+                    position:
+                      "absolute",
+                    right: {
+                      xs: 55,
+                      md: 70,
+                    },
+                    top:
+                      "95%",
+                    transform:
+                      "translateY(-50%)",
+                    bgcolor: "rgb(255, 255, 255)",
+                    color: "#00083d",
+                    zIndex: 4,
+                    "&:hover":
+                    {
+                      bgcolor: "rgba(12, 3, 139, 0.7)",
+                      color: "white",
+                      border: "1px solid white"
+                    },
+                  }}
+                >
+                  <KeyboardArrowRightIcon />
+                </IconButton>
+              </>
+            )}
+
+
+            {/* ==================================================
+                            IMAGE COUNT
+                        ================================================== */}
+
+            {activeNews.images?.length >
+              1 && (
+
+                <Chip
+                  label={`${activeImage + 1} / ${activeNews.images.length}`}
+                  size="small"
+                  sx={{
+                    position:
+                      "absolute",
+                    top: 15,
+                    right: 15,
+                    backgroundColor:
+                      "rgba(0,0,0,0.65)",
+                    color:
+                      "#fff",
+                    zIndex: 5,
                   }}
                 />
-              ))}
-            </Box>
+
+              )}
+
+
           </Box>
 
-          <Card sx={{ borderRadius: 4, boxShadow: "0 24px 60px rgba(15, 23, 42, 0.08)", display: "flex", flexDirection: "column", justifyContent: "space-between", minHeight: { xs: 260, md: 300 } }}>
-            <CardContent>
-              <Typography sx={{ color: "#0f172a", fontWeight: 900, fontSize: { xs: 22, md: 26 }, mb: 2 }}>
-                Trending feature
+
+          {/* ==================================================
+                        LATEST NEWS CARD
+                    ================================================== */}
+
+          <Card
+            sx={{
+              borderRadius: 4,
+              boxShadow:
+                "0 24px 60px rgba(15, 23, 42, 0.08)",
+              display:
+                "flex",
+              flexDirection:
+                "column",
+              minHeight: {
+                xs: 350,
+                md: 470,
+              },
+              overflow:
+                "hidden",
+            }}
+          >
+
+            {/* Latest Image */}
+
+            <CardMedia
+              component="img"
+              image={
+                latestNews
+                  .images?.[0] ||
+                ""
+              }
+              alt={
+                latestNews.title
+              }
+              sx={{
+                height: 190,
+                objectFit:
+                  "cover",
+              }}
+            />
+
+
+            <CardContent
+              sx={{
+                flexGrow: 1,
+              }}
+            >
+
+              <Chip
+                label="Latest News"
+                color="warning"
+                size="small"
+                sx={{
+                  mb: 1.5,
+                }}
+              />
+
+
+              <Typography
+                sx={{
+                  color:
+                    "#0f172a",
+                  fontWeight:
+                    900,
+                  fontSize: {
+                    xs: 20,
+                    md: 24,
+                  },
+                  mb: 1.5,
+                  lineHeight:
+                    1.2,
+                }}
+              >
+
+                {
+                  latestNews.title
+                }
+
               </Typography>
-              <Typography sx={{ color: "#475569", mb: 3, lineHeight: 1.8 }}>
-                Get the stories that matter most for software engineers right now: leadership hires, API launches, performance wins, and practical workflows.
+
+
+              <Typography
+                sx={{
+                  color:
+                    "#475569",
+                  lineHeight:
+                    1.7,
+                  mb: 2,
+                }}
+              >
+
+                {truncate(
+                  latestNews.shortDescription,
+                  130
+                )}
+
               </Typography>
-              <Box sx={{ display: "grid", gap: 2 }}>
-                <Box sx={{ display: "flex", gap: 2, alignItems: "flex-start" }}>
-                  <Box sx={{ width: 10, height: 10, borderRadius: "50%", bgcolor: "#ea580c", mt: 0.75 }} />
-                  <Typography sx={{ color: "#475569" }}>
-                    Instant headlines for product and engineering teams.
-                  </Typography>
-                </Box>
-                <Box sx={{ display: "flex", gap: 2, alignItems: "flex-start" }}>
-                  <Box sx={{ width: 10, height: 10, borderRadius: "50%", bgcolor: "#22c55e", mt: 0.75 }} />
-                  <Typography sx={{ color: "#475569" }}>
-                    Expert commentary on building fast, reliable systems.
-                  </Typography>
-                </Box>
-                <Box sx={{ display: "flex", gap: 2, alignItems: "flex-start" }}>
-                  <Box sx={{ width: 10, height: 10, borderRadius: "50%", bgcolor: "#818cf8", mt: 0.75 }} />
-                  <Typography sx={{ color: "#475569" }}>
-                    Actionable insight to help you ship better software.
-                  </Typography>
-                </Box>
-              </Box>
+
+
+              <Typography
+                variant="caption"
+                sx={{
+                  color:
+                    "#64748b",
+                }}
+              >
+
+                {formatDate(
+                  latestNews.publishedAt ||
+                  latestNews.createdAt
+                )}
+
+              </Typography>
+
             </CardContent>
-            <CardActions sx={{ p: 3 }}>
-              <Button variant="contained" onClick={() => handleOpenArticle(articles[0])} fullWidth>
-                Read full story
+
+
+            <CardActions
+              sx={{
+                p: 3,
+              }}
+            >
+
+              <Button
+                variant="contained"
+                fullWidth
+                onClick={() =>
+                  handleOpenArticle(
+                    latestNews
+                  )
+                }
+              >
+                Read Latest News
               </Button>
+
             </CardActions>
+
           </Card>
+
         </Box>
+
+
+        {/* ==================================================
+                    ALL NEWS CARDS
+                ================================================== */}
 
         <Box sx={{ mb: 6 }}>
-          <Typography sx={{ fontSize: { xs: 22, md: 28 }, fontWeight: 900, mb: 2 }}>
-            Feature stories
+
+          <Typography
+            sx={{
+              fontSize: {
+                xs: 22,
+                md: 28,
+              },
+              fontWeight:
+                900,
+              mb: 3,
+            }}
+          >
+            Latest & Featured Stories ({newsList?.length})
           </Typography>
-          <Box sx={{ display: "grid", gap: 3, gridTemplateColumns: { md: "repeat(3, minmax(0, 1fr))" } }}>
-            {articles.map((article) => (
-              <Card key={article.id} sx={{ borderRadius: 3, boxShadow: "0 24px 60px rgba(15, 23, 42, 0.08)", height: "100%", display: "flex", flexDirection: "column" }}>
-                <CardMedia component="img" height="200" image={article.image} alt={article.title} />
-                <CardContent sx={{ flexGrow: 1 }}>
-                  <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1 }}>
-                    <Chip label={article.category} color="warning" size="small" />
-                    <Typography variant="caption" sx={{ color: "#64748b" }}>
-                      {article.date}
-                    </Typography>
+
+
+          <Box
+            sx={{
+              display:
+                "grid",
+              gap: 3,
+              gridTemplateColumns:
+              {
+                xs: "1fr",
+                sm: "repeat(2, minmax(0, 1fr))",
+                md: "repeat(3, minmax(0, 1fr))",
+              },
+            }}
+          >
+
+            {newsList.map(
+              (article) => (
+
+                <Card
+                  key={
+                    article.id ||
+                    article._id
+                  }
+                  sx={{
+                    borderRadius:
+                      3,
+                    boxShadow:
+                      "0 24px 60px rgba(15, 23, 42, 0.08)",
+                    height:
+                      "100%",
+                    display:
+                      "flex",
+                    flexDirection:
+                      "column",
+                    overflow:
+                      "hidden",
+                  }}
+                >
+
+                  {/* CARD IMAGE */}
+
+                  <Box
+                    sx={{
+                      position:
+                        "relative",
+                    }}
+                  >
+
+                    <CardMedia
+                      component="img"
+                      height="200"
+                      image={
+                        article
+                          .images?.[0] ||
+                        ""
+                      }
+                      alt={
+                        article.title
+                      }
+                      sx={{
+                        objectFit:
+                          "cover",
+                      }}
+                    />
+
+
+                    {/* Image count */}
+
+                    {article
+                      .images
+                      ?.length >
+                      1 && (
+
+                        <Chip
+                          label={`+${article.images.length - 1} images`}
+                          size="small"
+                          sx={{
+                            position:
+                              "absolute",
+                            bottom: 10,
+                            right: 10,
+                            backgroundColor:
+                              "rgba(0,0,0,0.7)",
+                            color:
+                              "#fff",
+                          }}
+                        />
+
+                      )}
+
                   </Box>
-                  <Typography variant="h6" sx={{ fontWeight: 800, mb: 1.5 }}>
-                    {article.title}
-                  </Typography>
-                  <Typography sx={{ color: "#475569", mb: 2 }}>
-                    {truncate(article.summary, 100)}
-                  </Typography>
-                </CardContent>
-                <CardActions sx={{ justifyContent: "flex-end", px: 2, pb: 2 }}>
-                  <Button size="small" onClick={() => handleOpenArticle(article)}>
-                    Read More
-                  </Button>
-                </CardActions>
-              </Card>
-            ))}
+
+
+                  <CardContent
+                    sx={{
+                      flexGrow:
+                        1,
+                    }}
+                  >
+
+                    <Box
+                      sx={{
+                        display:
+                          "flex",
+                        justifyContent:
+                          "space-between",
+                        alignItems:
+                          "center",
+                        gap: 1,
+                        mb: 1.5,
+                      }}
+                    >
+
+                      <Chip
+                        label={
+                          article.category ||
+                          "News"
+                        }
+                        color="warning"
+                        size="small"
+                      />
+
+
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          color:
+                            "#64748b",
+                        }}
+                      >
+
+                        {formatDate(
+                          article.publishedAt ||
+                          article.createdAt
+                        )}
+
+                      </Typography>
+
+                    </Box>
+
+
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        fontWeight:
+                          800,
+                        mb: 1.5,
+                        lineHeight:
+                          1.3,
+                      }}
+                    >
+
+                      {
+                        article.title
+                      }
+
+                    </Typography>
+
+
+                    <Typography
+                      sx={{
+                        color:
+                          "#475569",
+                        mb: 2,
+                        lineHeight:
+                          1.6,
+                      }}
+                    >
+
+                      {truncate(
+                        article.shortDescription,
+                        110
+                      )}
+
+                    </Typography>
+
+                  </CardContent>
+
+
+                  <CardActions
+                    sx={{
+                      justifyContent:
+                        "flex-end",
+                      px: 2,
+                      pb: 2,
+                    }}
+                  >
+
+                    <Button
+                      size="small"
+                      onClick={() =>
+                        handleOpenArticle(
+                          article
+                        )
+                      }
+                    >
+                      Read More
+                    </Button>
+
+                  </CardActions>
+
+                </Card>
+
+              )
+            )}
+
           </Box>
+
         </Box>
 
-        <Card sx={{ borderRadius: 3, overflow: "hidden", boxShadow: "0 24px 60px rgba(15, 23, 42, 0.08)" }}>
-          <CardMedia
-            component="img"
-            height="320"
-            image="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=900&q=80"
-            alt="Tech news image"
-          />
-          <CardContent>
-            <Typography sx={{ color: "#0f172a", fontWeight: 800, mb: 2 }}>
-              Featured story
-            </Typography>
-            <Typography sx={{ color: "#475569", mb: 3 }}>
-              Deep dives and practical stories for engineers: architecture decisions, launch planning, and how dev teams ship quality software faster.
-            </Typography>
-            <Button variant="contained" size="large" onClick={() => handleOpenArticle(articles[0])}>
-              Read full story
-            </Button>
-          </CardContent>
-        </Card>
       </Box>
 
-      <Dialog open={Boolean(selectedArticle)} onClose={handleCloseArticle} fullWidth maxWidth="md">
+
+      {/* ==================================================
+                READ MORE DIALOG
+            ================================================== */}
+
+      <Dialog
+        open={
+          Boolean(
+            selectedArticle
+          )
+        }
+        onClose={
+          handleCloseArticle
+        }
+        fullWidth
+        maxWidth="md"
+      >
+
         {selectedArticle && (
+
           <>
-            <DialogTitle>{selectedArticle.title}</DialogTitle>
-            <DialogContent dividers>
-              <Typography sx={{ color: "#64748b", mb: 2 }}>
-                {selectedArticle.category} • {selectedArticle.date}
+
+            <DialogTitle
+              sx={{
+                fontWeight:
+                  800,
+                fontSize: {
+                  xs: 20,
+                  md: 26,
+                },
+              }}
+            >
+
+              {
+                selectedArticle.title
+              }
+
+            </DialogTitle>
+
+
+            <DialogContent
+              dividers
+            >
+
+              {/* ==================================================
+                                FULL IMAGE CAROUSEL
+                            ================================================== */}
+
+              {selectedArticle
+                .images
+                ?.length > 0 && (
+
+                  <Box
+                    sx={{
+                      position:
+                        "relative",
+                      width:
+                        "100%",
+                      mb: 3,
+                      borderRadius:
+                        2,
+                      overflow:
+                        "hidden",
+                    }}
+                  >
+
+                    {/* IMAGE */}
+
+                    <Box
+                      component="img"
+                      src={
+                        selectedArticle
+                          .images[
+                        selectedImage
+                        ]
+                      }
+                      alt={
+                        selectedArticle.title
+                      }
+                      sx={{
+                        width:
+                          "100%",
+                        height: {
+                          xs: 250,
+                          sm: 350,
+                          md: 430,
+                        },
+                        objectFit:
+                          "cover",
+                        display:
+                          "block",
+                      }}
+                    />
+
+
+                    {/* IMAGE COUNT */}
+
+                    {selectedArticle
+                      .images
+                      .length >
+                      1 && (
+
+                        <Chip
+                          label={`${selectedImage + 1} / ${selectedArticle.images.length}`}
+                          size="small"
+                          sx={{
+                            position:
+                              "absolute",
+                            top: 12,
+                            right: 12,
+                            backgroundColor:
+                              "rgba(0,0,0,0.7)",
+                            color:
+                              "#fff",
+                          }}
+                        />
+
+                      )}
+
+
+                    {/* PREVIOUS IMAGE */}
+
+                    {selectedArticle
+                      .images
+                      .length >
+                      1 && (
+
+                        <IconButton
+                          onClick={
+                            handlePreviousSelectedImage
+                          }
+                          sx={{
+                            position:
+                              "absolute",
+                            left: 12,
+                            top:
+                              "95%",
+                            transform:
+                              "translateY(-50%)",
+                            bgcolor: "rgb(255, 255, 255)",
+                            color: "#00083d",
+                            "&:hover":
+                            {
+                              bgcolor: "rgb(7, 4, 97)",
+                              color: "#ffffff",
+                            },
+                          }}
+                        >
+
+                          <KeyboardArrowLeftIcon />
+
+                        </IconButton>
+
+                      )}
+
+
+                    {/* NEXT IMAGE */}
+
+                    {selectedArticle
+                      .images
+                      .length >
+                      1 && (
+
+                        <IconButton
+                          onClick={
+                            handleNextSelectedImage
+                          }
+                          sx={{
+                            position:
+                              "absolute",
+                            right: 12,
+                            top:
+                              "95%",
+                            transform:
+                              "translateY(-50%)",
+                            bgcolor: "rgb(255, 255, 255)",
+                            color: "#00083d",
+                            "&:hover":
+                            {
+                              bgcolor: "rgb(7, 4, 97)",
+                              color: "#ffffff",
+                            },
+                          }}
+                        >
+
+                          <KeyboardArrowRightIcon />
+
+                        </IconButton>
+
+                      )}
+
+
+                    {/* DOTS */}
+
+                    {selectedArticle
+                      .images
+                      .length >
+                      1 && (
+
+                        <Box
+                          sx={{
+                            position:
+                              "absolute",
+                            bottom: 12,
+                            left:
+                              "50%",
+                            transform:
+                              "translateX(-50%)",
+                            display:
+                              "flex",
+                            gap: 1,
+                          }}
+                        >
+
+                          {selectedArticle.images.map(
+                            (
+                              _,
+                              index
+                            ) => (
+
+                              <Box
+                                key={
+                                  index
+                                }
+                                onClick={() =>
+                                  setSelectedImage(
+                                    index
+                                  )
+                                }
+                                sx={{
+                                  width:
+                                    index ===
+                                      selectedImage
+                                      ? 24
+                                      : 9,
+                                  height: 9,
+                                  borderRadius:
+                                    10,
+                                  bgcolor:
+                                    index ===
+                                      selectedImage
+                                      ? "#ea580c"
+                                      : "rgba(255,255,255,0.75)",
+                                  cursor:
+                                    "pointer",
+                                  transition:
+                                    "all 0.3s ease",
+                                }}
+                              />
+
+                            )
+                          )}
+
+                        </Box>
+
+                      )}
+
+                  </Box>
+
+                )}
+
+
+              {/* ==================================================
+                                CATEGORY + DATE
+                            ================================================== */}
+
+              <Typography
+                sx={{
+                  color:
+                    "#64748b",
+                  mb: 2,
+                }}
+              >
+
+                {
+                  selectedArticle.category
+                }
+
+                {" • "}
+
+                {formatDate(
+                  selectedArticle.publishedAt ||
+                  selectedArticle.createdAt
+                )}
+
               </Typography>
-              <Typography sx={{ mb: 3, color: "#475569", lineHeight: 1.8 }}>
-                {selectedArticle.content}
+
+
+              {/* ==================================================
+                                CONTENT
+                            ================================================== */}
+
+              <Typography
+                sx={{
+                  mb: 3,
+                  color:
+                    "#475569",
+                  lineHeight:
+                    1.8,
+                  whiteSpace:
+                    "pre-line",
+                }}
+              >
+
+                {
+                  selectedArticle.content
+                }
+
               </Typography>
-              <Divider sx={{ my: 3 }} />
-              <Typography sx={{ fontWeight: 700, mb: 2 }}>Comments</Typography>
-              <Box sx={{ display: "grid", gap: 2 }}>
+
+
+              <Divider
+                sx={{
+                  my: 3,
+                }}
+              />
+
+
+              {/* ==================================================
+                                COMMENTS
+                            ================================================== */}
+
+              <Typography
+                sx={{
+                  fontWeight:
+                    700,
+                  mb: 2,
+                }}
+              >
+                Comments
+              </Typography>
+
+
+              <Box
+                sx={{
+                  display:
+                    "grid",
+                  gap: 2,
+                }}
+              >
+
                 <TextField
                   label="Write a comment"
                   multiline
                   minRows={3}
-                  value={commentText}
-                  onChange={(e) => setCommentText(e.target.value)}
+                  value={
+                    commentText
+                  }
+                  onChange={(
+                    e
+                  ) =>
+                    setCommentText(
+                      e
+                        .target
+                        .value
+                    )
+                  }
                   fullWidth
                 />
-                <Box sx={{ display: "flex", justifyContent: "space-between", gap: 2, flexWrap: "wrap" }}>
-                  <Button variant="contained" onClick={handlePostComment} disabled={!commentText.trim()}>
+
+
+                <Box
+                  sx={{
+                    display:
+                      "flex",
+                    justifyContent:
+                      "space-between",
+                    gap: 2,
+                    flexWrap:
+                      "wrap",
+                  }}
+                >
+
+                  <Button
+                    variant="contained"
+                    onClick={
+                      handlePostComment
+                    }
+                    disabled={
+                      !commentText.trim()
+                    }
+                  >
                     Post comment
                   </Button>
-                  <Button startIcon={<ShareIcon />} onClick={handleShare}>
+
+
+                  <Button
+                    startIcon={
+                      <ShareIcon />
+                    }
+                    onClick={
+                      handleShare
+                    }
+                  >
                     Share story
                   </Button>
+
                 </Box>
+
+
                 {shareMessage && (
-                  <Typography variant="body2" sx={{ color: "#16a34a" }}>
-                    {shareMessage}
+
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color:
+                        "#16a34a",
+                    }}
+                  >
+                    {
+                      shareMessage
+                    }
                   </Typography>
+
                 )}
-                {comments.length > 0 ? (
-                  <Box sx={{ display: "grid", gap: 2 }}>
-                    {comments.map((item, index) => (
-                      <Box key={index} sx={{ p: 2, borderRadius: 2, bgcolor: "#f8fafc", border: "1px solid #e2e8f0" }}>
-                        <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
-                          <CommentIcon sx={{ fontSize: 18, color: "#0f172a" }} />
-                          <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
-                            You
+
+
+                {/* COMMENTS LIST */}
+
+                {comments.length >
+                  0 ? (
+
+                  <Box
+                    sx={{
+                      display:
+                        "grid",
+                      gap: 2,
+                    }}
+                  >
+
+                    {comments.map(
+                      (
+                        item,
+                        index
+                      ) => (
+
+                        <Box
+                          key={
+                            index
+                          }
+                          sx={{
+                            p: 2,
+                            borderRadius:
+                              2,
+                            bgcolor:
+                              "#f8fafc",
+                            border:
+                              "1px solid #e2e8f0",
+                          }}
+                        >
+
+                          <Box
+                            sx={{
+                              display:
+                                "flex",
+                              alignItems:
+                                "center",
+                              gap: 1,
+                              mb: 1,
+                            }}
+                          >
+
+                            <CommentIcon
+                              sx={{
+                                fontSize:
+                                  18,
+                                color:
+                                  "#0f172a",
+                              }}
+                            />
+
+
+                            <Typography
+                              variant="subtitle2"
+                              sx={{
+                                fontWeight:
+                                  700,
+                              }}
+                            >
+                              You
+                            </Typography>
+
+                          </Box>
+
+
+                          <Typography
+                            sx={{
+                              color:
+                                "#475569",
+                            }}
+                          >
+                            {
+                              item
+                            }
                           </Typography>
+
                         </Box>
-                        <Typography sx={{ color: "#475569" }}>{item}</Typography>
-                      </Box>
-                    ))}
+
+                      )
+                    )}
+
                   </Box>
+
                 ) : (
-                  <Typography sx={{ color: "#64748b" }}>
-                    No comments yet. Be the first to share your take.
+
+                  <Typography
+                    sx={{
+                      color:
+                        "#64748b",
+                    }}
+                  >
+                    No comments yet.
+                    Be the first
+                    to share your
+                    take.
                   </Typography>
+
                 )}
+
               </Box>
+
             </DialogContent>
+
+
             <DialogActions>
-              <Button onClick={handleCloseArticle}>Close</Button>
+
+              <Button
+                onClick={
+                  handleCloseArticle
+                }
+              >
+                Close
+              </Button>
+
             </DialogActions>
+
           </>
+
         )}
+
       </Dialog>
+
     </Box>
+
   );
 };
+
 
 export default News;

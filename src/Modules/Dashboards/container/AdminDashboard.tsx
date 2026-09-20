@@ -35,7 +35,7 @@ const DashboardWrapper = ({
         <Box
             sx={{
                 minHeight: "100vh",
-                width:"80%",
+                width:"95%",
                 margin:"0 auto",
                 px: {
                     xs: 1.5,
@@ -48,14 +48,10 @@ const DashboardWrapper = ({
                     md: 3,
                 },
 
-                borderRadius: "2rem",
-
-
+                borderRadius: "1rem",
                 position: "relative",
-
                 overflow: "hidden",
-                // border: "1px solid rgba(0, 95, 132, 0.16)",
-
+                boxShadow: "0px 5px 10px #dee0e0",
                 "&::before": {
                     content: '""',
 
@@ -66,8 +62,8 @@ const DashboardWrapper = ({
 
                     borderRadius: "50%",
 
-                    background: "linear-gradient(135deg,#f4f9fb 0%,#ffffff 45%,#f2f8fa 100%)",
-                    border: "3px solid rgba(7, 92, 126, 1)",
+                    background: "white",
+                    border: "3px solid rgb(31, 7, 126)",
 
                     top: -220,
                     right: -180,
@@ -100,7 +96,7 @@ const DashboardWrapper = ({
                         sm: "100%",
                         md: "100%",
                     },
-
+                    // backgroundColor:"white",
                     mx: "auto",
 
                     position: "relative",
@@ -254,13 +250,8 @@ const AdminDashboard = () => {
                         md: 4,
                     },
                     borderRadius: 5,
-
                     color: "#fff",
-
                     background: "linear-gradient(90deg, rgba(0, 0, 82, 1) 0%, rgba(25, 25, 158, 1) 60%, rgba(0, 0, 82, 1) 100%)",
-
-                    border: "3px solid rgba(10, 130, 177, 0.34)",
-
                     boxShadow: "0 25px 55px rgba(23,37,84,0.18)",
                 }}
             >
@@ -376,7 +367,7 @@ const AdminDashboard = () => {
                     mt: 2.5,
                     p: 2,
                     borderRadius: ".5rem",
-                    border: "3px solid rgba(18, 10, 177, 0.34)"
+                    border: "3px solid rgba(237, 236, 255, 0.34)"
                 }}
             >
 
@@ -537,7 +528,7 @@ const AdminDashboard = () => {
                     mt: 5,
                     p: 2,
                     borderRadius: ".5rem",
-                    border: "3px solid rgba(38, 10, 177, 0.34)"
+                    border: "3px solid rgba(230, 225, 252, 0.34)"
                 }}
             >
 
@@ -718,7 +709,7 @@ const AdminDashboard = () => {
                     mt: 5,
                     p: 2,
                     borderRadius: ".5rem",
-                    border: "3px solid rgba(43, 10, 177, 0.34)"
+                    border: "3px solid rgba(228, 222, 250, 0.34)"
                 }}
             >
 

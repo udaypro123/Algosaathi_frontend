@@ -10,6 +10,9 @@ import {
     CardMedia,
     Chip,
     CircularProgress,
+    Dialog,
+    DialogActions,
+    DialogTitle,
     Divider,
     IconButton,
     Paper,
@@ -21,23 +24,20 @@ import {
 import {
     AddPhotoAlternate,
     Delete,
+    Edit,
     Image,
     Newspaper,
-    Refresh,
     VideoLibrary,
+    Cancel,
+    Add,
 } from "@mui/icons-material";
-import { AddNewsdata, getAllNews } from "./api.ts/api";
+import { AddNewsdata, deleteNews, getAllNews, updateNews } from "./api.ts/api";
+import "../../css/pagesUnique.css"
 
 
 // ======================================================
 // TYPES
 // ======================================================
-
-interface NewsImage {
-    url: string;
-    alt?: string;
-    caption?: string;
-}
 
 interface News {
     _id: string;
@@ -47,7 +47,7 @@ interface News {
     shortDescription: string;
     content: string;
 
-    images: NewsImage[];
+    images: string[];
 
     video?: {
         url?: string;
@@ -176,6 +176,9 @@ const AddNews = () => {
     const [success, setSuccess] = useState("");
 
     const [error, setError] = useState("");
+    const [editingNewsId, setEditingNewsId] = useState<string | null>(null);
+    const [openNewsDialog, setOpenNewsDialog] = useState(false);
+    console.log("newsList................ ,", newsList)
 
 
     // ==================================================
@@ -314,6 +317,82 @@ const AddNews = () => {
 
 
     // ==================================================
+    // EDIT NEWS
+    // ==================================================
+
+    const handleEdit = (newsItem: News) => {
+        setEditingNewsId(newsItem._id);
+
+        setForm({
+            title: newsItem.title || "",
+            slug: newsItem.slug || "",
+            shortDescription: newsItem.shortDescription || "",
+            content: newsItem.content || "",
+            category: newsItem.category || "",
+            subCategory: newsItem.subCategory || "",
+            tags: Array.isArray(newsItem.tags) ? newsItem.tags.join(", ") : "",
+            authorName: newsItem.author?.name || "",
+            sourceName: newsItem.source?.name || "",
+            sourceUrl: newsItem.source?.url || "",
+            publishedAt: newsItem.publishedAt ? newsItem.publishedAt.slice(0, 16) : "",
+            videoUrl: newsItem.video?.url || "",
+            videoThumbnail: newsItem.video?.thumbnail || "",
+            metaTitle: newsItem.seo?.metaTitle || "",
+            metaDescription: newsItem.seo?.metaDescription || "",
+            seoKeywords: Array.isArray(newsItem.seo?.keywords) ? newsItem.seo.keywords.join(", ") : "",
+            canonicalUrl: newsItem.seo?.canonicalUrl || "",
+            isPublished: newsItem.isPublished ?? true,
+        });
+
+        if (Array.isArray(newsItem.images) && newsItem.images.length > 0) {
+            setImagePreviews(newsItem.images);
+        } else {
+            setImagePreviews([]);
+        }
+
+        setImages([]);
+        setError("");
+        setSuccess("");
+        setOpenNewsDialog(true);
+    };
+
+    const handleDelete = async (newsItem: News) => {
+        try {
+            await deleteNews(newsItem?._id);
+            fetchNews()
+        } catch (error) {
+            console.log("error", error)
+        }
+    };
+
+    const handleCancelEdit = () => {
+        setEditingNewsId(null);
+        setForm(initialForm);
+        setImages([]);
+        imagePreviews.forEach((url) => URL.revokeObjectURL(url));
+        setImagePreviews([]);
+        setError("");
+        setSuccess("");
+        setOpenNewsDialog(false);
+    };
+
+    const handleOpenAddNews = () => {
+        setEditingNewsId(null);
+        setForm(initialForm);
+        setImages([]);
+        imagePreviews.forEach((url) => URL.revokeObjectURL(url));
+        setImagePreviews([]);
+        setError("");
+        setSuccess("");
+        setOpenNewsDialog(true);
+    };
+
+    const handleCloseNewsDialog = () => {
+        setOpenNewsDialog(false);
+    };
+
+
+    // ==================================================
     // FETCH ALL NEWS
     // ==================================================
 
@@ -329,9 +408,9 @@ const AddNews = () => {
             const response = await getAllNews()
 
             // const data = await response.json();
+            console.log("response ..................", response)
 
-
-            if (!response.ok) {
+            if (!response.success) {
 
                 throw new Error(
                     response?.message ||
@@ -340,18 +419,10 @@ const AddNews = () => {
             }
 
 
-            const news =
-                response?.response ??
-                response?.news ??
-                response?.results ??
-                response;
+            const news = response?.data || [];
 
-
-            setNewsList(
-                Array.isArray(news)
-                    ? news
-                    : []
-            );
+            console.log("newsnewsnewsnewsnews", news)
+            setNewsList(Array.isArray(news) ? news : []);
 
         } catch (err) {
 
@@ -624,7 +695,6 @@ const AddNews = () => {
                 })
             );
 
-
             // ------------------------------------------
             // MULTIPLE IMAGES
             // ------------------------------------------
@@ -640,22 +710,22 @@ const AddNews = () => {
 
 
             // ------------------------------------------
+            // EDIT MODE - APPEND ID
+            // ------------------------------------------
+
+            if (editingNewsId) {
+                formData.append("_id", editingNewsId);
+            }
+
+
+            // ------------------------------------------
             // API REQUEST
             // ------------------------------------------
 
-            const response = await AddNewsdata(formData)
-
-
-            const data =
-                await response.json();
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    data?.message ||
-                    "Failed to add news"
-                );
+            if (editingNewsId) {
+                await updateNews(formData);
+            } else {
+                await AddNewsdata(formData);
             }
 
 
@@ -663,20 +733,22 @@ const AddNews = () => {
             // SUCCESS
             // ------------------------------------------
 
-            setSuccess("News added successfully.");
+            if (editingNewsId) {
+                setSuccess("News updated successfully.");
+                handleCancelEdit();
+            } else {
+                setSuccess("News added successfully.");
 
+                setForm(initialForm);
 
-            setForm(initialForm);
+                imagePreviews.forEach((url) => {
+                    URL.revokeObjectURL(url);
+                });
 
+                setImages([]);
 
-            imagePreviews.forEach((url) => {
-                URL.revokeObjectURL(url);
-            });
-
-
-            setImages([]);
-
-            setImagePreviews([]);
+                setImagePreviews([]);
+            }
 
 
             // ------------------------------------------
@@ -708,38 +780,9 @@ const AddNews = () => {
 
     return (
 
-        <Box
-            sx={{
-                width: "100%",
-                minHeight: "100vh",
-                p: {
-                    xs: 2,
-                    sm: 3,
-                    md: 4,
-                },
-                backgroundColor: "#f3f9f8",
-                boxSizing: "border-box",
-                borderRadius: "1rem"
-            }}
-        >
+        <Box className="containerClass">
 
-            <Box
-                sx={{
-                    width: "90%",
-                    minHeight: "100vh",
-                    p: {
-                        xs: 2,
-                        sm: 3,
-                        md: 4,
-                    },
-                    boxSizing: "border-box",
-                    backgroundColor: "#fcfcfc",
-                    boxShadow: "0px 5px 10px #dee0e0",
-                    borderRadius: "1rem",
-                    margin: "0 auto"
-                }}
-            >
-
+            <Box className="SubContainerClass" >
 
                 {/* ==========================================
                 HEADER
@@ -801,16 +844,21 @@ const AddNews = () => {
 
                     <Button
                         variant="outlined"
-                        startIcon={<Refresh />}
-                        onClick={fetchNews}
-                        disabled={fetchingNews}
+                        startIcon={<Add />}
+                        onClick={handleOpenAddNews}
                         sx={{
                             minWidth: 120,
                             borderRadius: 2,
                             textTransform: "none",
+                            color: "#fff",
+                            borderColor: "rgba(255,255,255,0.7)",
+                            "&:hover": {
+                                borderColor: "#fff",
+                                backgroundColor: "rgba(255,255,255,0.1)",
+                            },
                         }}
                     >
-                        Refresh
+                        Add News
                     </Button>
 
                 </Box>
@@ -868,52 +916,71 @@ const AddNews = () => {
                 ADD NEWS
             ========================================== */}
 
-                <Paper
-                    elevation={0}
-                    sx={{
-                        width: "90%",
-                        p: {
-                            xs: 2,
-                            sm: 3,
-                            md: 4,
+                <Dialog
+                    open={openNewsDialog}
+                    onClose={handleCloseNewsDialog}
+                    maxWidth="lg"
+                    fullWidth
+                    slotProps={{
+                        paper: {
+                            sx: {
+                                borderRadius: 3,
+                                maxHeight: "90vh",
+                            },
                         },
-                        margin: "0 auto",
-                        borderRadius: 3,
-                        borderColor: "divider",
-                        backgroundColor:
-                            "background.paper",
-                        boxSizing: "border-box",
                     }}
                 >
-
-                    {/* Form Header */}
-
-                    <Box
+                    <DialogTitle
                         sx={{
+                            background: "linear-gradient(90deg, rgba(0, 0, 82, 1) 0%, rgba(25, 25, 158, 1) 60%, rgba(0, 0, 82, 1) 100%)",
+                            color: "#fff",
+                            fontWeight: 700,
                             display: "flex",
                             alignItems: "center",
                             gap: 1,
-                            mb: 3,
+                        }}
+                    >
+                        <Newspaper sx={{ color: "#fff" }} />
+                        {editingNewsId ? "Edit News" : "Add News"}
+                    </DialogTitle>
+
+                    <Paper
+                        elevation={0}
+                        sx={{
+                            width: "100%",
+                            p: {
+                                xs: 2,
+                                sm: 3,
+                                md: 4,
+                            },
+                            borderRadius: 3,
+                            borderColor: "divider",
+                            backgroundColor:
+                                "background.paper",
+                            boxSizing: "border-box",
+                            maxHeight: "80vh",
+                            overflow: "auto",
                         }}
                     >
 
-                        <Newspaper
-                            sx={{
-                                color: "primary.main",
-                            }}
-                        />
+                    {/* Form Header */}
 
-                        <Typography
-                            variant="h6"
-                            sx={{
-                                fontWeight: 700,
-                            }}
-                        >
-                            Add News
-                        </Typography>
-
-                    </Box>
-
+                    {editingNewsId && (
+                        <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
+                            <Button
+                                variant="outlined"
+                                color="secondary"
+                                startIcon={<Cancel />}
+                                onClick={handleCancelEdit}
+                                sx={{
+                                    borderRadius: 2,
+                                    textTransform: "none",
+                                }}
+                            >
+                                Cancel Edit
+                            </Button>
+                        </Box>
+                    )}
 
                     <form
                         onSubmit={handleSubmit}
@@ -1737,9 +1804,7 @@ const AddNews = () => {
                                     />
 
                                 ) : (
-
-                                    "Publish News"
-
+                                    editingNewsId ? "Update News" : "Publish News"
                                 )}
 
                             </Button>
@@ -1749,6 +1814,13 @@ const AddNews = () => {
                     </form>
 
                 </Paper>
+
+                <DialogActions sx={{ px: 3, pb: 2, justifyContent: "flex-end" }}>
+                    <Button onClick={handleCloseNewsDialog} variant="outlined" disabled={loading}>
+                        Close
+                    </Button>
+                </DialogActions>
+            </Dialog>
 
 
                 {/* ==========================================
@@ -1915,7 +1987,7 @@ const AddNews = () => {
                             }}
                         >
 
-                            {newsList.map(
+                            {newsList?.map(
                                 (news) => (
 
                                     <Card
@@ -1947,75 +2019,40 @@ const AddNews = () => {
 
                                         {/* Card Image */}
 
-                                        {news.images
-                                            ?.length >
-                                            0 ? (
-
+                                        {news.images?.length > 0 ? (
                                             <Box
                                                 sx={{
-                                                    position:
-                                                        "relative",
-                                                    width:
-                                                        "100%",
+                                                    position: "relative",
+                                                    width: "100%",
                                                 }}
                                             >
-
                                                 <CardMedia
                                                     component="img"
-                                                    image={
-                                                        news
-                                                            .images[0]
-                                                            ?.url
-                                                    }
-                                                    alt={
-                                                        news
-                                                            .images[0]
-                                                            ?.alt ||
-                                                        news.title
-                                                    }
+                                                    image={news.images[0]}
+                                                    alt={news.title}
                                                     sx={{
-                                                        width:
-                                                            "100%",
-                                                        height:
-                                                            220,
-                                                        objectFit:
-                                                            "cover",
-                                                        display:
-                                                            "block",
+                                                        width: "100%",
+                                                        height: 220,
+                                                        objectFit: "cover",
+                                                        display: "block",
                                                     }}
                                                 />
 
-
                                                 {/* Multiple image count */}
-
-                                                {news
-                                                    .images
-                                                    .length >
-                                                    1 && (
-
-                                                        <Chip
-                                                            label={`+${news
-                                                                .images
-                                                                .length -
-                                                                1
-                                                                } images`}
-                                                            size="small"
-                                                            sx={{
-                                                                position:
-                                                                    "absolute",
-                                                                bottom: 10,
-                                                                right: 10,
-                                                                backgroundColor:
-                                                                    "rgba(0,0,0,0.75)",
-                                                                color:
-                                                                    "#fff",
-                                                                fontWeight:
-                                                                    500,
-                                                            }}
-                                                        />
-
-                                                    )}
-
+                                                {news.images.length > 1 && (
+                                                    <Chip
+                                                        label={`+${news.images.length - 1} images`}
+                                                        size="small"
+                                                        sx={{
+                                                            position: "absolute",
+                                                            bottom: 10,
+                                                            right: 10,
+                                                            backgroundColor: "rgba(0,0,0,0.75)",
+                                                            color: "#fff",
+                                                            fontWeight: 500,
+                                                        }}
+                                                    />
+                                                )}
                                             </Box>
 
                                         ) : (
@@ -2077,11 +2114,11 @@ const AddNews = () => {
                                                 }}
                                             >
 
-                                                {news.category && (
+                                                {news?.category && (
 
                                                     <Chip
                                                         label={
-                                                            news.category
+                                                            news?.category
                                                         }
                                                         size="small"
                                                         color="primary"
@@ -2094,7 +2131,7 @@ const AddNews = () => {
                                                 )}
 
 
-                                                {news.video
+                                                {news?.video
                                                     ?.url && (
 
                                                         <Chip
@@ -2263,21 +2300,68 @@ const AddNews = () => {
                                                     </Typography>
 
 
-                                                    <Typography
-                                                        variant="caption"
+                                                    <Box
                                                         sx={{
-                                                            color:
-                                                                "text.secondary",
-                                                            whiteSpace:
-                                                                "nowrap",
+                                                            display:
+                                                                "flex",
+                                                            gap: 1,
+                                                            alignItems:
+                                                                "center",
                                                         }}
                                                     >
-                                                        {news.publishedAt
-                                                            ? new Date(
-                                                                news.publishedAt
-                                                            ).toLocaleDateString()
-                                                            : ""}
-                                                    </Typography>
+
+                                                        <Typography
+                                                            variant="caption"
+                                                            sx={{
+                                                                color:
+                                                                    "text.secondary",
+                                                                whiteSpace:
+                                                                    "nowrap",
+                                                            }}
+                                                        >
+                                                            {news.publishedAt
+                                                                ? new Date(
+                                                                    news.publishedAt
+                                                                ).toLocaleDateString()
+                                                                : ""}
+                                                        </Typography>
+
+                                                        <IconButton
+                                                            size="small"
+                                                            onClick={() => handleEdit(news)}
+                                                            sx={{
+                                                                padding: 0.5,
+                                                                border: "1px solid #2d11e1",
+                                                                ":hover": {
+                                                                    bgcolor: "#ededfe",
+
+                                                                }
+                                                            }}
+                                                        >
+                                                            <Edit
+                                                                fontSize="small"
+                                                                color="primary"
+                                                            />
+                                                        </IconButton>
+                                                        <IconButton
+                                                            size="small"
+                                                            onClick={() => handleDelete(news)}
+                                                            sx={{
+                                                                padding: 0.5,
+                                                                border: "1px solid #2d11e1",
+                                                                ":hover": {
+                                                                    bgcolor: "#ededfe",
+
+                                                                }
+                                                            }}
+                                                        >
+                                                            <Delete
+                                                                fontSize="small"
+                                                                color="primary"
+                                                            />
+                                                        </IconButton>
+
+                                                    </Box>
 
                                                 </Box>
 

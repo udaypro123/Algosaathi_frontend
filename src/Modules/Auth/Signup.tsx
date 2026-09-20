@@ -47,7 +47,7 @@ const Signup = () => {
 
     const [form, setForm] = useState<SignupForm>({
         firstName: "",
-        Role: "",
+        Role: "student",
         lastName: "",
         email: "",
         password: "",
@@ -201,7 +201,6 @@ const Signup = () => {
 
         if (
             !form.firstName ||
-            !form.lastName ||
             !form.Role ||
             !form.email ||
             !form.password ||
@@ -825,7 +824,6 @@ const Signup = () => {
                                             handleChange
                                         }
                                         fullWidth
-                                        required
                                         sx={
                                             inputStyles
                                         }
@@ -979,9 +977,9 @@ const Signup = () => {
                                             },
                                         }}
                                     >
-                                        <MenuItem value="users">
+                                        {/* <MenuItem value="users">
                                             User
-                                        </MenuItem>
+                                        </MenuItem> */}
 
                                         <MenuItem value="student">
                                             Student

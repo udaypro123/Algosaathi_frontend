@@ -476,7 +476,7 @@ const CreateComplaint: React.FC = () => {
         <Box
             sx={{
                 minHeight: "100vh",
-                bgcolor: "#f6f8fb",
+                bgcolor: "var(--global-bg)",
                 p: {
                     xs: 2,
                     sm: 3,

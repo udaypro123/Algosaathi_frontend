@@ -56,7 +56,7 @@ const Feature = () => {
   return (
     <Box
       sx={{
-        width: { xs: "95%", md: "80%" },
+        width: { xs: "95%", md: "95%" },
         mx: "auto",
         py: 4,
       }}

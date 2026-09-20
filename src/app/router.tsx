@@ -13,6 +13,7 @@ const Dashboard = lazyWithRetry(() => import("../Modules/Dashboards/container/Da
 // const Signup = lazy(() => import("../Modules/Auth/Signup"));
 
 const AdminTemplateManager = lazyWithRetry(() => import("../Modules/Templates/container/AdminTemplateManager"));
+const AdminCourseManager = lazyWithRetry(() => import("../Modules/AdminPannel/container/AdminCourseManager"));
 const OurClient = lazyWithRetry(() => import("../Modules/AdminPannel/container/OurClient"));
 const AddNews = lazyWithRetry(() => import("../Modules/News/AddNews"));
 const Feature = lazyWithRetry(() => import("../Modules/Feature/Feature"));
@@ -316,6 +317,20 @@ export const router = createBrowserRouter([
                             </>
                         )
                     },
+                    {
+                        path: "admin/courses",
+                        element: (
+                            <>
+                                <SEO
+                                    title="Admin Courses"
+                                    description="Manage and publish all Algosaathi courses from the admin dashboard."
+                                    canonical="https://algosaathi.com/admin/courses"
+                                />
+                                <AdminCourseManager />
+                            </>
+                        )
+                    },
+                    
                 ]
             }
         ]

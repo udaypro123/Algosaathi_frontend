@@ -21,6 +21,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { type SelectChangeEvent } from '@mui/material/Select';
+import "../../../css/pagesUnique.css"
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -49,7 +50,6 @@ import {
 } from "react";
 
 import { getUser, getUserRole } from "../../../utils/auth";
-import BubleComponent from "../../../common/BubleComponent";
 import { addYoutubePost, deleteYoutubePost, getAllYoutubePost, updateYoutubePost } from "../api/api";
 
 
@@ -692,291 +692,183 @@ const YoutubePost = () => {
 
     return (
 
-        <Box
-            sx={{
-                p: 3,
-                position: "relative",
-                overflow: "hidden",
-            }}
-        >
+        <Box className="containerClass">
+            <Box className="SubContainerClass" >
 
-            <BubleComponent />
-
-
-            {/* =====================================================
+                {/* =====================================================
                 HERO / HEADER
             ====================================================== */}
 
-            <Paper
-                elevation={4}
-                sx={{
-                    p: 5,
-                    maxWidth: "80%",
-                    minHeight: "fit-content",
-                    display: "flex",
-                    margin: "0 auto",
-                    background: "linear-gradient(90deg, rgb(7, 7, 131) 0%, rgba(25, 25, 158, 1) 60%, rgb(14, 14, 153) 100%)",
-                    color: "#fff",
-                }}
-            >
-
-                <Stack
-                    direction={{
-                        xs: "column",
-                        md: "row",
-                    }}
-                    spacing={4}
-                    sx={{
-                        alignItems: "center",
-                        width: "100%",
-                    }}
-                >
-
-
-                    {/* =================================================
-                        HERO CONTENT
-                    ================================================== */}
-
-                    <Box
-                        sx={{
-                            flex: 1,
-                        }}
-                    >
-
-                        <Typography
-                            variant="h4"
-                            sx={{
-                                fontWeight:
-                                    "bold",
-                            }}
-                        >
-                            Hi, I'm Uday 👋
-                        </Typography>
-
-
-                        <Typography
-                            sx={{
-                                mt: 2,
-                                maxWidth: "90%",
-                            }}
-                        >
-                            If you’re passionate about becoming a software engineer, you’re in the right place. Here, you’ll learn interview-focused DSA, programming, and development concepts explained in a simple and practical way.
-
-                            Stay focused, stay consistent, and keep learning. Your goal of becoming a better software engineer is closer than you think.
-
-
-
-                            Currently building{" "}
-
-                            <b>
-                                AlgoSaathi
-                            </b>
-
-                            , where I aim to
-                            provide quality
-                            learning resources,
-                            products and tools
-                            for developers.
-                        </Typography>
-
-                    </Box>
-
-                </Stack>
-
-            </Paper>
-
-
-            {/* =========================================================
-                YOUTUBE POSTS SECTION
-            ========================================================== */}
-
-            <Box
-                sx={{
-                    maxWidth: "80%",
-                    margin: "25px auto 0",
-                    position: "relative",
-                    zIndex: 1,
-                }}
-            >
-
                 <Paper
-                    elevation={3}
+                    elevation={4}
                     sx={{
-                        p: {
-                            xs: 2,
-                            md: 4,
-                        },
-                        borderRadius: 3,
+                        p: 5,
+                        maxWidth: "100%",
+                        minHeight: "fit-content",
+                        display: "flex",
+                        borderRadius: 4,
+                        margin: "0 auto",
+                        background: "linear-gradient(90deg, rgb(7, 7, 131) 0%, rgba(25, 25, 158, 1) 60%, rgb(14, 14, 153) 100%)",
+                        color: "#fff",
                     }}
                 >
-
-                    {/* =================================================
-                        SECTION HEADER
-                    ================================================== */}
 
                     <Stack
                         direction={{
                             xs: "column",
-                            sm: "row",
+                            md: "row",
                         }}
+                        spacing={4}
                         sx={{
-                            justifyContent:
-                                "space-between",
-
-                            alignItems: {
-                                xs: "flex-start",
-                                sm: "center",
-                            },
+                            alignItems: "center",
+                            width: "100%",
                         }}
-                        spacing={2}
                     >
 
-                        <Box>
 
-                            <Stack
-                                direction="row"
-                                spacing={1}
-                                sx={{
-                                    alignItems:
-                                        "center",
-                                }}
-                            >
-
-                                <YouTubeIcon
-                                    sx={{
-                                        color: "#ff0000",
-                                        fontSize: 34,
-                                    }}
-                                />
-
-                                <Typography
-                                    variant="h5"
-                                    sx={{
-                                        fontWeight:
-                                            "bold",
-                                    }}
-                                >
-                                    YouTube Posts
-                                </Typography>
-
-                            </Stack>
-
-
-                            <Typography
-                                color="text.secondary"
-                                sx={{
-                                    mt: 0.5,
-                                }}
-                            >
-                                Latest videos, tutorials
-                                you guys will learn here.
-                            </Typography>
-
-                        </Box>
-
-                        {
-                            userRole === "admin" && <Button
-                                variant="contained"
-                                startIcon={
-                                    <AddIcon />
-                                }
-                                onClick={
-                                    handleAddPost
-                                }
-                                sx={{
-                                    background: "linear-gradient(90deg, rgba(0, 0, 82, 1) 0%, rgba(25, 25, 158, 1) 60%, rgba(0, 0, 82, 1) 100%)",
-                                    borderRadius: 2,
-                                    px: 2.5,
-                                }}
-                            >
-                                Add YouTube Post
-                            </Button>
-
-                        }
-
-                    </Stack>
-
-
-                    <Divider
-                        sx={{
-                            my: 3,
-                        }}
-                    />
-
-
-                    {/* =================================================
-                        LOADING
+                        {/* =================================================
+                        HERO CONTENT
                     ================================================== */}
-
-                    {loadingPosts && (
 
                         <Box
                             sx={{
-                                py: 6,
-                                textAlign: "center",
+                                flex: 1,
                             }}
                         >
 
                             <Typography
-                                color="text.secondary"
+                                variant="h4"
+                                sx={{
+                                    fontWeight:
+                                        "bold",
+                                }}
                             >
-                                Loading YouTube posts...
+                                Hi, I'm Uday 👋
+                            </Typography>
+
+
+                            <Typography
+                                sx={{
+                                    mt: 2,
+                                    maxWidth: "90%",
+                                }}
+                            >
+                                If you’re passionate about becoming a software engineer, you’re in the right place. Here, you’ll learn interview-focused DSA, programming, and development concepts explained in a simple and practical way.
+
+                                Stay focused, stay consistent, and keep learning. Your goal of becoming a better software engineer is closer than you think.
+
+
+
+                                Currently building{" "}
+
+                                <b>
+                                    AlgoSaathi
+                                </b>
+
+                                , where I aim to
+                                provide quality
+                                learning resources,
+                                products and tools
+                                for developers.
                             </Typography>
 
                         </Box>
 
-                    )}
+                    </Stack>
+
+                </Paper>
 
 
-                    {/* =================================================
-                        EMPTY STATE
+                {/* =========================================================
+                YOUTUBE POSTS SECTION
+            ========================================================== */}
+
+                <Box
+                    sx={{
+                        maxWidth: "95%",
+                        margin: "25px auto 0",
+                        position: "relative",
+                        zIndex: 1,
+                    }}
+                >
+
+                    <Paper
+                        elevation={3}
+                        sx={{
+                            p: {
+                                xs: 2,
+                                md: 4,
+                            },
+                            borderRadius: 3,
+                        }}
+                    >
+
+                        {/* =================================================
+                        SECTION HEADER
                     ================================================== */}
 
-                    {!loadingPosts &&
-                        userRole === "admin" && filteredPosts.length === 0 && (
+                        <Stack
+                            direction={{
+                                xs: "column",
+                                sm: "row",
+                            }}
+                            sx={{
+                                justifyContent:
+                                    "space-between",
 
-                            <Box
-                                sx={{
-                                    py: 7,
-                                    textAlign: "center",
-                                    borderRadius: 3,
-                                    border:
-                                        "2px dashed rgba(0,0,0,0.12)",
-                                }}
-                            >
+                                alignItems: {
+                                    xs: "flex-start",
+                                    sm: "center",
+                                },
+                            }}
+                            spacing={2}
+                        >
 
-                                <YouTubeIcon
+                            <Box>
+
+                                <Stack
+                                    direction="row"
+                                    spacing={1}
                                     sx={{
-                                        fontSize: 60,
-                                        color:
-                                            "text.secondary",
-                                        mb: 1,
+                                        alignItems:
+                                            "center",
                                     }}
-                                />
+                                >
+
+                                    <YouTubeIcon
+                                        sx={{
+                                            color: "#ff0000",
+                                            fontSize: 34,
+                                        }}
+                                    />
+
+                                    <Typography
+                                        variant="h5"
+                                        sx={{
+                                            fontWeight:
+                                                "bold",
+                                        }}
+                                    >
+                                        YouTube Posts
+                                    </Typography>
+
+                                </Stack>
 
 
                                 <Typography
-                                    variant="h6"
-                                    color="text.secondary"
-                                >
-                                    No YouTube posts yet
-                                </Typography>
-
-
-                                <Typography
-                                    variant="body2"
                                     color="text.secondary"
                                     sx={{
-                                        mt: 1,
+                                        mt: 0.5,
                                     }}
                                 >
-                                    Add your first
-                                    YouTube video
-                                    to get started.
+                                    Latest videos, tutorials
+                                    you guys will learn here.
                                 </Typography>
 
+                            </Box>
 
-                                <Button
+                            {
+                                userRole === "admin" && <Button
                                     variant="contained"
                                     startIcon={
                                         <AddIcon />
@@ -985,618 +877,719 @@ const YoutubePost = () => {
                                         handleAddPost
                                     }
                                     sx={{
-                                        mt: 3,
-                                        backgroundColor:
-                                            "#ff0000",
-
-                                        "&:hover": {
-                                            backgroundColor:
-                                                "#cc0000",
-                                        },
+                                        background: "linear-gradient(90deg, rgba(0, 0, 82, 1) 0%, rgba(25, 25, 158, 1) 60%, rgba(0, 0, 82, 1) 100%)",
+                                        borderRadius: 2,
+                                        px: 2.5,
                                     }}
                                 >
-                                    Add First Video
+                                    Add YouTube Post
                                 </Button>
+
+                            }
+
+                        </Stack>
+
+
+                        <Divider
+                            sx={{
+                                my: 3,
+                            }}
+                        />
+
+
+                        {/* =================================================
+                        LOADING
+                    ================================================== */}
+
+                        {loadingPosts && (
+
+                            <Box
+                                sx={{
+                                    py: 6,
+                                    textAlign: "center",
+                                }}
+                            >
+
+                                <Typography
+                                    color="text.secondary"
+                                >
+                                    Loading YouTube posts...
+                                </Typography>
 
                             </Box>
 
                         )}
 
 
-                    {/* =================================================
-                        POSTS GRID
+                        {/* =================================================
+                        EMPTY STATE
                     ================================================== */}
 
+                        {!loadingPosts &&
+                            userRole === "admin" && filteredPosts.length === 0 && (
 
-                    {
-                        posts.length > 0 && <div>
-                            <FormControl sx={{ m: 1, width: 300 }}>
-                                <InputLabel id="playlist-select-label">Playlist</InputLabel>
-                                <Select
-                                    labelId="demo-multiple-name-label"
-                                    id="demo-multiple-name"
-                                    value={personName}
-                                    onChange={handleChange}
-                                    input={<OutlinedInput label="Name" />}
-                                    MenuProps={MenuProps}
+                                <Box
+                                    sx={{
+                                        py: 7,
+                                        textAlign: "center",
+                                        borderRadius: 3,
+                                        border:
+                                            "2px dashed rgba(0,0,0,0.12)",
+                                    }}
                                 >
-                                    <MenuItem value="">
-                                        All Playlists
-                                    </MenuItem>
 
-                                    {names.map((name) => (
-                                        <MenuItem
-                                            key={name}
-                                            value={name}
-                                        >
-                                            {name}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
-                        </div>
-                    }
+                                    <YouTubeIcon
+                                        sx={{
+                                            fontSize: 60,
+                                            color:
+                                                "text.secondary",
+                                            mb: 1,
+                                        }}
+                                    />
 
-                    {
-                        posts?.length > 0 && <Divider
-                            sx={{
-                                flex: 1,
-                                borderColor: "rgba(6, 0, 95, 0.97)",
-                                mb: 2,
-                                mt: 2,
-                                opacity: .3,
-                                borderTopWidth: ".1rem",
-                                borderRadius: "1rem"
-
-                            }}
-                        />
-
-                    }
-
-                    {!loadingPosts &&
-                        filteredPosts.length > 0 && (
-
-                            <Grid
-                                container
-                                spacing={3}
-                            >
-
-                                {filteredPosts.map((post) => {
-
-                                    return (
-
-                                        <Grid
-                                            key={
-                                                post._id ||
-                                                post.link
-                                            }
-                                            size={{
-                                                xs: 12,
-                                                sm: 6,
-                                                md: 6,
-                                            }}
-                                        >
-
-                                            <Paper
-                                                elevation={2}
-                                                sx={{
-                                                    height: "100%",
-                                                    borderRadius: 3,
-                                                    overflow: "hidden",
-                                                    display: "flex",
-                                                    border: "1px solid rgba(0,0,0,0.08)",
-                                                    transition: "all 0.25s ease",
-
-                                                    "&:hover":
-                                                    {
-                                                        transform:
-                                                            "translateY(-1px)",
-
-                                                        boxShadow:
-                                                            "0 1px 3px rgba(0,0,0,0.12)",
-                                                    },
-                                                }}
-                                            >
-
-                                                {/* =================================================
-                                                        THUMBNAIL
-                                                    ================================================== */}
-
-                                                <Box
-                                                    sx={{
-                                                        height: 190,
-                                                        position: "relative",
-                                                        background: "linear-gradient(90deg, rgb(3, 3, 128) 0%, rgba(25, 25, 158, 1) 60%, rgb(14, 14, 153) 100%)",
-                                                        display: "flex",
-                                                        alignItems: "center",
-                                                        justifyContent: "center",
-                                                    }}
-                                                >
-
-                                                    {post?.thumbnail ? (
-
-                                                        <Box
-                                                            component="img"
-                                                            src={
-                                                                post.thumbnail
-                                                            }
-                                                            alt={
-                                                                post.title
-                                                            }
-                                                            sx={{
-                                                                width:
-                                                                    "100%",
-                                                                height:
-                                                                    "100%",
-                                                                objectFit:
-                                                                    "cover",
-                                                            }}
-                                                        />
-
-                                                    ) : (
-
-                                                        <YouTubeIcon
-                                                            sx={{
-                                                                fontSize:
-                                                                    70,
-                                                                color:
-                                                                    "#fff",
-                                                            }}
-                                                        />
-
-                                                    )}
-
-
-                                                    {/* YouTube Icon */}
-
-                                                    <Box
-                                                        sx={{
-                                                            position:
-                                                                "absolute",
-                                                            left:
-                                                                "50%",
-                                                            top:
-                                                                "50%",
-                                                            transform:
-                                                                "translate(-50%, -50%)",
-                                                            width:
-                                                                55,
-                                                            height:
-                                                                55,
-                                                            borderRadius:
-                                                                "50%",
-                                                            background:
-                                                                "rgba(255,0,0,0.95)",
-                                                            display:
-                                                                "flex",
-                                                            alignItems:
-                                                                "center",
-                                                            justifyContent:
-                                                                "center",
-                                                        }}
-                                                    >
-
-                                                        <YouTubeIcon
-                                                            sx={{
-                                                                color:
-                                                                    "#fff",
-                                                                fontSize:
-                                                                    35,
-                                                            }}
-                                                        />
-
-                                                    </Box>
-
-                                                </Box>
-
-
-                                                {/* =================================================
-                                                        POST CONTENT
-                                                    ================================================== */}
-
-                                                <Box
-                                                    sx={{
-                                                        p: 2.5,
-                                                    }}
-                                                >
-
-                                                    <Typography
-                                                        variant="h6"
-                                                        sx={{
-                                                            fontWeight: 700,
-                                                            display: "-webkit-box",
-                                                            WebkitLineClamp: 2,
-                                                            WebkitBoxOrient: "vertical",
-                                                            overflow: "hidden",
-                                                            minHeight:
-                                                                30,
-                                                        }}
-                                                    >
-                                                        {
-                                                            post.title
-                                                        }
-                                                    </Typography>
-
-
-                                                    <Typography
-                                                        variant="body2"
-                                                        color="text.secondary"
-                                                        sx={{
-                                                            display:
-                                                                "-webkit-box",
-                                                            WebkitLineClamp:
-                                                                3,
-                                                            WebkitBoxOrient:
-                                                                "vertical",
-                                                            overflow:
-                                                                "hidden",
-                                                            minHeight:
-                                                                60,
-                                                        }}
-                                                    >
-                                                        {post.description || "No description available."}
-                                                    </Typography>
-
-
-                                                    {/* =================================================
-                                                            ACTIONS
-                                                        ================================================== */}
-
-                                                    <Stack
-                                                        direction="row"
-                                                        spacing={1}
-                                                        sx={{
-                                                            mt: 2,
-                                                        }}
-                                                    >
-
-                                                        <Button
-                                                            size="small"
-                                                            variant="contained"
-                                                            startIcon={
-                                                                <OpenInNewIcon />
-                                                            }
-                                                            component="a"
-                                                            href={
-                                                                post.link
-                                                            }
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                            sx={{
-                                                                flex: 1,
-                                                                backgroundColor:
-                                                                    "#ff0000",
-
-                                                                "&:hover":
-                                                                {
-                                                                    backgroundColor:
-                                                                        "#cc0000",
-                                                                },
-                                                            }}
-                                                        >
-                                                            Watch
-                                                        </Button>
-                                                        {
-                                                            userRole === "admin" && <>
-                                                                <Tooltip title="Edit">
-
-                                                                    <IconButton
-                                                                        color="primary"
-                                                                        onClick={() =>
-                                                                            handleEditPost(
-                                                                                post
-                                                                            )
-                                                                        }
-                                                                    >
-                                                                        <EditIcon />
-                                                                    </IconButton>
-
-                                                                </Tooltip>
-                                                            </>
-                                                        }
-
-
-
-                                                        {
-                                                            userRole === "admin" && <Tooltip title="Delete">
-
-                                                                <IconButton
-                                                                    color="error"
-                                                                    onClick={() =>
-                                                                        handleDeletePost(
-                                                                            post
-                                                                        )
-                                                                    }
-                                                                >
-                                                                    <DeleteIcon />
-                                                                </IconButton>
-
-                                                            </Tooltip>
-
-                                                        }
-
-                                                    </Stack>
-
-                                                </Box>
-
-                                            </Paper>
-
-                                        </Grid>
-
-                                    );
-                                }
-                                )}
-
-                            </Grid>
-
-                        )}
-
-                </Paper>
-
-            </Box>
-
-
-            {/* =========================================================
-                ADD / EDIT DIALOG
-            ========================================================== */}
-
-            {
-                userRole === "admin" &&
-                <Dialog
-                    open={openDialog}
-                    onClose={
-                        handleCloseDialog
-                    }
-                    fullWidth
-                    maxWidth="sm"
-                >
-
-                    <DialogTitle
-                        sx={{
-                            fontWeight: 700,
-                        }}
-                    >
-                        {editingPost
-                            ? "Edit YouTube Post"
-                            : "Add YouTube Post"}
-                    </DialogTitle>
-
-
-                    <DialogContent>
-
-                        <Stack
-                            spacing={2.5}
-                            sx={{
-                                mt: 1,
-                            }}
-                        >
-
-                            {/* =================================================
-                            TITLE
-                        ================================================== */}
-
-                            <TextField
-                                fullWidth
-                                required
-                                label="Title"
-                                name="title"
-                                value={
-                                    formData.title
-                                }
-                                onChange={
-                                    handleInputChange
-                                }
-                                slotProps={{
-                                    htmlInput: {
-                                        maxLength: 150,
-                                    },
-                                }}
-                                helperText={
-                                    `${formData.title.length}/150`
-                                }
-                            />
-
-                            {/* =================================================
-                            PLAYLISTNAME
-                        ================================================== */}
-                            <TextField
-                                fullWidth
-                                required
-                                label="Playlist Name"
-                                name="playListName"
-                                value={
-                                    formData.playListName
-                                }
-                                onChange={
-                                    handleInputChange
-                                }
-                                slotProps={{
-                                    htmlInput: {
-                                        maxLength: 150,
-                                    },
-                                }}
-                                helperText={
-                                    `${formData.playListName.length}/150`
-                                }
-                            />
-
-
-                            {/* =================================================
-                            DESCRIPTION
-                        ================================================== */}
-
-                            <TextField
-                                fullWidth
-                                required
-                                multiline
-                                minRows={4}
-                                label="Description"
-                                name="description"
-                                value={
-                                    formData.description
-                                }
-                                onChange={
-                                    handleInputChange
-                                }
-                                slotProps={{
-                                    htmlInput: {
-                                        maxLength: 1000,
-                                    },
-                                }}
-                                helperText={
-                                    formData.description.length < 30
-                                        ? `${formData.description.length}/30 minimum characters`
-                                        : `${formData.description.length} characters`
-                                }
-                                error={
-                                    formData.description.length > 0 &&
-                                    formData.description.length < 30
-                                }
-                            />
-
-
-                            {/* =================================================
-                            YOUTUBE LINK
-                        ================================================== */}
-
-                            <TextField
-                                fullWidth
-                                required
-                                label="YouTube Link"
-                                name="link"
-                                value={
-                                    formData.link
-                                }
-                                onChange={
-                                    handleInputChange
-                                }
-                                placeholder="https://www.youtube.com/watch?v=..."
-                                error={
-                                    formData.link.length > 0 &&
-                                    !isValidYoutubeUrl(
-                                        formData.link
-                                    )
-                                }
-                                helperText={
-                                    formData.link.length > 0 &&
-                                        !isValidYoutubeUrl(
-                                            formData.link
-                                        )
-                                        ? "Please enter a valid YouTube URL"
-                                        : "Thumbnail will be generated automatically"
-                                }
-                            />
-
-
-                            {/* =================================================
-                            THUMBNAIL PREVIEW
-                        ================================================== */}
-
-                            {formData.thumbnail && (
-
-                                <Box>
 
                                     <Typography
-                                        variant="subtitle2"
-                                        sx={{
-                                            mb: 1,
-                                            fontWeight: 600,
-                                        }}
+                                        variant="h6"
+                                        color="text.secondary"
                                     >
-                                        Thumbnail Preview
+                                        No YouTube posts yet
                                     </Typography>
 
 
-                                    <Box
-                                        component="img"
-                                        src={
-                                            formData.thumbnail
-                                        }
-                                        alt="YouTube thumbnail"
+                                    <Typography
+                                        variant="body2"
+                                        color="text.secondary"
                                         sx={{
-                                            width: "100%",
-                                            maxHeight: 250,
-                                            objectFit: "cover",
-                                            borderRadius: 2,
-                                            border:
-                                                "1px solid rgba(0,0,0,0.12)",
+                                            mt: 1,
                                         }}
-                                    />
+                                    >
+                                        Add your first
+                                        YouTube video
+                                        to get started.
+                                    </Typography>
+
+
+                                    <Button
+                                        variant="contained"
+                                        startIcon={
+                                            <AddIcon />
+                                        }
+                                        onClick={
+                                            handleAddPost
+                                        }
+                                        sx={{
+                                            mt: 3,
+                                            backgroundColor:
+                                                "#ff0000",
+
+                                            "&:hover": {
+                                                backgroundColor:
+                                                    "#cc0000",
+                                            },
+                                        }}
+                                    >
+                                        Add First Video
+                                    </Button>
 
                                 </Box>
 
                             )}
 
-                        </Stack>
 
-                    </DialogContent>
+                        {/* =================================================
+                        POSTS GRID
+                    ================================================== */}
 
 
-                    <DialogActions
-                        sx={{
-                            p: 2,
-                        }}
+                        {
+                            posts.length > 0 && <div>
+                                <FormControl sx={{ m: 1, width: 300 }}>
+                                    <InputLabel id="playlist-select-label">Playlist</InputLabel>
+                                    <Select
+                                        labelId="demo-multiple-name-label"
+                                        id="demo-multiple-name"
+                                        value={personName}
+                                        onChange={handleChange}
+                                        input={<OutlinedInput label="Name" />}
+                                        MenuProps={MenuProps}
+                                    >
+                                        <MenuItem value="">
+                                            All Playlists
+                                        </MenuItem>
+
+                                        {names.map((name) => (
+                                            <MenuItem
+                                                key={name}
+                                                value={name}
+                                            >
+                                                {name}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            </div>
+                        }
+
+                        {
+                            posts?.length > 0 && <Divider
+                                sx={{
+                                    flex: 1,
+                                    borderColor: "rgba(6, 0, 95, 0.97)",
+                                    mb: 2,
+                                    mt: 2,
+                                    opacity: .3,
+                                    borderTopWidth: ".1rem",
+                                    borderRadius: "1rem"
+
+                                }}
+                            />
+
+                        }
+
+                        {!loadingPosts &&
+                            filteredPosts.length > 0 && (
+
+                                <Grid
+                                    container
+                                    spacing={3}
+                                >
+
+                                    {filteredPosts.map((post) => {
+
+                                        return (
+
+                                            <Grid
+                                                key={
+                                                    post._id ||
+                                                    post.link
+                                                }
+                                                size={{
+                                                    xs: 12,
+                                                    sm: 6,
+                                                    md: 6,
+                                                }}
+                                            >
+
+                                                <Paper
+                                                    elevation={2}
+                                                    sx={{
+                                                        height: "100%",
+                                                        borderRadius: 3,
+                                                        overflow: "hidden",
+                                                        display: "flex",
+                                                        border: "1px solid rgba(0,0,0,0.08)",
+                                                        transition: "all 0.25s ease",
+
+                                                        "&:hover":
+                                                        {
+                                                            transform:
+                                                                "translateY(-1px)",
+
+                                                            boxShadow:
+                                                                "0 1px 3px rgba(0,0,0,0.12)",
+                                                        },
+                                                    }}
+                                                >
+
+                                                    {/* =================================================
+                                                        THUMBNAIL
+                                                    ================================================== */}
+
+                                                    <Box
+                                                        sx={{
+                                                            height: 190,
+                                                            position: "relative",
+                                                            background: "linear-gradient(90deg, rgb(3, 3, 128) 0%, rgba(25, 25, 158, 1) 60%, rgb(14, 14, 153) 100%)",
+                                                            display: "flex",
+                                                            alignItems: "center",
+                                                            justifyContent: "center",
+                                                        }}
+                                                    >
+
+                                                        {post?.thumbnail ? (
+
+                                                            <Box
+                                                                component="img"
+                                                                src={
+                                                                    post.thumbnail
+                                                                }
+                                                                alt={
+                                                                    post.title
+                                                                }
+                                                                sx={{
+                                                                    width:
+                                                                        "100%",
+                                                                    height:
+                                                                        "100%",
+                                                                    objectFit:
+                                                                        "cover",
+                                                                }}
+                                                            />
+
+                                                        ) : (
+
+                                                            <YouTubeIcon
+                                                                sx={{
+                                                                    fontSize:
+                                                                        70,
+                                                                    color:
+                                                                        "#fff",
+                                                                }}
+                                                            />
+
+                                                        )}
+
+
+                                                        {/* YouTube Icon */}
+
+                                                        <Box
+                                                            sx={{
+                                                                position:
+                                                                    "absolute",
+                                                                left:
+                                                                    "50%",
+                                                                top:
+                                                                    "50%",
+                                                                transform:
+                                                                    "translate(-50%, -50%)",
+                                                                width:
+                                                                    55,
+                                                                height:
+                                                                    55,
+                                                                borderRadius:
+                                                                    "50%",
+                                                                background:
+                                                                    "rgba(255,0,0,0.95)",
+                                                                display:
+                                                                    "flex",
+                                                                alignItems:
+                                                                    "center",
+                                                                justifyContent:
+                                                                    "center",
+                                                            }}
+                                                        >
+
+                                                            <YouTubeIcon
+                                                                sx={{
+                                                                    color:
+                                                                        "#fff",
+                                                                    fontSize:
+                                                                        35,
+                                                                }}
+                                                            />
+
+                                                        </Box>
+
+                                                    </Box>
+
+
+                                                    {/* =================================================
+                                                        POST CONTENT
+                                                    ================================================== */}
+
+                                                    <Box
+                                                        sx={{
+                                                            p: 2.5,
+                                                        }}
+                                                    >
+
+                                                        <Typography
+                                                            variant="h6"
+                                                            sx={{
+                                                                fontWeight: 700,
+                                                                display: "-webkit-box",
+                                                                WebkitLineClamp: 2,
+                                                                WebkitBoxOrient: "vertical",
+                                                                overflow: "hidden",
+                                                                minHeight:
+                                                                    30,
+                                                            }}
+                                                        >
+                                                            {
+                                                                post.title
+                                                            }
+                                                        </Typography>
+
+
+                                                        <Typography
+                                                            variant="body2"
+                                                            color="text.secondary"
+                                                            sx={{
+                                                                display:
+                                                                    "-webkit-box",
+                                                                WebkitLineClamp:
+                                                                    3,
+                                                                WebkitBoxOrient:
+                                                                    "vertical",
+                                                                overflow:
+                                                                    "hidden",
+                                                                minHeight:
+                                                                    60,
+                                                            }}
+                                                        >
+                                                            {post.description || "No description available."}
+                                                        </Typography>
+
+
+                                                        {/* =================================================
+                                                            ACTIONS
+                                                        ================================================== */}
+
+                                                        <Stack
+                                                            direction="row"
+                                                            spacing={1}
+                                                            sx={{
+                                                                mt: 2,
+                                                            }}
+                                                        >
+
+                                                            <Button
+                                                                size="small"
+                                                                variant="contained"
+                                                                startIcon={
+                                                                    <OpenInNewIcon />
+                                                                }
+                                                                component="a"
+                                                                href={
+                                                                    post.link
+                                                                }
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                sx={{
+                                                                    flex: 1,
+                                                                    backgroundColor:
+                                                                        "#ff0000",
+
+                                                                    "&:hover":
+                                                                    {
+                                                                        backgroundColor:
+                                                                            "#cc0000",
+                                                                    },
+                                                                }}
+                                                            >
+                                                                Watch
+                                                            </Button>
+                                                            {
+                                                                userRole === "admin" && <>
+                                                                    <Tooltip title="Edit">
+
+                                                                        <IconButton
+                                                                            color="primary"
+                                                                            onClick={() =>
+                                                                                handleEditPost(
+                                                                                    post
+                                                                                )
+                                                                            }
+                                                                        >
+                                                                            <EditIcon />
+                                                                        </IconButton>
+
+                                                                    </Tooltip>
+                                                                </>
+                                                            }
+
+
+
+                                                            {
+                                                                userRole === "admin" && <Tooltip title="Delete">
+
+                                                                    <IconButton
+                                                                        color="error"
+                                                                        onClick={() =>
+                                                                            handleDeletePost(
+                                                                                post
+                                                                            )
+                                                                        }
+                                                                    >
+                                                                        <DeleteIcon />
+                                                                    </IconButton>
+
+                                                                </Tooltip>
+
+                                                            }
+
+                                                        </Stack>
+
+                                                    </Box>
+
+                                                </Paper>
+
+                                            </Grid>
+
+                                        );
+                                    }
+                                    )}
+
+                                </Grid>
+
+                            )}
+
+                    </Paper>
+
+                </Box>
+
+
+                {/* =========================================================
+                ADD / EDIT DIALOG
+            ========================================================== */}
+
+                {
+                    userRole === "admin" &&
+                    <Dialog
+                        open={openDialog}
+                        onClose={
+                            handleCloseDialog
+                        }
+                        fullWidth
+                        maxWidth="sm"
                     >
 
-                        <Button
-                            onClick={
-                                handleCloseDialog
-                            }
-                            disabled={savingPost}
+                        <DialogTitle
+                            sx={{
+                                fontWeight: 700,
+                            }}
                         >
-                            Cancel
-                        </Button>
+                            {editingPost
+                                ? "Edit YouTube Post"
+                                : "Add YouTube Post"}
+                        </DialogTitle>
 
 
-                        <Button
-                            variant="contained"
-                            onClick={
-                                handleSavePost
-                            }
-                            disabled={savingPost}
+                        <DialogContent>
+
+                            <Stack
+                                spacing={2.5}
+                                sx={{
+                                    mt: 1,
+                                }}
+                            >
+
+                                {/* =================================================
+                            TITLE
+                        ================================================== */}
+
+                                <TextField
+                                    fullWidth
+                                    required
+                                    label="Title"
+                                    name="title"
+                                    value={
+                                        formData.title
+                                    }
+                                    onChange={
+                                        handleInputChange
+                                    }
+                                    slotProps={{
+                                        htmlInput: {
+                                            maxLength: 150,
+                                        },
+                                    }}
+                                    helperText={
+                                        `${formData.title.length}/150`
+                                    }
+                                />
+
+                                {/* =================================================
+                            PLAYLISTNAME
+                        ================================================== */}
+                                <TextField
+                                    fullWidth
+                                    required
+                                    label="Playlist Name"
+                                    name="playListName"
+                                    value={
+                                        formData.playListName
+                                    }
+                                    onChange={
+                                        handleInputChange
+                                    }
+                                    slotProps={{
+                                        htmlInput: {
+                                            maxLength: 150,
+                                        },
+                                    }}
+                                    helperText={
+                                        `${formData.playListName.length}/150`
+                                    }
+                                />
+
+
+                                {/* =================================================
+                            DESCRIPTION
+                        ================================================== */}
+
+                                <TextField
+                                    fullWidth
+                                    required
+                                    multiline
+                                    minRows={4}
+                                    label="Description"
+                                    name="description"
+                                    value={
+                                        formData.description
+                                    }
+                                    onChange={
+                                        handleInputChange
+                                    }
+                                    slotProps={{
+                                        htmlInput: {
+                                            maxLength: 1000,
+                                        },
+                                    }}
+                                    helperText={
+                                        formData.description.length < 30
+                                            ? `${formData.description.length}/30 minimum characters`
+                                            : `${formData.description.length} characters`
+                                    }
+                                    error={
+                                        formData.description.length > 0 &&
+                                        formData.description.length < 30
+                                    }
+                                />
+
+
+                                {/* =================================================
+                            YOUTUBE LINK
+                        ================================================== */}
+
+                                <TextField
+                                    fullWidth
+                                    required
+                                    label="YouTube Link"
+                                    name="link"
+                                    value={
+                                        formData.link
+                                    }
+                                    onChange={
+                                        handleInputChange
+                                    }
+                                    placeholder="https://www.youtube.com/watch?v=..."
+                                    error={
+                                        formData.link.length > 0 &&
+                                        !isValidYoutubeUrl(
+                                            formData.link
+                                        )
+                                    }
+                                    helperText={
+                                        formData.link.length > 0 &&
+                                            !isValidYoutubeUrl(
+                                                formData.link
+                                            )
+                                            ? "Please enter a valid YouTube URL"
+                                            : "Thumbnail will be generated automatically"
+                                    }
+                                />
+
+
+                                {/* =================================================
+                            THUMBNAIL PREVIEW
+                        ================================================== */}
+
+                                {formData.thumbnail && (
+
+                                    <Box>
+
+                                        <Typography
+                                            variant="subtitle2"
+                                            sx={{
+                                                mb: 1,
+                                                fontWeight: 600,
+                                            }}
+                                        >
+                                            Thumbnail Preview
+                                        </Typography>
+
+
+                                        <Box
+                                            component="img"
+                                            src={
+                                                formData.thumbnail
+                                            }
+                                            alt="YouTube thumbnail"
+                                            sx={{
+                                                width: "100%",
+                                                maxHeight: 250,
+                                                objectFit: "cover",
+                                                borderRadius: 2,
+                                                border:
+                                                    "1px solid rgba(0,0,0,0.12)",
+                                            }}
+                                        />
+
+                                    </Box>
+
+                                )}
+
+                            </Stack>
+
+                        </DialogContent>
+
+
+                        <DialogActions
+                            sx={{
+                                p: 2,
+                            }}
                         >
-                            {savingPost
-                                ? "Saving..."
-                                : editingPost
-                                    ? "Update Post"
-                                    : "Create Post"}
-                        </Button>
 
-                    </DialogActions>
+                            <Button
+                                onClick={
+                                    handleCloseDialog
+                                }
+                                disabled={savingPost}
+                            >
+                                Cancel
+                            </Button>
 
-                </Dialog>
-            }
 
-            {/* =================================================
+                            <Button
+                                variant="contained"
+                                onClick={
+                                    handleSavePost
+                                }
+                                disabled={savingPost}
+                            >
+                                {savingPost
+                                    ? "Saving..."
+                                    : editingPost
+                                        ? "Update Post"
+                                        : "Create Post"}
+                            </Button>
+
+                        </DialogActions>
+
+                    </Dialog>
+                }
+
+                {/* =================================================
                 ADMIN FOOTER
             ================================================= */}
 
-            <Box
-                sx={{
-                    py: 4,
+                <Box
+                    sx={{
+                        py: 4,
 
-                    textAlign: "center",
+                        textAlign: "center",
 
-                }}
-            >
-
-                <Typography
-                    color="text.secondary"
-                    variant="body2"
+                    }}
                 >
-                    AlgoSaathi Administration Panel
-                </Typography>
 
-                <Typography
-                    color="text.secondary"
-                    variant="caption"
-                >
-                    © {new Date().getFullYear()} AlgoSaathi
-                </Typography>
+                    <Typography
+                        color="text.secondary"
+                        variant="body2"
+                    >
+                        AlgoSaathi Administration Panel
+                    </Typography>
+
+                    <Typography
+                        color="text.secondary"
+                        variant="caption"
+                    >
+                        © {new Date().getFullYear()} AlgoSaathi
+                    </Typography>
+
+                </Box>
 
             </Box>
-
-
         </Box>
     );
 };

@@ -314,7 +314,7 @@ body {
 
   border: 1px solid rgba(0, 5, 47, 0.732);
 
-  background: linear-gradient(90deg, rgb(2, 2, 113) 0%, rgba(25, 25, 158, 1) 60%, rgb(3, 3, 113) 100%);
+  background: linear-gradient(90deg, rgb(2, 2, 113) 0%, rgba(25, 25, 158, 1) 60%, rgb(3, 3, 113) 100%) !important;
 
   color: white !important;
 
@@ -345,7 +345,7 @@ body {
   border-color:
     rgba(241, 241, 244, 0.767) !important;
 
-   background: linear-gradient(90deg, rgb(33, 33, 255) 0%, rgb(41, 41, 241) 60%, rgb(0, 0, 50) 100%);
+   background: linear-gradient(90deg, rgb(33, 33, 255) 0%, rgb(16, 16, 168) 60%, rgb(0, 0, 50) 100%) !important;
 
   box-shadow:
     0 0 35px rgba(35, 15, 216, 0.673);
@@ -780,14 +780,13 @@ box-shadow: rgba(0, 0, 0, 0.45) 0px 25px 20px -20px;
 
   border-radius: 10px !important;
 
-  color: #aab5d0 !important;
+  color: #042d97 !important;
 
   text-transform: none !important;
 
   font-size: 12px !important;
 
-  border:
-    1px solid rgba(255, 255, 255, .09) !important;
+  border:1px solid rgba(16, 1, 76, 0.464) !important;
 }
 
 

@@ -62,7 +62,7 @@ export default function PostCard({ postData }: { postData: any }) {
                 md: "90%",
                 lg: "90%",
             },
-             boxShadow: "0 0 0 1px rgba(4, 108, 113, 0.25)",
+            boxShadow: "0 0 0 1px rgba(13, 4, 113, 0.25)",
         }}>
             <CardHeader
                 avatar={

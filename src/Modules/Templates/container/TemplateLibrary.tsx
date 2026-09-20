@@ -8,6 +8,9 @@ import {
     Chip,
     Container,
     Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
     FormControl,
     Grid,
     IconButton,
@@ -29,6 +32,7 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { getAllTemplates } from "../api/api";
 import "../css/TemplateLibrary.css";
+import Loader from "../../../common/Loader";
 
 const fallbackTemplateImages = [
     "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80",
@@ -64,6 +68,7 @@ const TemplateLibrary = () => {
     const [toast, setToast] = useState<string | null>(null);
     const [previewTemplate, setPreviewTemplate] = useState<any | null>(null);
     const [previewIndex, setPreviewIndex] = useState(0);
+    const [descriptionTarget, setDescriptionTarget] = useState<any | null>(null);
 
     const categories = useMemo(() => {
         const uniqueCategories = Array.from(
@@ -161,7 +166,7 @@ const TemplateLibrary = () => {
             const previewImages = getTemplateImages(template);
             setPreviewTemplate(template);
             setPreviewIndex(previewImages.length > 0 ? 0 : -1);
-            setToast("Please contact admin for preview.");
+            // setToast("Please contact admin for preview.");
             return;
         }
 
@@ -181,6 +186,12 @@ const TemplateLibrary = () => {
         if (!canNavigatePreview) return;
         setPreviewIndex((prev) => (prev >= previewImages.length - 1 ? 0 : prev + 1));
     };
+
+    if(loading){
+        return <>
+            <Loader/>
+        </>
+    }
 
     return (
         <Box className="template-page">
@@ -441,7 +452,23 @@ const TemplateLibrary = () => {
 
 
                                         <Typography className="template-description">
-                                            {template.description}
+                                            {template.description && template.description.length > 250
+                                                ? `${template.description.slice(0, 150)}... `
+                                                : template.description}
+                                            {template.description && template.description.length > 250 && (
+                                                <Box
+                                                    component="span"
+                                                    sx={{
+                                                        color: "#2563eb",
+                                                        fontWeight: 700,
+                                                        cursor: "pointer",
+                                                        "&:hover": { textDecoration: "underline" },
+                                                    }}
+                                                    onClick={() => setDescriptionTarget(template)}
+                                                >
+                                                    Read more
+                                                </Box>
+                                            )}
                                         </Typography>
 
 
@@ -462,7 +489,7 @@ const TemplateLibrary = () => {
                                                 startIcon={<VisibilityOutlinedIcon />}
                                                 className="preview-btn"
                                                 onClick={() => handleTemplateAction(template, "preview")}
-                                                style={{ cursor: "pointer" }}
+                                                style={{ cursor: "pointer", color:"#1605b6",  }}
                                             >
                                                 Preview
                                             </Button>
@@ -625,6 +652,28 @@ const TemplateLibrary = () => {
                         </Box>
                     </Box>
                 </Box>
+            </Dialog>
+
+            <Dialog
+                open={Boolean(descriptionTarget)}
+                onClose={() => setDescriptionTarget(null)}
+                maxWidth="sm"
+                fullWidth
+                slotProps={{ paper: { sx: { borderRadius: 3, p: 3 } } }}
+            >
+                <DialogTitle sx={{ pb: 1, fontWeight: 700 }}>
+                    {descriptionTarget?.title || "Template Description"}
+                </DialogTitle>
+                <DialogContent>
+                    <Typography variant="body1" sx={{ whiteSpace: "pre-wrap", lineHeight: 1.7 }}>
+                        {descriptionTarget?.description}
+                    </Typography>
+                </DialogContent>
+                <DialogActions sx={{ px: 3, pb: 2 }}>
+                    <Button onClick={() => setDescriptionTarget(null)} variant="contained">
+                        Close
+                    </Button>
+                </DialogActions>
             </Dialog>
 
             <Snackbar

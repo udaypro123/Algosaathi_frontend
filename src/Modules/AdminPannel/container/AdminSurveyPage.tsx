@@ -84,7 +84,7 @@ const AdminSurveyPage = () => {
                 minHeight: "100vh",
                 maxWidth: "95%",
                 margin: "0 auto",
-                background: "#f5f8fa",
+                background: "var(--global-bg)",
                 borderRadius: ".5rem",
                 border: "1px solid rgba(10, 130, 177, 0.34)",
                 p: {

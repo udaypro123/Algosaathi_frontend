@@ -1,34 +1,31 @@
 import {
-    Drawer,
+    Box,
     List,
     ListItemButton,
     ListItemIcon,
     ListItemText,
-    Toolbar,
-    Box,
-    Typography
+    Typography,
+    Divider,
+    IconButton,
+    Tooltip
 } from "@mui/material";
 
 import DashboardIcon from "@mui/icons-material/Dashboard";
-// import StarIcon from "@mui/icons-material/Star";
 import BookIcon from "@mui/icons-material/Book";
-// import ContactMailIcon from "@mui/icons-material/ContactMail";
+import SchoolIcon from "@mui/icons-material/School";
 import YouTubeIcon from '@mui/icons-material/YouTube';
-// import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import PaletteIcon from '@mui/icons-material/Palette';
-import NewspaperIcon from '@mui/icons-material/Newspaper';
+import NewspaperIcon from "@mui/icons-material/Newspaper";
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
+import LogoutIcon from "@mui/icons-material/Logout";
 import logo from "../assets/gene-structure-svgrepo-com.svg"
 
-import { NavLink } from "react-router-dom";
-import { getUserRole } from "../utils/auth";
-import { type Role, Roles } from "../redux/auth/authTypes";
+import { NavLink, useNavigate } from "react-router-dom";
+import { getUserRole, clearAuthData } from "../utils/auth";
 import type { JSX } from "@emotion/react/jsx-runtime";
+import { type Role, Roles } from "../redux/auth/authTypes";
 
-
-const drawerWidth = 300;
-
-
+const drawerWidth = 260;
 
 const menuItems: Array<{
     name: string;
@@ -40,7 +37,7 @@ const menuItems: Array<{
             name: "Dashboard",
             path: "/dashboard",
             icon: <DashboardIcon />,
-            allowedRoles: [Roles.USERS, Roles.ADMIN]
+            allowedRoles: [Roles.USERS, Roles.ADMIN, Roles.STUDENT]
         },
         {
             name: "Courses",
@@ -48,12 +45,6 @@ const menuItems: Array<{
             icon: <BookIcon />,
             allowedRoles: [Roles.STUDENT]
         },
-        // {
-        //     name: "Features",
-        //     path: "/features",
-        //     icon: <StarIcon />,
-        //     allowedRoles: [Roles.USERS, Roles.STUDENT]
-        // },
         {
             name: "You Tube",
             path: "/youtubepost",
@@ -64,6 +55,12 @@ const menuItems: Array<{
             name: "Template Manager",
             path: "/admin/templates",
             icon: <PaletteIcon />,
+            allowedRoles: [Roles.ADMIN]
+        },
+        {
+            name: "Courses",
+            path: "/admin/courses",
+            icon: <SchoolIcon />,
             allowedRoles: [Roles.ADMIN]
         },
         {
@@ -80,68 +77,52 @@ const menuItems: Array<{
         }
     ];
 
-
-
-
-const Sidebar = ({
-    open,
-    handleDrawerToggle
-
-}: any) => {
-
-
-    return (
-
-        <>
-
-            <Drawer
-                variant="temporary"
-                open={open}
-                onClose={handleDrawerToggle}
-                ModalProps={{ keepMounted: true }}
-                sx={{
-                    display: "block",
-                    "& .MuiDrawer-paper": {
-                        width: drawerWidth,
-                        overflowX: "hidden",
-                        transition: "0.3s",
-                        background: "white",
-                        color: "#fff",
-                        position: 'fixed',
-                        top: 0,
-                        left: 0,
-                        height: '100vh',
-                        boxSizing: 'border-box',
-                        zIndex: 1200
-                    }
-                }}
-            >
-                <DrawerContent handleDrawerToggle={handleDrawerToggle} />
-            </Drawer>
-
-
-
-        </>
-
-    )
-
-}
-
-const DrawerContent = ({  }: any) => {
+const Sidebar = () => {
+    const navigate = useNavigate();
     const userRole = getUserRole();
     const visibleItems = menuItems.filter((item) => {
         if (!item.allowedRoles) return true;
         return userRole ? item.allowedRoles.includes(userRole) : false;
     });
 
+    const handleLogout = () => {
+        clearAuthData();
+        navigate("/login", { replace: true });
+    };
+
+
+
     return (
-
-        <Box >
-
-
-            <Toolbar sx={{ background: "linear-gradient(90deg, rgba(0, 0, 82, 1) 0%, rgba(25, 25, 158, 1) 60%, rgba(0, 0, 82, 1) 100%)", borderBottom: "1px solid white", borderRight: "1px solid grey", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, }}>
+        <Box
+            sx={{
+                width: drawerWidth,
+                minWidth: drawerWidth,
+                height: "100vh",
+                position: "fixed",
+                left: 0,
+                top: 0,
+                zIndex: 1200,
+                display: "flex",
+                flexDirection: "column",
+                background: "white",
+                color: "#fff",
+                // boxShadow: "2px 0 8px rgba(0,0,0,0.08)",
+                // borderRight: "1px solid rgba(0,0,0,0.06)"
+            }}
+        >
+            <Box
+                sx={{
+                    background: "#f5f7fa",
+                    borderBottom: "3px solid rgb(255, 255, 255)",
+                    boxShadow:" rgba(17, 3, 120, 0.04) 0px 60px 40px 7px",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    padding: "16px 20px",
+                    minHeight: 72
+                }}
+            >
+                {/* <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, }}>
                     <Typography
                         variant="h5"
                         sx={{
@@ -150,7 +131,6 @@ const DrawerContent = ({  }: any) => {
                             display: "flex",
                             overflow: "hidden",
                             textDecoration: "none",
-
                             fontSize: { xs: 20, md: 25 },
                             color: "inherit",
                             whiteSpace: "nowrap",
@@ -158,7 +138,6 @@ const DrawerContent = ({  }: any) => {
                     >
                         {"AlgoSaathi".split("").map((char, index) => {
                             const isAlgo = index < 4;
-
                             return (
                                 <Box
                                     component="span"
@@ -170,24 +149,12 @@ const DrawerContent = ({  }: any) => {
                                         fontStyle: "italic",
                                         transform: "translateY(18px)",
                                         animation: "letterAppear 3s ease-in-out infinite",
-                                        animationDelay: `${index * 0.15}s`,
+                                        animationDelay: `${index * .5}s`,
                                         "@keyframes letterAppear": {
-                                            "0%": {
-                                                opacity: 0,
-                                                transform: "translateY(18px)",
-                                            },
-                                            "15%": {
-                                                opacity: 1,
-                                                transform: "translateY(0)",
-                                            },
-                                            "70%": {
-                                                opacity: 1,
-                                                transform: "translateY(0)",
-                                            },
-                                            "100%": {
-                                                opacity: 0,
-                                                transform: "translateY(-18px)",
-                                            },
+                                            "0%": { opacity: 0, transform: "translateY(18px)" },
+                                            "15%": { opacity: 1, transform: "translateY(0)" },
+                                            "70%": { opacity: 1, transform: "translateY(0)" },
+                                            "100%": { opacity: 0, transform: "translateY(-18px)" },
                                         },
                                     }}
                                 >
@@ -199,96 +166,135 @@ const DrawerContent = ({  }: any) => {
                     <img
                         src={logo}
                         alt="Logo"
-                        style={{ width: "2.5rem", height: "2.5rem", marginLeft: "3rem" }}
+                        style={{ width: "2.5rem", height: "2.5rem", marginLeft: "0.5rem" }}
+                    />
+                </Box> */}
+
+
+                <Box
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 1,
+                    }}
+                >
+                    <Typography
+                        sx={{
+                            fontWeight: 900,
+                            letterSpacing: 1,
+                            fontSize: { xs: 18, md: 22 },
+                            fontStyle: "italic",
+
+                            // backgroundImage: `url(${geneStructure})`,
+                            // backgroundSize: "contain",
+                            // backgroundPosition: "center",
+                            // backgroundRepeat: "no-repeat",
+
+                            // WebkitBackgroundClip: "text",
+                            // WebkitTextFillColor: "transparent",
+                            backgroundClip: "text",
+                            color:"#0d0262",
+                            display: "flex",
+                        }}
+                    >
+                        AlgoSaathi
+                    </Typography>
+
+                    <img
+                        src={logo}
+                        alt="Logo"
+                        style={{
+                            width: "2.4rem",
+                            height: "2.4rem",
+                            marginLeft:"1rem"
+                        }}
                     />
                 </Box>
+            </Box>
 
-                {/* <IconButton onClick={handleDrawerToggle} sx={{ color: '#fff', border: "1px solid white", borderRadius: "50%" ,  marginLeft: "1rem" }}>
-                    <ArrowBack />
-                </IconButton> */}
-
-            </Toolbar>
-
-
-
-            <List>
-
-
-                {
-                    visibleItems.map((item) => (
-
-
+            <Box
+                sx={{
+                    flexGrow: 1,
+                    overflowY: "auto",
+                    py: 1,
+                    "&::-webkit-scrollbar": { width: "4px" },
+                    "&::-webkit-scrollbar-thumb": { background: "#ccc", borderRadius: "4px" }
+                }}
+            >
+                <List sx={{ px: 1.5 }}>
+                    {visibleItems.map((item) => (
                         <ListItemButton
-
-
                             key={item.path}
-
-
                             component={NavLink}
-
                             to={item.path}
-
-
                             sx={{
-
-                                margin: "5px 10px",
-
+                                margin: "4px 0",
                                 borderRadius: "10px",
-
+                                py: 1,
+                                px: 1.5,
                                 "&.active": {
-
-                                    background: "#e9e9f9",
-
-                                    color: "#010020"
-
+                                    background: "#e3f2fd",
+                                    color: "#0d47a1",
+                                    "& .MuiListItemIcon-root": {
+                                        color: "#1565c0"
+                                    },
+                                    "& .MuiListItemText-primary": {
+                                        color: "#0d47a1",
+                                        fontWeight: 700
+                                    }
+                                },
+                                "&:hover": {
+                                    background: "#f0f7ff",
+                                    "& .MuiListItemIcon-root": {
+                                        color: "#1976d2"
+                                    },
+                                    "& .MuiListItemText-primary": {
+                                        color: "#1565c0"
+                                    }
                                 }
-
                             }}
-
-
                         >
-
-
                             <ListItemIcon
-
                                 sx={{
-                                    color: "#010020"
+                                    color: "#1976d2",
+                                    minWidth: 40
                                 }}
-
                             >
-
                                 {item.icon}
-
                             </ListItemIcon>
-
-
                             <ListItemText
-                                sx={{
-                                    color: "#010020"
-                                }}
+                                sx={{ color: "#0d47a1" }}
                                 primary={item.name}
-
                             />
-
-
                         </ListItemButton>
+                    ))}
+                </List>
+            </Box>
 
+            <Divider sx={{ borderColor: "rgba(0,0,0,0.08)" }} />
 
-                    ))
-
-                }
-
-
-
-            </List>
-
-
+            <Box sx={{ p: 1.5 }}>
+                <Tooltip title="Sign Out">
+                    <IconButton
+                        onClick={handleLogout}
+                        sx={{
+                            width: "100%",
+                            justifyContent: "flex-start",
+                            gap: 1,
+                            px: 1.5,
+                            py: 1,
+                            borderRadius: "10px",
+                            color: "#d32f2f",
+                            "&:hover": { background: "#ffebee" }
+                        }}
+                    >
+                        <LogoutIcon fontSize="small" />
+                        <Typography variant="body2" sx={{ fontWeight: 600 }}>Sign Out</Typography>
+                    </IconButton>
+                </Tooltip>
+            </Box>
         </Box>
-
-    )
-
-}
-
-
+    );
+};
 
 export default Sidebar;

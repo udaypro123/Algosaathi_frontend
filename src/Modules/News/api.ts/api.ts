@@ -6,6 +6,7 @@ import { ADD_NEWS, DELETE_NEWS, GET_NEWS, UPDATE_NEWS } from "../routes/routes";
 // you tube modules routes and api
 
 export const AddNewsdata= async (data: any) => {
+  console.log("data..............", data)
   const res = await api.post(ADD_NEWS, data);
   return res.data;
 };

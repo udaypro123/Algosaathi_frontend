@@ -115,9 +115,9 @@ const Home = () => {
             sx={{
                 minHeight: "100vh",
 
-                background: "#f8fafc",
+                background: "var(--global-bg)",
 
-                color: "#0f172a",
+                color: "var(--global-text)",
 
                 position: "relative",
 
@@ -474,6 +474,7 @@ const Home = () => {
                                 py: 1.2,
 
                                 mb: 4,
+                                mt:3,
 
                                 fontWeight: 700,
 

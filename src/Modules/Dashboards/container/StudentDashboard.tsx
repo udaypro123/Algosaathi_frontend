@@ -108,43 +108,29 @@ const DashboardWrapper = ({
         <Box
             sx={{
                 minHeight: "100vh",
-
                 px: {
                     xs: 1.5,
                     sm: 2,
                     md: 3,
                 },
-
                 py: {
                     xs: 2,
                     md: 3,
                 },
-
                 borderRadius: "2rem",
-
-                background: "linear-gradient(135deg,#f4f9fb 0%,#ffffff 45%,#f2f8fa 100%)",
-
                 position: "relative",
-
                 overflow: "hidden",
-                border: "1px solid rgba(0, 95, 132, 0.16)",
+                boxShadow: "0px 5px 10px #dee0e0",
 
                 "&::before": {
                     content: '""',
-
                     position: "absolute",
-
                     width: 450,
                     height: 450,
-
                     borderRadius: "50%",
-
                     background: "linear-gradient(135deg,#f4f9fb 0%,#ffffff 45%,#f2f8fa 100%)",
-                    border: "3px solid rgba(7, 92, 126, 1)",
-
                     top: -220,
                     right: -180,
-
                     animation:
                         "floatCircle 8s ease-in-out infinite",
                 },
@@ -160,7 +146,6 @@ const DashboardWrapper = ({
                     borderRadius: "50%",
 
                     // background: "rgba(5, 109, 132, 0.4)",
-                    border: "3px solid rgba(7, 92, 126, 0.81)",
                     bottom: -180,
                     left: -150,
 
@@ -186,8 +171,8 @@ const DashboardWrapper = ({
                 sx={{
                     width: {
                         xs: "95%",
-                        sm: "90%",
-                        md: "80%",
+                        sm: "95%",
+                        md: "95%",
                     },
 
                     mx: "auto",
@@ -310,40 +295,12 @@ const StudentDashboard = () => {
                 sx={{
                     p: {
                         xs: 3,
-                        sm: 4,
-                        md: 5,
+                        md: 4,
                     },
-
                     borderRadius: 5,
-
                     color: "#fff",
-
-                    overflow: "hidden",
-
-                    position: "relative",
-
-                    background:
-                        "linear-gradient(135deg,#043b52 0%,#075d7e 50%,#0b8792 100%)",
-
-                    boxShadow:
-                        "0 25px 60px rgba(4,59,82,0.18)",
-
-                    animation:
-                        "heroEntry 0.8s ease",
-
-                    "@keyframes heroEntry": {
-                        from: {
-                            opacity: 0,
-                            transform:
-                                "translateY(20px)",
-                        },
-
-                        to: {
-                            opacity: 1,
-                            transform:
-                                "translateY(0)",
-                        },
-                    },
+                    background: "linear-gradient(90deg, rgba(0, 0, 82, 1) 0%, rgba(25, 25, 158, 1) 60%, rgba(0, 0, 82, 1) 100%)",
+                    boxShadow: "0 25px 55px rgba(23,37,84,0.18)",
                 }}
             >
 
@@ -386,7 +343,7 @@ const StudentDashboard = () => {
                                         "block",
 
                                     color:
-                                        "#7de3df",
+                                        "#d5d1f3",
 
                                     mt: 0.5,
                                     fontSize: {
@@ -509,7 +466,7 @@ const StudentDashboard = () => {
                                 sx={{
                                     fontSize: 45,
                                     color:
-                                        "#7de3df",
+                                        "#fdfdff",
                                 }}
                             />
 
@@ -569,7 +526,7 @@ const StudentDashboard = () => {
                     mt: 2.5,
                     p: 2,
                     borderRadius: ".5rem",
-                    border: "3px solid rgba(10, 130, 177, 0.34)"
+                    border: "3px solid rgba(231, 231, 255, 0.34)"
                 }}
             >
 
@@ -623,7 +580,7 @@ const StudentDashboard = () => {
                                     "#fff",
 
                                 border:
-                                    "1px solid rgba(7,93,126,0.08)",
+                                    "1px solid rgba(7, 23, 126, 0.08)",
 
                                 transition:
                                     "all 0.3s ease",
@@ -633,7 +590,7 @@ const StudentDashboard = () => {
                                         "translateY(-6px)",
 
                                     boxShadow:
-                                        "0 18px 40px rgba(7,93,126,0.1)",
+                                        "0 18px 40px rgba(7, 17, 126, 0.1)",
                                 },
                             }}
                         >
@@ -649,8 +606,7 @@ const StudentDashboard = () => {
 
                                 <Avatar
                                     sx={{
-                                        background:
-                                            "linear-gradient(135deg,#075d7e,#14b8a6)",
+                                        background: "linear-gradient(90deg, rgba(0, 0, 82, 1) 0%, rgba(25, 25, 158, 1) 60%, rgba(0, 0, 82, 1) 100%)",
                                     }}
                                 >
                                     {
@@ -678,7 +634,7 @@ const StudentDashboard = () => {
                                                 900,
 
                                             color:
-                                                "#075d7e",
+                                                "#1d077e",
                                         }}
                                     >
                                         {
@@ -708,7 +664,7 @@ const StudentDashboard = () => {
                     mt: 5,
                     p: 2,
                     borderRadius: ".5rem",
-                    border: "3px solid rgba(10, 130, 177, 0.34)"
+                    border: "3px solid rgba(231, 231, 255, 0.34)"
                 }}
             >
 
@@ -765,7 +721,7 @@ const StudentDashboard = () => {
                                     borderRadius: 4,
 
                                     border:
-                                        "1px solid rgba(7,93,126,0.08)",
+                                        "1px solid rgba(11, 7, 126, 0.08)",
 
                                     cursor:
                                         "pointer",
@@ -778,15 +734,14 @@ const StudentDashboard = () => {
                                             "translateY(-5px)",
 
                                         boxShadow:
-                                            "0 15px 35px rgba(7,93,126,0.1)",
+                                            "0 15px 35px rgba(7, 17, 126, 0.1)",
                                     },
                                 }}
                             >
 
                                 <Avatar
                                     sx={{
-                                        background:
-                                            "linear-gradient(135deg,#075d7e,#14b8a6)",
+                                        background: "linear-gradient(90deg, rgba(0, 0, 82, 1) 0%, rgba(25, 25, 158, 1) 60%, rgba(0, 0, 82, 1) 100%)",
 
                                         mb: 2,
                                     }}
@@ -821,7 +776,7 @@ const StudentDashboard = () => {
                                         mt: 2,
 
                                         color:
-                                            "#075d7e",
+                                            "#07117e",
                                     }}
                                 />
 
@@ -845,7 +800,7 @@ const StudentDashboard = () => {
                     mt: 5,
                     p: 2,
                     borderRadius: ".5rem",
-                    border: "3px solid rgba(10, 130, 177, 0.34)"
+                    border: "3px solid rgba(231, 231, 255, 0.34)"
                 }}
             >
 
@@ -894,7 +849,7 @@ const StudentDashboard = () => {
                                     borderRadius: 4,
 
                                     border:
-                                        "1px solid rgba(7,93,126,0.08)",
+                                        "1px solid rgba(7, 11, 126, 0.08)",
 
                                     transition:
                                         "all 0.3s ease",
@@ -904,7 +859,7 @@ const StudentDashboard = () => {
                                             "translateY(-6px)",
 
                                         boxShadow:
-                                            "0 20px 45px rgba(7,93,126,0.1)",
+                                            "0 20px 45px rgba(7, 37, 126, 0.1)",
                                     },
                                 }}
                             >
@@ -919,8 +874,7 @@ const StudentDashboard = () => {
                                             width: 58,
                                             height: 58,
 
-                                            background:
-                                                "linear-gradient(135deg,#075d7e,#14b8a6)",
+                                            background: "linear-gradient(90deg, rgba(0, 0, 82, 1) 0%, rgba(25, 25, 158, 1) 60%, rgba(0, 0, 82, 1) 100%)",
                                         }}
                                     >
                                         {
@@ -961,7 +915,7 @@ const StudentDashboard = () => {
                                                 size="small"
                                                 sx={{
                                                     color:
-                                                        "#075d7e",
+                                                        "#070b7e",
 
                                                     background:
                                                         "#eaf7f8",
@@ -1021,8 +975,7 @@ const StudentDashboard = () => {
                                                 height:
                                                     "100%",
 
-                                                background:
-                                                    "linear-gradient(90deg,#075d7e,#14b8a6)",
+                                                background: "linear-gradient(90deg, rgba(0, 0, 82, 1) 0%, rgba(25, 25, 158, 1) 60%, rgba(0, 0, 82, 1) 100%)",
 
                                                 borderRadius:
                                                     10,
@@ -1066,7 +1019,7 @@ const StudentDashboard = () => {
                     background:
                         "linear-gradient(135deg,#fff4f3,#ffffff)",
 
-                    border: "3px solid rgba(10, 130, 177, 0.34)"
+                    border: "3px solid rgba(231, 231, 255, 0.34)"
                 }}
             >
 

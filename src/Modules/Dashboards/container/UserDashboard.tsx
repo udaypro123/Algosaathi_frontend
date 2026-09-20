@@ -33,6 +33,7 @@ import { getAllUsers } from "../api/api";
 
 import "../css/UserDashboard.css";
 import PostCard from "../../../common/PostCard";
+import { getUserRole } from "../../../utils/auth";
 // import type { PostCardProps } from "../api/interface";
 
 
@@ -281,6 +282,8 @@ const NotificationItem = ({ notification }: { notification: any }) => {
 
 const UserDashboard = () => {
     const navigate = useNavigate();
+    const user= getUserRole()
+    console.log("user------------>", user)
 
     const { displayUsers, loadingUsers } = useUserCount();
 
@@ -328,9 +331,11 @@ const UserDashboard = () => {
                         </Typography>
 
                         <Typography className="dashboard-heading">
-                            Welcome back 👋
+                            Welcome back 👋 
                         </Typography>
-
+                        <Typography className="dashboard-eyebrow">
+                           User Dashboard
+                        </Typography>
                         {/* <Typography className="dashboard-subheading">
                             Stay informed, stay connected and be part of meaningful
                             conversations.
@@ -447,7 +452,7 @@ const UserDashboard = () => {
                             </Button> */}
                         </Stack>
 
-                        <Stack spacing={2} sx={{display:"flex", flexDirection:"column", gap: ".5rem", alignItems:"center", border:"1px solid #fcfdfd", borderRadius:"1rem", padding: "1rem", backgroundColor:"#f8f8f9", }}>
+                        <Stack spacing={2} sx={{display:"flex", flexDirection:"column", gap: ".5rem", alignItems:"center", border:"1px solid #fcfcfd", borderRadius:"1rem", padding: "1rem", backgroundColor:"var(--global-bg)", }}>
                             {posts?.map((post: any, index:any) => (
                                 <Box key={index}>
                                 <PostCard postData={post}/>
@@ -464,7 +469,7 @@ const UserDashboard = () => {
                         <Paper className="notifications-card" elevation={0}>
 
                             <Stack
-                                sx={{ direction: "row", justifyContent: "space-between", alignItems: "center",boxShadow: "0px 4px 3px rgba(4, 108, 113, 0.77)",}}
+                                sx={{ direction: "row", justifyContent: "space-between", alignItems: "center",boxShadow: "0px 4px 3px rgba(9, 4, 113, 0.77)",}}
                                 className="notifications-header"
                             >
                                 <Box>
