@@ -24,11 +24,18 @@ import {
     type Variants,
 } from "framer-motion";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
 import api from "../../API/api";
 import { setAuthData } from "../../utils/auth";
+import { googleAuth } from "../../API/googleAuth";
+
+declare global {
+    interface Window {
+        google?: any;
+    }
+}
 
 
 interface LoginForm {
@@ -318,6 +325,43 @@ const Login = () => {
         navigate("/signup");
     };
 
+    const handleGoogleLogin = async (response: any) => {
+        try {
+            setLoading(true);
+            setError(null);
+            
+            const idToken = response.credential;
+            const result = await googleAuth(idToken);
+            
+            setAuthData(result.data.tokens.accessToken, result.data.user);
+            navigate("/dashboard");
+        } catch (err: any) {
+            setError(err?.response?.data?.message || "Google login failed. Please try again.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const googleButtonRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (window.google && googleButtonRef.current) {
+            window.google.accounts.id.initialize({
+                client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID || "",
+                callback: handleGoogleLogin,
+            });
+            window.google.accounts.id.renderButton(
+                googleButtonRef.current,
+                {
+                    theme: "outline",
+                    size: "large",
+                    width: "100%",
+                    text: "signin_with",
+                }
+            );
+        }
+    }, []);
+
     /* =========================================================
        UI
     ========================================================= */
@@ -327,8 +371,10 @@ const Login = () => {
         <Box
             sx={{
 
-                minHeight:
-                    "100vh",
+                minHeight: {
+                    xs: "auto",
+                    md: "100vh",
+                },
 
                 width:
                     "100%",
@@ -480,56 +526,30 @@ const Login = () => {
 
                 <Box
                     sx={{
-                        width:"100%",
-                        background:  "rgba(255,255,255,0.92)",
-                        backdropFilter:  "blur(20px)",
-                        WebkitBackdropFilter: "blur(20px)",
-
-                        borderRadius:
-                        {
-                            xs: "22px",
-                            md: "28px",
+                        width: "100%",
+                        background: "#ffffff",
+                        borderRadius: {
+                            xs: "24px",
+                            md: "32px",
                         },
-
-                        p:
-                        {
-                            xs: 2.5,
+                        p: {
+                            xs: 3,
                             sm: 4,
                             md: 5,
                         },
-
-                        boxShadow:
-                            "0 30px 80px rgba(15,23,42,0.12)",
-
-                        position:  "relative",
-
-                        overflow:  "hidden",
-
-
-                        /* TOP ACCENT */
+                        boxShadow: "0 25px 70px rgba(15,23,42,0.08)",
+                        position: "relative",
+                        overflow: "hidden",
+                        border: "1px solid rgba(226,232,240,0.8)",
 
                         "&::before": {
-
-                            content:
-                                '""',
-
-                            position:
-                                "absolute",
-
-                            top:
-                                0,
-
-                            left:
-                                0,
-
-                            right:
-                                0,
-
-                            height:
-                                "4px",
-
-                            // background:
-                            //     "linear-gradient(90deg,#2563eb,#0284c7,#06b6d4)",
+                            content: '""',
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            height: "5px",
+                            background: "linear-gradient(90deg,#2563eb,#0284c7,#06b6d4)",
                         },
                     }}
                 >
@@ -1200,6 +1220,20 @@ const Login = () => {
                         />
 
                     </Stack>
+
+
+                    {/* =================================================
+                        GOOGLE LOGIN
+                    ================================================= */}
+
+                    {/* <Box
+                        ref={googleButtonRef}
+                        sx={{
+                            display: "flex",
+                            justifyContent: "center",
+                            mb: 2,
+                        }}
+                    /> */}
 
 
                     {/* =================================================

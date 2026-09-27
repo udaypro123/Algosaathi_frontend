@@ -139,7 +139,10 @@ const AuthLayout = () => {
         <Box
             sx={{
                 width: "100%",
-                height: "100vh",
+                height: {
+                    xs: "auto",
+                    md: "100vh"
+                },
                 minHeight: "100vh",
 
                 position: "relative",
@@ -148,7 +151,11 @@ const AuthLayout = () => {
                 alignItems: "center",
                 justifyContent: "center",
 
-                overflow: "hidden",
+                overflowX: "hidden",
+                overflowY: {
+                    xs: "auto",
+                    md: "hidden"
+                },
 
                 boxSizing: "border-box",
 
@@ -414,7 +421,10 @@ const AuthLayout = () => {
 
                     zIndex: 2,
 
-                    overflow: "hidden",
+                    overflow: {
+                        xs: "visible",
+                        md: "hidden"
+                    },
 
                     borderRadius: {
                         xs: 3,

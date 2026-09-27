@@ -25,10 +25,12 @@ import {
 } from "@mui/icons-material";
 
 import { motion, type Variants } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
 import api from "../../API/api";
+import { googleAuth } from "../../API/googleAuth";
+import { setAuthData } from "../../utils/auth";
 
 
 interface SignupForm {
@@ -290,6 +292,42 @@ const Signup = () => {
         }
     };
 
+    const handleGoogleSignup = async (response: any) => {
+        try {
+            setLoading(true);
+            setError(null);
+            
+            const idToken = response.credential;
+            const result = await googleAuth(idToken);
+            
+            setAuthData(result.data.tokens.accessToken, result.data.user);
+            navigate("/dashboard");
+        } catch (err: any) {
+            setError(err?.response?.data?.message || "Google sign up failed. Please try again.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const googleButtonRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (window.google && googleButtonRef.current) {
+            window.google.accounts.id.initialize({
+                client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID || "",
+                callback: handleGoogleSignup,
+            });
+            window.google.accounts.id.renderButton(
+                googleButtonRef.current,
+                {
+                    theme: "outline",
+                    size: "large",
+                    width: "100%",
+                    text: "signup_with",
+                }
+            );
+        }
+    }, []);
 
     /* =========================================================
        INPUT STYLE
@@ -301,31 +339,32 @@ const Signup = () => {
 
             borderRadius: "14px",
 
-            backgroundColor: "rgb(247, 249, 251)",
+            backgroundColor: "#ffffff",
 
             transition: "all 0.25s ease",
 
             "& fieldset": {
-                borderColor: "#ffffff",
-                borderWidth: "2px",
+                borderColor: "#e2e8f0",
+                borderWidth: "1px",
             },
 
             "&:hover": {
-                backgroundColor: "rgb(247, 249, 251)",
+                backgroundColor: "#ffffff",
 
                 "& fieldset": {
-                    borderColor: "#ffffff",
+                    borderColor: "#93c5fd",
                 },
             },
 
             "&.Mui-focused": {
                 backgroundColor: "#ffffff",
+
+                boxShadow: "0 0 0 4px rgba(37,99,235,0.08)",
             },
 
-            /* Focus hone par blue border nahi */
             "&.Mui-focused fieldset": {
-                borderColor: "#ffffff",
-                borderWidth: "2px",
+                borderColor: "#2563eb",
+                borderWidth: "1.5px",
             },
         },
 
@@ -335,48 +374,23 @@ const Signup = () => {
         },
 
         "& .MuiInputLabel-root.Mui-focused": {
-            color: "#000000",
+            color: "#2563eb",
         },
 
         "& .MuiOutlinedInput-input": {
-            color: "#030408",
+            color: "#0f172a",
             fontSize: "14px",
             fontWeight: 500,
         },
 
         "& .MuiOutlinedInput-input::placeholder": {
-            color: "#080e1553",
+            color: "#94a3b8",
             opacity: 1,
         },
 
         "& .MuiInputAdornment-root svg": {
             color: "#64748b",
             fontSize: 21,
-        },
-
-        /* Chrome Autofill / Suggestion Background */
-        "& input:-webkit-autofill": {
-            WebkitBoxShadow:
-                "0 0 0 1000px rgb(247, 249, 251) inset",
-
-            WebkitTextFillColor:
-                "#030408",
-
-            transition:
-                "background-color 9999s ease-in-out 0s",
-        },
-
-        "& input:-webkit-autofill:hover": {
-            WebkitBoxShadow:
-                "0 0 0 1000px rgb(247, 249, 251) inset",
-        },
-
-        "& input:-webkit-autofill:focus": {
-            WebkitBoxShadow:
-                "0 0 0 1000px #ffffff inset",
-
-            WebkitTextFillColor:
-                "#030408",
         },
     };
 
@@ -387,7 +401,10 @@ const Signup = () => {
     return (
         <Box
             sx={{
-                minHeight: "100vh",
+                minHeight: {
+                    xs: "auto",
+                    md: "100vh",
+                },
 
                 width: "100%",
 
@@ -503,57 +520,30 @@ const Signup = () => {
 
                 <Box
                     sx={{
-                        width:
-                            "100%",
-
-                        background: "white",
-
-                        backdropFilter:
-                            "blur(20px)",
-
-                        WebkitBackdropFilter:
-                            "blur(20px)",
-
-                        // border:  "1px solid rgba(148,163,184,0.25)",
-
+                        width: "100%",
+                        background: "#ffffff",
                         borderRadius: {
-                            xs: "22px",
-                            md: "30px",
+                            xs: "24px",
+                            md: "32px",
                         },
-
                         p: {
-                            xs: 2.5,
+                            xs: 3,
                             sm: 4,
                             md: 5,
                         },
-
-                        boxShadow:
-                            "0 30px 90px rgba(15,23,42,0.10)",
-
-                        position:
-                            "relative",
-
-                        overflow:
-                            "hidden",
+                        boxShadow: "0 25px 70px rgba(15,23,42,0.08)",
+                        position: "relative",
+                        overflow: "hidden",
+                        border: "1px solid rgba(226,232,240,0.8)",
 
                         "&::before": {
-                            content:
-                                '""',
-
-                            position:
-                                "absolute",
-
+                            content: '""',
+                            position: "absolute",
                             top: 0,
-
                             left: 0,
-
                             right: 0,
-
-                            height:
-                                "4px",
-
-                            // background:
-                            //     "linear-gradient(90deg,#2563eb,#0284c7,#06b6d4)",
+                            height: "5px",
+                            background: "linear-gradient(90deg,#2563eb,#0284c7,#06b6d4)",
                         },
                     }}
                 >
@@ -1436,6 +1426,20 @@ const Signup = () => {
                             }}
                         />
                     </Stack>
+
+
+                    {/* =================================================
+                        GOOGLE SIGN UP
+                    ================================================= */}
+
+                    {/* <Box
+                        ref={googleButtonRef}
+                        sx={{
+                            display: "flex",
+                            justifyContent: "center",
+                            mb: 2,
+                        }}
+                    /> */}
 
 
                     {/* =================================================
