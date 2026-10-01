@@ -200,7 +200,7 @@ const CreateComplaint: React.FC = () => {
     const videoInputRef = useRef<HTMLInputElement>(null);
 
     const [images, setImages] = useState<ImageFile[]>([]);
-    const [video, setVideo] = useState<File | null>(null);
+    const [, setVideo] = useState<File | null>(null);
     const [videoPreview, setVideoPreview] = useState<string | null>(null);
 
     const [formData, setFormData] = useState<ComplaintFormData>({
@@ -233,10 +233,6 @@ const CreateComplaint: React.FC = () => {
 
     const selectedBlock = selectedDistrict?.blocks.find(
         (block) => block.id === formData.block
-    );
-
-    const selectedVillage = selectedBlock?.villages.find(
-        (village) => village.id === formData.village
     );
 
     const districts = selectedState?.districts ?? [];
@@ -452,20 +448,6 @@ const CreateComplaint: React.FC = () => {
             return;
         }
 
-        const complaintPayload = {
-            ...formData,
-
-            stateName: selectedState?.name ?? "",
-            districtName: selectedDistrict?.name ?? "",
-            blockName: selectedBlock?.name ?? "",
-            villageName: selectedVillage?.name ?? "",
-
-            images: images.map((image) => image.file),
-
-            video,
-        };
-
-        console.log("Complaint Payload:", complaintPayload);
     };
 
     /* ------------------------------------------------------------------------ */

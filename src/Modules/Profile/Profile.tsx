@@ -105,8 +105,6 @@ const Profile = () => {
         e: React.ChangeEvent<HTMLInputElement>
     ) => {
         const file = e.target.files?.[0];
-        console.log("file", file)
-
         if (!file) {
             return;
         }
@@ -129,28 +127,14 @@ const Profile = () => {
             // IMPORTANT: backend expects "file"
             formData.append("file", file);
 
-            console.log("file:", file);
-            console.log("formData file:", formData.get("file"));
-            console.log("formData entries:", [...formData.entries()]);
-
             const response = await api.post(
                 "/fileUpload/upload",
                 formData
             );
 
-            console.log(
-                "Cloudinary response:",
-                response.data
-            );
-
             setProfileImage(response.data.url);
 
         } catch (error: any) {
-            console.error(
-                "Image upload failed:",
-                error
-            );
-
             alert(
                 error?.response?.data?.error ||
                 "Unable to upload profile image."

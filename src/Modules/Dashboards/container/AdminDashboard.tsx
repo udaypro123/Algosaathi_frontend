@@ -130,16 +130,11 @@ const useUserCount = () => {
                 setLoadingUsers(true);
 
                 const response = await getAllUsers();
-                console.log("responce------------>", response)
-
                 const count = response?.pagination?.count ?? 0;
 
                 setTotalUsers(Number(count) - 1);
-            } catch (error) {
-                console.error(
-                    "Failed to fetch user count:",
-                    error
-                );
+            } catch {
+                return;
             } finally {
                 setLoadingUsers(false);
             }
@@ -210,15 +205,10 @@ const AdminDashboard = () => {
 
                 const allyoutubePost = await getAllYoutubePost()
                 const allUsersQuery = await getAllUsersQuery()
-                console.log("response data ---------->", allyoutubePost, allUsersQuery)
-
                 setvideoCount(allyoutubePost?.data?.length || 0)
                 setRequestCount(allUsersQuery?.data?.pagination?.count || 0)
-            } catch (error) {
-                console.error(
-                    "Failed to fetch user count:",
-                    error
-                );
+            } catch {
+                return;
             } finally {
 
             }

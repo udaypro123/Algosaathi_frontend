@@ -178,7 +178,6 @@ const AddNews = () => {
     const [error, setError] = useState("");
     const [editingNewsId, setEditingNewsId] = useState<string | null>(null);
     const [openNewsDialog, setOpenNewsDialog] = useState(false);
-    console.log("newsList................ ,", newsList)
 
 
     // ==================================================
@@ -360,8 +359,8 @@ const AddNews = () => {
         try {
             await deleteNews(newsItem?._id);
             fetchNews()
-        } catch (error) {
-            console.log("error", error)
+        } catch {
+            return;
         }
     };
 
@@ -408,8 +407,6 @@ const AddNews = () => {
             const response = await getAllNews()
 
             // const data = await response.json();
-            console.log("response ..................", response)
-
             if (!response.success) {
 
                 throw new Error(
@@ -421,7 +418,6 @@ const AddNews = () => {
 
             const news = response?.data || [];
 
-            console.log("newsnewsnewsnewsnews", news)
             setNewsList(Array.isArray(news) ? news : []);
 
         } catch (err) {

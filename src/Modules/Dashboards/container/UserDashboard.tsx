@@ -33,7 +33,6 @@ import { getAllUsers } from "../api/api";
 
 import "../css/UserDashboard.css";
 import PostCard from "../../../common/PostCard";
-import { getUserRole } from "../../../utils/auth";
 // import type { PostCardProps } from "../api/interface";
 
 
@@ -170,8 +169,8 @@ const useUserCount = () => {
                 if (!mounted) return;
 
                 setTotalUsers(target);
-            } catch (error) {
-                console.error("Unable to fetch users:", error);
+            } catch {
+                return;
             } finally {
                 if (mounted) {
                     setLoadingUsers(false);
@@ -282,9 +281,6 @@ const NotificationItem = ({ notification }: { notification: any }) => {
 
 const UserDashboard = () => {
     const navigate = useNavigate();
-    const user= getUserRole()
-    console.log("user------------>", user)
-
     const { displayUsers, loadingUsers } = useUserCount();
 
     const handleComplaint = () => {

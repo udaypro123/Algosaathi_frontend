@@ -208,16 +208,11 @@ const useUserCount = () => {
                 setLoadingUsers(true);
 
                 const response = await getAllUsers();
-                console.log("responce------------>", response)
-
                 const count = response?.pagination?.count ?? 0;
 
                 setTotalUsers(Number(count) - 1);
-            } catch (error) {
-                console.error(
-                    "Failed to fetch user count:",
-                    error
-                );
+            } catch {
+                return;
             } finally {
                 setLoadingUsers(false);
             }

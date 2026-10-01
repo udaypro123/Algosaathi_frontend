@@ -42,18 +42,11 @@ const AdminSurveyPage = () => {
 
                 const response = await getAllUsersQuery();
 
-                console.log("Survey Response:", response);
-
                 setSurveys(
                     response?.data?.users || []
                 );
 
             } catch (error: any) {
-
-                console.error(
-                    "Failed to fetch surveys:",
-                    error
-                );
 
                 setError(
                     error?.response?.data?.message ||

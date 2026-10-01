@@ -16,7 +16,6 @@ export const updateYoutubePost= async (data: any) => {
 };
 
 export const deleteYoutubePost = async (id: string) => {
-    console.log("checking arguments in api.ts", id)
   const res = await api.delete(DELETE_YOUTUBE_POST, {
     data: { id },
   });
@@ -56,7 +55,6 @@ export const UpdateClient= async (data: any) => {
 };
 
 export const DeleteClient = async (id: string) => {
-    console.log("checking arguments in api.ts", id)
   const res = await api.delete(DELETE_CLIENT, {
     data: { id },
   });

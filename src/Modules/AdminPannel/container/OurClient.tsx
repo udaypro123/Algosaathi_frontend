@@ -185,7 +185,6 @@ const OurClient = () => {
     ) => {
 
         const data = response?.data || response?.data?.data || {};
-        console.log("data-----> ", data)
 
         return {
             clients: data || [],
@@ -239,12 +238,6 @@ const OurClient = () => {
 
 
             } catch (error: any) {
-
-                console.error(
-                    "Get clients error:",
-                    error
-                );
-
 
                 setSnackbar({
                     open: true,
@@ -450,7 +443,6 @@ const OurClient = () => {
             }
 
             const resposnse = await addClient(payload);
-            console.log(resposnse)
 
             showToast(resposnse.message, "success")
 
@@ -546,12 +538,6 @@ const OurClient = () => {
 
 
         } catch (error: any) {
-
-            console.error(
-                "Save client error:",
-                error
-            );
-
 
             setSnackbar({
                 open: true,
@@ -662,12 +648,6 @@ const OurClient = () => {
 
 
         } catch (error: any) {
-
-            console.error(
-                "Delete client error:",
-                error
-            );
-
 
             setSnackbar({
                 open: true,

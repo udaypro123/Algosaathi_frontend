@@ -9,12 +9,7 @@ publicApi.interceptors.response.use(
     (response) => response,
 
     (error) => {
-        console.error("Public API Error:", {
-            message: error.message,
-            response: error.response?.data,
-            status: error.response?.status,
-            url: error.config?.url,
-        });
+        console.error("Public API request failed", error.response?.status ?? "Network error");
 
         return Promise.reject(error);
     }

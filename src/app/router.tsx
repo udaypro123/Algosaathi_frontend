@@ -30,9 +30,25 @@ const Home = lazyWithRetry(() => import("../Modules/Home/Home"));
 const Footer = lazyWithRetry(() => import("../common/Footer"));
 const SEO = lazyWithRetry(() => import("../seo/SEO"));
 const PublicHeader = lazyWithRetry(() => import("../common/PublicHeader"));
+const PrivacyPolicy = lazyWithRetry(() => import("../Modules/Privacy/PrivacyPolicy"));
 
 
 export const router = createBrowserRouter([
+    {
+        path: "/privacy-policy",
+        element: (
+            <>
+                <SEO
+                    title="Privacy Policy"
+                    description="Read how AlgoSaathi collects, uses, and protects information on its website and mobile app."
+                    canonical="https://algosaathi.com/privacy-policy"
+                />
+                <PublicHeader />
+                <PrivacyPolicy />
+                <Footer />
+            </>
+        )
+    },
     {
         path: "/",
         element: (

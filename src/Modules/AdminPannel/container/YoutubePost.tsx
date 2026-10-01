@@ -101,7 +101,6 @@ const YoutubePost = () => {
        YOUTUBE POSTS STATE
     ====================================================== */
     const userRole = getUserRole();
-    console.log("userRole", userRole)
 
     const [posts, setPosts] = useState<YoutubePostData[]>([]);
 
@@ -176,8 +175,6 @@ const YoutubePost = () => {
         if (!user) {
             return "";
         }
-        console.log("user data ------->", user)
-
         return (
             user.ownerId ||
             user._id ||
@@ -318,17 +315,11 @@ const YoutubePost = () => {
             setLoadingPosts(true);
 
             const response = await getAllYoutubePost()
-            console.log("response data ---------->", response)
 
             setPosts(response.data?.data || response.data || []);
 
-        } catch (error) {
-
-            console.error(
-                "Unable to fetch YouTube posts:",
-                error
-            );
-
+        } catch {
+            return;
         } finally {
 
             setLoadingPosts(false);
@@ -604,8 +595,7 @@ const YoutubePost = () => {
                 await updateYoutubePost({ ...payload, postId: editingPost._id })
 
             } else {
-                const response = await addYoutubePost(payload)
-                console.log("response data ", response)
+                await addYoutubePost(payload)
                 // await api.post( "/youtubePost",  payload);
             }
             await fetchPosts()
@@ -613,12 +603,6 @@ const YoutubePost = () => {
             handleCloseDialog();
 
         } catch (error: any) {
-
-            console.error(
-                "Unable to save YouTube post:",
-                error
-            );
-
 
             alert(
                 error?.response?.data?.message ||
@@ -657,7 +641,6 @@ const YoutubePost = () => {
 
         try {
 
-            console.log("post ----->", post)
             let Id: string = post?._id
 
             await deleteYoutubePost(Id)
@@ -670,12 +653,6 @@ const YoutubePost = () => {
             await fetchPosts();
 
         } catch (error: any) {
-
-            console.error(
-                "Unable to delete YouTube post:",
-                error
-            );
-
 
             alert(
                 error?.response?.data?.message ||

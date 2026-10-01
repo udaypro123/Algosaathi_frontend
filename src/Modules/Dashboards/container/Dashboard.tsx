@@ -8,8 +8,6 @@ const Dashboard = () => {
 
     const userRole = getUserRole();
 
-    console.log("User Role:", userRole);
-
     if (userRole === "admin") {
         return <AdminDashboard />;
     }

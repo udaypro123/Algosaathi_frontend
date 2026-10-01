@@ -172,12 +172,6 @@ const News = () => {
 
       const response = await getAllNews();
 
-      console.log(
-        "NEWS RESPONSE:",
-        response
-      );
-
-
       if (!response.success) {
 
         throw new Error(
@@ -190,12 +184,6 @@ const News = () => {
 
       const news =
         response?.data || [];
-
-
-      console.log(
-        "NEWS DATA:",
-        news
-      );
 
 
       setNewsList(

@@ -117,8 +117,7 @@ const AdminTemplateManager = () => {
                 ? response
                 : response?.data ?? response?.templates ?? [];
             setTemplates(list);
-        } catch (error) {
-            console.error("Failed to fetch templates:", error);
+        } catch {
             showToast("Failed to load templates.", "error");
         } finally {
             setLoading(false);
@@ -203,8 +202,7 @@ const AdminTemplateManager = () => {
             }
             await fetchTemplates();
             resetForm();
-        } catch (error) {
-            console.error("Template save failed:", error);
+        } catch {
             showToast("Could not save template. Check backend endpoint.", "error");
         } finally {
             setSaving(false);
@@ -247,8 +245,7 @@ const AdminTemplateManager = () => {
             await fetchTemplates();
             if (editingId === id) resetForm();
             showToast("Template deleted successfully.", "success");
-        } catch (error) {
-            console.error("Delete failed:", error);
+        } catch {
             showToast("Could not delete template.", "error");
         } finally {
             setDeleteTarget(null);

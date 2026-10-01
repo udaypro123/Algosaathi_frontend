@@ -300,10 +300,6 @@ const Login = () => {
 
 
         } catch (err: any) {
-
-            console.error(err);
-
-
             setError(
                 err?.response?.data?.message ||
                 "Invalid email or password."

@@ -8,9 +8,6 @@ import {
     Chip,
     Container,
     Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
     FormControl,
     Grid,
     IconButton,
@@ -68,7 +65,6 @@ const TemplateLibrary = () => {
     const [toast, setToast] = useState<string | null>(null);
     const [previewTemplate, setPreviewTemplate] = useState<any | null>(null);
     const [previewIndex, setPreviewIndex] = useState(0);
-    const [descriptionTarget, setDescriptionTarget] = useState<any | null>(null);
 
     const categories = useMemo(() => {
         const uniqueCategories = Array.from(
@@ -91,8 +87,7 @@ const TemplateLibrary = () => {
                     ? response
                     : response?.data ?? response?.templates ?? [];
                 setTemplates(list);
-            } catch (error) {
-                console.error("Failed to fetch templates:", error);
+            } catch {
                 setTemplates([]);
             } finally {
                 setLoading(false);
@@ -404,11 +399,10 @@ const TemplateLibrary = () => {
                         const previewImages = getTemplateImages(template);
                         const imageKey = String(template?._id ?? template.id ?? template.title ?? "template");
                         const activePreviewIndex = activeImageMap[imageKey] ?? 0;
-                        const templateTags = normalizeTags(template);
 
                         return (
                             <Grid
-                                size={{ xs: 12, sm: 6, lg: 4 }}
+                                size={{ xs: 12, sm: 6 }}
                                 key={template._id || template.id || template.title}
                             >
 
@@ -435,51 +429,17 @@ const TemplateLibrary = () => {
                                     <CardContent className="template-content">
 
                                         <Box className="template-top">
-
+                                            <Typography
+                                                variant="h6"
+                                                className="template-title"
+                                                title={template.title}
+                                            >
+                                                {template.title}
+                                            </Typography>
                                             <Chip
                                                 label={template.category || "General"}
                                                 className="template-chip"
                                             />
-
-                                        </Box>
-
-                                        <Typography
-                                            variant="h5"
-                                            className="template-title"
-                                        >
-                                            {template.title}
-                                        </Typography>
-
-
-                                        <Typography className="template-description">
-                                            {template.description && template.description.length > 250
-                                                ? `${template.description.slice(0, 150)}... `
-                                                : template.description}
-                                            {template.description && template.description.length > 250 && (
-                                                <Box
-                                                    component="span"
-                                                    sx={{
-                                                        color: "#2563eb",
-                                                        fontWeight: 700,
-                                                        cursor: "pointer",
-                                                        "&:hover": { textDecoration: "underline" },
-                                                    }}
-                                                    onClick={() => setDescriptionTarget(template)}
-                                                >
-                                                    Read more
-                                                </Box>
-                                            )}
-                                        </Typography>
-
-
-                                        <Box className="template-tags">
-
-                                            {templateTags.map((tag: string) => (
-                                                <span key={`${template._id || template.id || template.title}-${tag}`}>
-                                                    {tag}
-                                                </span>
-                                            ))}
-
                                         </Box>
 
 
@@ -587,6 +547,7 @@ const TemplateLibrary = () => {
                                     height: "100%",
                                     objectFit: "contain",
                                     display: "block",
+                                    background: "#fefeff",
                                     borderBottom: "3px solid rgba(252, 252, 252, 0.76)",
                                 }}
                             />
@@ -652,28 +613,6 @@ const TemplateLibrary = () => {
                         </Box>
                     </Box>
                 </Box>
-            </Dialog>
-
-            <Dialog
-                open={Boolean(descriptionTarget)}
-                onClose={() => setDescriptionTarget(null)}
-                maxWidth="sm"
-                fullWidth
-                slotProps={{ paper: { sx: { borderRadius: 3, p: 3 } } }}
-            >
-                <DialogTitle sx={{ pb: 1, fontWeight: 700 }}>
-                    {descriptionTarget?.title || "Template Description"}
-                </DialogTitle>
-                <DialogContent>
-                    <Typography variant="body1" sx={{ whiteSpace: "pre-wrap", lineHeight: 1.7 }}>
-                        {descriptionTarget?.description}
-                    </Typography>
-                </DialogContent>
-                <DialogActions sx={{ px: 3, pb: 2 }}>
-                    <Button onClick={() => setDescriptionTarget(null)} variant="contained">
-                        Close
-                    </Button>
-                </DialogActions>
             </Dialog>
 
             <Snackbar

@@ -129,7 +129,6 @@ const AuthLayout = () => {
 
     const location = useLocation();
     const showloginForm = location.pathname === "/login";
-    console.log("showloginForm", showloginForm)
 
     const handlBackHome = () => {
         navigate("/algosaathi")

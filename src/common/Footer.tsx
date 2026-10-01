@@ -236,6 +236,14 @@ const Footer = () => {
                         © 2026 algosaathi.com. All rights reserved.
                     </Typography>
 
+                    <Link
+                        href="/privacy-policy"
+                        underline="hover"
+                        sx={{ color: "#cbd5e1", fontSize: 13, whiteSpace: "nowrap" }}
+                    >
+                        Privacy Policy
+                    </Link>
+
                     <Typography
                         sx={{
                             color: "#64748b",

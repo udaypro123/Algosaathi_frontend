@@ -139,9 +139,7 @@ const SendQuery = () => {
         try {
             setLoading(true);
 
-            const response = await sendQuery(formData);
-
-            console.log("Query Submitted:", response);
+            await sendQuery(formData);
 
             setSnackbar({
                 open: true,
@@ -154,9 +152,7 @@ const SendQuery = () => {
                 navigate("/signup");
             }, 1200);
 
-        } catch (error) {
-            console.error("Query submission failed:", error);
-
+        } catch {
             setSnackbar({
                 open: true,
                 message:
