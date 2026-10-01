@@ -17,7 +17,7 @@ import EmailIcon from "@mui/icons-material/Email";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
-import PhoneIcon from "@mui/icons-material/Phone";
+// import PhoneIcon from "@mui/icons-material/Phone";
 import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
 import "../Templates/css/TemplateLibrary.css"
 
@@ -29,13 +29,13 @@ const contacts = [
     link: "mailto:chauhanuday842@gmail.com",
     color: "#1976d2",
   },
-  {
-    title: "Phone",
-    value: "+91 7827443304",
-    icon: <PhoneIcon />,
-    link: "tel:+917827443304",
-    color: "#2e7d32",
-  },
+  // {
+  //   title: "Phone",
+  //   value: "+91 7827443304",
+  //   icon: <PhoneIcon />,
+  //   link: "tel:+917827443304",
+  //   color: "#2e7d32",
+  // },
   {
     title: "GitHub",
     value: "github.com/udaypro123",
@@ -181,7 +181,7 @@ const Contact = () => {
                   Start a Conversation
                 </Button>
 
-                <Button
+                {/* <Button
                   component="a"
                   href="tel:+917827443304"
                   variant="outlined"
@@ -202,7 +202,7 @@ const Contact = () => {
                   }}
                 >
                   Let&apos;s Talk
-                </Button>
+                </Button> */}
               </Box>
             </Box>
           </Grid>
