@@ -26,7 +26,7 @@ import {
 
 import { motion, type Variants } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import api from "../../API/api";
 import { googleAuth } from "../../API/googleAuth";
@@ -46,6 +46,12 @@ interface SignupForm {
 
 const Signup = () => {
     const navigate = useNavigate();
+    const location = useLocation();
+    const returnTo = location.state?.from;
+    const destination = typeof returnTo?.pathname === "string"
+        && returnTo.pathname.startsWith("/")
+        ? `${returnTo.pathname}${returnTo.search || ""}${returnTo.hash || ""}`
+        : "/dashboard";
 
     const [form, setForm] = useState<SignupForm>({
         firstName: "",
@@ -277,7 +283,7 @@ const Signup = () => {
             );
 
 
-            navigate("/login");
+            navigate("/login", { state: location.state });
 
         } catch (err: any) {
 
@@ -300,7 +306,7 @@ const Signup = () => {
             const result = await googleAuth(idToken);
             
             setAuthData(result.data.tokens.accessToken, result.data.user);
-            navigate("/dashboard");
+            navigate(destination, { replace: true });
         } catch (err: any) {
             setError(err?.response?.data?.message || "Google sign up failed. Please try again.");
         } finally {
@@ -973,7 +979,7 @@ const Signup = () => {
                                         <MenuItem value="student">
                                             Student
                                         </MenuItem>
-                                        {/* <MenuItem value="student">
+                                        {/* <MenuItem value="admin">
                                             admin
                                         </MenuItem> */}
                                     </TextField>
@@ -1462,7 +1468,7 @@ const Signup = () => {
                         <Box
                             component="span"
                             onClick={() =>
-                                navigate("/login")
+                                navigate("/login", { state: location.state })
                             }
                             sx={{
                                 color:

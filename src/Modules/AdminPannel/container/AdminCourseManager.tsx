@@ -90,8 +90,7 @@ const AdminCourseManager = () => {
         setLoading(true);
         try {
             const data = await getAllCourses();
-            const list = Array.isArray(data) ? data : data?.data || data?.courses || [];
-            setCourses(list);
+            setCourses(data);
         } catch (err: any) {
             setError(err?.response?.data?.message || "Failed to load courses.");
         } finally {

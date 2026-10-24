@@ -41,6 +41,12 @@ export interface CourseItem {
   updatedAt?: string;
 }
 
+export interface CourseCatalogItem {
+  _id: string;
+  courseName: string;
+  chaptersCount: number;
+}
+
 export interface CoursePayload {
   courseName: string;
   chapters: Chapter[];

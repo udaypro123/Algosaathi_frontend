@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Box,
   Button,
@@ -15,13 +15,24 @@ import {
   IconButton,
   Chip,
   Divider,
+  LinearProgress,
+  InputAdornment,
+  Tabs,
+  Tab,
 } from "@mui/material";
 
 import ShareIcon from "@mui/icons-material/Share";
 import CommentIcon from "@mui/icons-material/Comment";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-import { getAllNews } from "./api.ts/api";
+import SearchIcon from "@mui/icons-material/Search";
+import {
+  getNewsByCategory,
+  getNewsCategories,
+} from "./api.ts/api";
+
+const DEFAULT_NEWS_IMAGE =
+  "https://res.cloudinary.com/dyxmtrlqg/image/upload/v1792822562/template-images/iv40i5ftwbxqtp7toy7r.jpg";
 
 
 
@@ -120,7 +131,30 @@ const News = () => {
   const [newsList, setNewsList] =
     useState<NewsItem[]>([]);
 
+  const [categories, setCategories] =
+    useState<string[]>([]);
+
+  const [selectedCategory, setSelectedCategory] =
+    useState("");
+
+  const selectedCategoryRef = useRef("");
+
+  const [searchText, setSearchText] = useState("");
+
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  const searchRef = useRef("");
+
+  const [loadingCategories, setLoadingCategories] =
+    useState(true);
+
   const [fetchingNews, setFetchingNews] =
+    useState(false);
+
+  const [fetchingMore, setFetchingMore] =
+    useState(false);
+
+  const [hasMore, setHasMore] =
     useState(false);
 
   const [error, setError] =
@@ -162,63 +196,173 @@ const News = () => {
   // FETCH NEWS
   // ==================================================
 
-  const fetchNews = async () => {
-
-    try {
-
-      setFetchingNews(true);
-
-      setError("");
-
-      const response = await getAllNews();
-
-      if (!response.success) {
-
-        throw new Error(
-          response?.message ||
-          "Failed to fetch news"
-        );
-
-      }
-
-
-      const news =
-        response?.data || [];
-
-
-      setNewsList(
-        Array.isArray(news)
-          ? news
-          : []
-      );
-
-    } catch (err) {
-
-      const message =
-        err instanceof Error
-          ? err.message
-          : "Failed to fetch news";
-
-      setError(message);
-
-    } finally {
-
-      setFetchingNews(false);
-
-    }
-
-  };
-
-
-  // ==================================================
-  // FETCH ON MOUNT
-  // ==================================================
+  const normalizeNews = (items: NewsItem[]): NewsItem[] =>
+    items.map((item) => ({
+      ...item,
+      images: Array.isArray(item.images) && item.images.length > 0
+        ? item.images
+        : [DEFAULT_NEWS_IMAGE],
+    }));
 
   useEffect(() => {
+    const timeout = window.setTimeout(() => {
+      setDebouncedSearch(searchText.trim());
+    }, 350);
+    return () => window.clearTimeout(timeout);
+  }, [searchText]);
 
-    fetchNews();
+  useEffect(() => {
+    let cancelled = false;
 
+    const fetchCategories = async () => {
+      try {
+        const result = await getNewsCategories();
+        if (cancelled) return;
+
+        const availableCategories = Array.isArray(result) ? result : [];
+        selectedCategoryRef.current = "all";
+        setCategories(availableCategories);
+        setSelectedCategory("all");
+      } catch (err) {
+        if (!cancelled) {
+          setError(err instanceof Error ? err.message : "Failed to load news categories.");
+        }
+      } finally {
+        if (!cancelled) {
+          setLoadingCategories(false);
+        }
+      }
+    };
+
+    fetchCategories();
+    return () => {
+      cancelled = true;
+    };
   }, []);
+
+  useEffect(() => {
+    if (!selectedCategory) return;
+
+    let cancelled = false;
+    const fetchCategoryNews = async () => {
+      setFetchingNews(true);
+      setHasMore(false);
+      setError("");
+      setActiveSlide(0);
+      setActiveImage(0);
+
+      try {
+        const response = await getNewsByCategory(
+          selectedCategory,
+          0,
+          9,
+          debouncedSearch,
+        );
+        if (!response.success) {
+          throw new Error(response.message || "Failed to fetch news.");
+        }
+
+        if (!cancelled) {
+          setNewsList(normalizeNews(Array.isArray(response.data) ? response.data : []));
+          setHasMore(Boolean(response.hasMore));
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setNewsList([]);
+          setError(err instanceof Error ? err.message : "Failed to fetch news.");
+        }
+      } finally {
+        if (!cancelled) {
+          setFetchingNews(false);
+        }
+      }
+    };
+
+    fetchCategoryNews();
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedCategory, debouncedSearch]);
+
+  const handleLoadMore = async () => {
+    if (!selectedCategory || fetchingMore || !hasMore) return;
+
+    const requestedCategory = selectedCategory;
+    const requestedSearch = debouncedSearch;
+    setFetchingMore(true);
+    setError("");
+    try {
+      const response = await getNewsByCategory(
+        requestedCategory,
+        newsList.length,
+        9,
+        requestedSearch,
+      );
+      if (!response.success) {
+        throw new Error(response.message || "Failed to load more news.");
+      }
+      if (selectedCategoryRef.current !== requestedCategory
+        || searchRef.current.trim() !== requestedSearch) return;
+
+      const nextItems = Array.isArray(response.data) ? response.data : [];
+      setNewsList((current) => [...current, ...normalizeNews(nextItems)]);
+      setHasMore(Boolean(response.hasMore));
+    } catch (err) {
+      if (selectedCategoryRef.current === requestedCategory
+        && searchRef.current.trim() === requestedSearch) {
+        setError(err instanceof Error ? err.message : "Failed to load more news.");
+      }
+    } finally {
+      setFetchingMore(false);
+    }
+  };
+
+  const categoryTabs = categories.length > 0 ? (
+    <Tabs
+      value={selectedCategory}
+      onChange={(_, category: string) => {
+        selectedCategoryRef.current = category;
+        setSelectedCategory(category);
+      }}
+      variant="scrollable"
+      scrollButtons="auto"
+      allowScrollButtonsMobile
+      sx={{ mb: 4, borderBottom: 1, borderColor: "divider" }}
+    >
+      <Tab value="all" label="All" sx={{ fontWeight: 700 }} />
+      {categories.map((category) => (
+        <Tab
+          key={category}
+          value={category}
+          label={category.replace(/\b\w/g, (letter) => letter.toUpperCase())}
+          sx={{ fontWeight: 700, textTransform: "capitalize" }}
+        />
+      ))}
+    </Tabs>
+  ) : null;
+
+  const newsSearch = (
+    <TextField
+      fullWidth
+      value={searchText}
+      onChange={(event) => {
+        searchRef.current = event.target.value;
+        setSearchText(event.target.value);
+      }}
+      placeholder="Search title, content, category, author, tags..."
+      aria-label="Search news"
+      sx={{ mb: 2.5, "& .MuiOutlinedInput-root": { borderRadius: 2 } }}
+      slotProps={{
+        input: {
+          startAdornment: (
+            <InputAdornment position="start">
+              <SearchIcon color="action" />
+            </InputAdornment>
+          ),
+        },
+      }}
+    />
+  );
 
 
   // ==================================================
@@ -497,24 +641,26 @@ const News = () => {
   // LOADING
   // ==================================================
 
-  if (fetchingNews) {
+  if (loadingCategories || (fetchingNews && !newsList.length)) {
 
     return (
 
       <Box
         sx={{
           minHeight: "100vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
           background:
             "var(--global-bg)",
+          pt: { xs: 12, md: 14 },
+          px: { xs: 2, sm: 3, md: 4 },
         }}
       >
-
-        <Typography>
-          Loading news...
-        </Typography>
+        <Box sx={{ maxWidth: 1200, mx: "auto" }}>
+          {newsSearch}
+          {categoryTabs}
+          <Typography sx={{ textAlign: "center", py: 8 }}>
+            Loading news...
+          </Typography>
+        </Box>
 
       </Box>
 
@@ -527,7 +673,7 @@ const News = () => {
   // ERROR
   // ==================================================
 
-  if (error) {
+  if (error && !newsList.length) {
 
     return (
 
@@ -540,15 +686,17 @@ const News = () => {
           background:
             "var(--global-bg)",
           px: 3,
+          pt: { xs: 12, md: 14 },
         }}
       >
 
-        <Typography
-          color="error"
-          sx={{ textAlign: "center" }}
-        >
-          {error}
-        </Typography>
+        <Box sx={{ width: "100%", maxWidth: 1200 }}>
+          {newsSearch}
+          {categoryTabs}
+          <Typography color="error" sx={{ textAlign: "center", py: 6 }}>
+            {error}
+          </Typography>
+        </Box>
 
       </Box>
 
@@ -568,24 +716,21 @@ const News = () => {
       <Box
         sx={{
           minHeight: "100vh",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
           background:
             "var(--global-bg)",
+          pt: { xs: 12, md: 14 },
+          px: { xs: 2, sm: 3, md: 4 },
         }}
       >
         <Box
           sx={{
             width: "100%",
-            display: "flex",
-            flexDirection:
-              "column",
-            textAlign: "center",
+            maxWidth: 1200,
+            mx: "auto",
           }}
         >
-
+          {newsSearch}
+          {categoryTabs}
           <Typography
             sx={{
               fontSize: {
@@ -619,8 +764,7 @@ const News = () => {
                 md: 18,
               },
               color: "grey",
-              textAlign:
-                "center",
+              textAlign: "center",
               mt: 0.5,
             }}
           >
@@ -633,9 +777,11 @@ const News = () => {
 
         </Box>
 
-        <Typography variant="h3" sx={{ mt: 5 }}>
-          No news available.
-        </Typography>
+          <Typography sx={{ mt: 5, textAlign: "center", color: "text.secondary" }}>
+            {selectedCategory
+              ? `No news available in ${selectedCategory}.`
+              : "No news available."}
+          </Typography>
 
       </Box>
 
@@ -763,6 +909,19 @@ const News = () => {
 
         </Box>
 
+        {newsSearch}
+        {categoryTabs}
+        {fetchingNews && (
+          <LinearProgress
+            sx={{
+              mb: 3,
+              borderRadius: 1,
+              "& .MuiLinearProgress-bar": {
+                transition: "transform 0.35s ease",
+              },
+            }}
+          />
+        )}
 
         {/* ==================================================
                     HERO + LATEST
@@ -1366,6 +1525,25 @@ const News = () => {
             )}
 
           </Box>
+
+          {error && (
+            <Typography color="error" sx={{ mt: 3, textAlign: "center" }}>
+              {error}
+            </Typography>
+          )}
+
+          {hasMore && (
+            <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+              <Button
+                variant="outlined"
+                onClick={handleLoadMore}
+                disabled={fetchingMore}
+                sx={{ textTransform: "none", fontWeight: 700 }}
+              >
+                {fetchingMore ? "Loading..." : "Load more news"}
+              </Button>
+            </Box>
+          )}
 
         </Box>
 

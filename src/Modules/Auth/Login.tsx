@@ -25,7 +25,7 @@ import {
 } from "framer-motion";
 
 import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import api from "../../API/api";
 import { setAuthData } from "../../utils/auth";
@@ -149,6 +149,12 @@ const inputStyles = {
 const Login = () => {
 
     const navigate = useNavigate();
+    const location = useLocation();
+    const returnTo = location.state?.from;
+    const destination = typeof returnTo?.pathname === "string"
+        && returnTo.pathname.startsWith("/")
+        ? `${returnTo.pathname}${returnTo.search || ""}${returnTo.hash || ""}`
+        : "/dashboard";
 
 
     const [form, setForm] =
@@ -296,7 +302,7 @@ const Login = () => {
             );
 
 
-            navigate("/dashboard");
+            navigate(destination, { replace: true });
 
 
         } catch (err: any) {
@@ -318,7 +324,7 @@ const Login = () => {
     ===================================================== */
 
     const handleSignup = () => {
-        navigate("/signup");
+        navigate("/signup", { state: location.state });
     };
 
     const handleGoogleLogin = async (response: any) => {
@@ -330,7 +336,7 @@ const Login = () => {
             const result = await googleAuth(idToken);
             
             setAuthData(result.data.tokens.accessToken, result.data.user);
-            navigate("/dashboard");
+            navigate(destination, { replace: true });
         } catch (err: any) {
             setError(err?.response?.data?.message || "Google login failed. Please try again.");
         } finally {

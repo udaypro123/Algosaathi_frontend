@@ -23,7 +23,12 @@ api.interceptors.response.use(
     (error) => {
         console.error("API request failed", error.response?.status ?? "Network error");
 
-        if (error.response?.status === 401) {
+        const requestPath = error.config?.url
+            ?.split("?")[0]
+            ?.replace(/\/$/, "");
+        const isLoginRequest = requestPath?.endsWith("/auth/login");
+
+        if (error.response?.status === 401 && !isLoginRequest) {
             localStorage.removeItem("token");
             window.location.href = "/login";
         }
@@ -33,4 +38,3 @@ api.interceptors.response.use(
 );
 
 export default api;
-

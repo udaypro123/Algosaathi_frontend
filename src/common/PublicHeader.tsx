@@ -17,6 +17,7 @@ import { Link, useLocation } from "react-router-dom";
 
 const navItems = [
     { label: "Templates", to: "/templates" },
+    { label: "Courses", to: "/availablecourses" },
     { label: "Create Complaint", to: "/signup" },
     { label: "News", to: "/news" },
     { label: "Contact", to: "/contact" },

@@ -1,5 +1,6 @@
 export const COURSE_BASE = "/course";
 
+export const GET_COURSE_CATALOG = `${COURSE_BASE}/catalog`;
 export const GET_ALL_COURSES = `${COURSE_BASE}`;
 export const GET_COURSE_BY_ID = `${COURSE_BASE}/:id`;
 export const ADD_COURSE = `${COURSE_BASE}/addCourse`;

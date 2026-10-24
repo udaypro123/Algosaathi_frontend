@@ -8,8 +8,6 @@ import {
   AccordionDetails,
   Checkbox,
   Slider,
-  Tabs,
-  Tab,
 } from "@mui/material";
 
 import SchoolIcon from "@mui/icons-material/School";
@@ -19,12 +17,15 @@ import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 // import CoursesCarousel from "../../common/CoursesCarousel";
 import Loader from "../../common/Loader";
 import { useState, useMemo, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import {
   getAllCourses,
 } from "./api/api";
 import type { CourseItem } from "./api/interface";
 
 const Courses = () => {
+  const location = useLocation();
+  const requestedCourseId = new URLSearchParams(location.search).get("course");
   const [courses, setCourses] = useState<CourseItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -32,33 +33,32 @@ const Courses = () => {
   const [expandedChapter, setExpandedChapter] = useState<string | false>(false);
   const [completedChapters, setCompletedChapters] = useState<Record<string, boolean>>({});
   // const [completedTopics, setCompletedTopics] = useState<Record<string, boolean>>({});
-  const [activeTab, setActiveTab] = useState(0);
 
   useEffect(() => {
     const fetchCourses = async () => {
       try {
         setLoading(true);
         setError("");
-        const data = await getAllCourses();
-        const list = Array.isArray(data) ? data : data?.data || data?.courses || [];
-        setCourses(list);
-        if (list.length > 0 && !selectedCourse) {
-          setSelectedCourse(list[0]);
-        }
-      } catch (err: any) {
-        setError(err?.response?.data?.message || "Failed to load courses.");
+        const allCourses = await getAllCourses();
+        setCourses(allCourses);
+        setSelectedCourse(
+          requestedCourseId
+            ? allCourses.find((course) => course._id === requestedCourseId) ?? null
+            : null,
+        );
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Failed to load courses.");
       } finally {
         setLoading(false);
       }
     };
 
     fetchCourses();
-  }, []);
+  }, [requestedCourseId]);
 
   const handleCourseSelect = (course: CourseItem) => {
     setSelectedCourse(course);
     setExpandedChapter(false);
-    setActiveTab(1);
   };
 
   const handleChapterChange =
@@ -66,7 +66,10 @@ const Courses = () => {
       setExpandedChapter(isExpanded ? panel : false);
     };
 
-  const chapters = selectedCourse?.chapters ?? [];
+  const chapters = useMemo(
+    () => selectedCourse?.chapters ?? [],
+    [selectedCourse],
+  );
 
   const courseKey = selectedCourse?._id ?? "";
 
@@ -114,7 +117,7 @@ const Courses = () => {
   // }));
 
   return (
-    <Box className="containerClass">
+    <Box className="containerClass" sx={{ pt: { xs: "96px", md: "112px" } }}>
       <Box className="SubContainerClass" sx={{
         mt: "0 !important",
         margin:"0 auto"
@@ -124,6 +127,7 @@ const Courses = () => {
         <Paper
           elevation={4}
           sx={{
+            marginTop: -2,
             p: 5,
             textAlign: "center",
             width:"95%",
@@ -165,24 +169,6 @@ const Courses = () => {
             margin:"10px auto",
           }}
         >
-          <Tabs
-            value={activeTab}
-            onChange={(_, newValue) => setActiveTab(newValue)}
-            variant="fullWidth"
-            sx={{
-              mb: 3,
-              borderBottom: 1,
-              borderColor: "divider",
-              "& .MuiTab-root": {
-                fontWeight: 700,
-                textTransform: "none",
-              },
-            }}
-          >
-            <Tab label="Available Courses" />
-            <Tab label="Course Content" disabled={!selectedCourse} />
-          </Tabs>
-
           {loading ? (
             <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", py: 6 }}>
               <Loader />
@@ -193,44 +179,82 @@ const Courses = () => {
             </Typography>
           ) : (
             <>
-              {activeTab === 0 && (
-                <Box sx={{maxWidth:"50%"}}>
-                  <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 2 }}>
+              <Box sx={{ maxWidth: { xs: "100%", md: "50%" } }}>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 0.5 }}>
                     Choose a course to start learning
                   </Typography>
-                  <Stack spacing={1.5}>
-                    {courses.map((course) => (
-                      <Paper
-                        key={course._id}
-                        variant="outlined"
-                        sx={{
-                          p: 2,
-                          borderRadius: 2,
-                          cursor: "pointer",
-                          border: "1px solid",
-                          borderColor: selectedCourse?._id === course._id ? "primary.main" : "divider",
-                          bgcolor: selectedCourse?._id === course._id ? "primary.main" : "background.paper",
-                          color: selectedCourse?._id === course._id ? "#fff" : "text.primary",
-                          "&:hover": {
-                            borderColor: "primary.main",
-                          },
-                        }}
-                        onClick={() => handleCourseSelect(course)}
-                      >
-                        <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                          {course.courseName}
-                        </Typography>
-                        <Typography variant="caption" sx={{ color: selectedCourse?._id === course._id ? "rgba(255,255,255,0.9)" : "text.secondary" }}>
-                          {course.chapters.length} chapters
-                        </Typography>
-                      </Paper>
-                    ))}
-                  </Stack>
-                </Box>
-              )}
+                  <Typography variant="body2" sx={{ color: "text.secondary", mb: 2 }}>
+                    Select a course to view its learning content.
+                  </Typography>
+                  {courses.length ? (
+                    <Stack spacing={1.5}>
+                      {courses.map((course) => (
+                        <Paper
+                          key={course._id}
+                          variant="outlined"
+                          sx={{
+                            p: 2,
+                            borderRadius: 2,
+                            cursor: "pointer",
+                            border: "1px solid",
+                            borderColor: selectedCourse?._id === course._id ? "primary.main" : "divider",
+                            bgcolor: selectedCourse?._id === course._id ? "primary.main" : "background.paper",
+                            color: selectedCourse?._id === course._id ? "#fff" : "text.primary",
+                            "&:hover": {
+                              borderColor: "primary.main",
+                              bgcolor: "primary.main",
+                              color: "#fff",
+                              "& .course-chapter-count, & .course-access-icon": {
+                                color: "rgba(255,255,255,0.9)",
+                              },
+                            },
+                          }}
+                          role="button"
+                          tabIndex={0}
+                          onClick={() => handleCourseSelect(course)}
+                          onKeyDown={(event) => {
+                            if (event.key === "Enter" || event.key === " ") {
+                              event.preventDefault();
+                              handleCourseSelect(course);
+                            }
+                          }}
+                        >
+                          <Stack
+                            direction="row"
+                            sx={{ justifyContent: "space-between", alignItems: "center" }}
+                          >
+                            <Box>
+                              <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                                {course.courseName}
+                              </Typography>
+                              <Typography
+                                className="course-chapter-count"
+                                variant="caption"
+                                sx={{
+                                  color: selectedCourse?._id === course._id
+                                    ? "rgba(255,255,255,0.9)"
+                                    : "text.secondary",
+                                }}
+                              >
+                                {course.chapters.length} chapters
+                              </Typography>
+                            </Box>
+                          </Stack>
+                        </Paper>
+                      ))}
+                    </Stack>
+                  ) : (
+                    <Typography sx={{ color: "text.secondary" }}>
+                      No courses are available yet.
+                    </Typography>
+                  )}
+              </Box>
 
-              {activeTab === 1 && selectedCourse && (
+              {selectedCourse && (
                 <Box>
+                  <Typography variant="h6" sx={{ fontWeight: 700, mt: 4, mb: 2 }}>
+                    Course Content
+                  </Typography>
                   <Box sx={{ mb: 3 }}>
                     <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 1 }}>
                       {selectedCourse.courseName} Progress
@@ -275,8 +299,16 @@ const Courses = () => {
                           No chapters available for this course.
                         </Typography>
                       ) : (
-                        <Stack spacing={1.5}>
-                          {chapters.map((chapter, index) => {
+                        <Box
+                          sx={{
+                            maxHeight: { xs: "65vh", md: "70vh" },
+                            overflowY: "auto",
+                            pr: 1,
+                            overscrollBehavior: "contain",
+                          }}
+                        >
+                          <Stack spacing={1.5}>
+                            {chapters.map((chapter, index) => {
                             const panelId = `chapter-panel-${index}`;
                             const isExpanded = expandedChapter === panelId;
                             const complete = isChapterComplete(index);
@@ -523,13 +555,15 @@ const Courses = () => {
                                 </Accordion>
                               </Box>
                             );
-                          })}
-                        </Stack>
+                            })}
+                          </Stack>
+                        </Box>
                       )}
                     </AccordionDetails>
                   </Accordion>
                 </Box>
               )}
+
             </>
           )}
         </Paper>

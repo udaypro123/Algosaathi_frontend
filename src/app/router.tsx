@@ -18,6 +18,7 @@ const OurClient = lazyWithRetry(() => import("../Modules/AdminPannel/container/O
 const AddNews = lazyWithRetry(() => import("../Modules/News/AddNews"));
 const Feature = lazyWithRetry(() => import("../Modules/Feature/Feature"));
 const Courses = lazyWithRetry(() => import("../Modules/Courses/Courses"));
+const PublicCourseCatalog = lazyWithRetry(() => import("../Modules/Courses/PublicCourseCatalog"));
 const Contact = lazyWithRetry(() => import("../Modules/Contact/Contact"));
 const News = lazyWithRetry(() => import("../Modules/News/News"));
 const Profile = lazyWithRetry(() => import("../Modules/Profile/Profile"));
@@ -32,8 +33,22 @@ const SEO = lazyWithRetry(() => import("../seo/SEO"));
 const PublicHeader = lazyWithRetry(() => import("../common/PublicHeader"));
 const PrivacyPolicy = lazyWithRetry(() => import("../Modules/Privacy/PrivacyPolicy"));
 
-
 export const router = createBrowserRouter([
+    {
+        path: "/availablecourses",
+        element: (
+            <>
+                <SEO
+                    title="Available Courses"
+                    description="Browse all AlgoSaathi courses. Sign in to access course content."
+                    canonical="https://algosaathi.com/availablecourses"
+                />
+                <PublicHeader />
+                <PublicCourseCatalog />
+                <Footer />
+            </>
+        ),
+    },
     {
         path: "/privacy-policy",
         element: (
@@ -179,6 +194,19 @@ export const router = createBrowserRouter([
                 element: <DashboardLayout />,
                 children: [
                     {
+                        path: "courses",
+                        element: (
+                            <>
+                                <SEO
+                                    title="Courses"
+                                    description="Access your AlgoSaathi course content and learning progress."
+                                    canonical="https://algosaathi.com/courses"
+                                />
+                                <Courses />
+                            </>
+                        ),
+                    },
+                    {
                         path: "dashboard",
                         element: (
                             <>
@@ -202,19 +230,6 @@ export const router = createBrowserRouter([
                                     canonical="https://algosaathi.com/features"
                                 />
                                 <Feature />
-                            </>
-                        )
-                    },
-                    {
-                        path: "courses",
-                        element: (
-                            <>
-                                <SEO
-                                    title="Courses"
-                                    description="Explore upcoming courses in JavaScript, React.js, Node.js, system design, DSA, TypeScript, and career-ready development skills."
-                                    canonical="https://algosaathi.com/courses"
-                                />
-                                <Courses />
                             </>
                         )
                     },

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 
 import {
@@ -15,8 +15,12 @@ import {
     DialogTitle,
     Divider,
     IconButton,
+    InputAdornment,
+    LinearProgress,
     Paper,
     Stack,
+    Tab,
+    Tabs,
     TextField,
     Typography,
 } from "@mui/material";
@@ -30,9 +34,19 @@ import {
     VideoLibrary,
     Cancel,
     Add,
+    Search,
 } from "@mui/icons-material";
-import { AddNewsdata, deleteNews, getAllNews, updateNews } from "./api.ts/api";
+import {
+    AddNewsdata,
+    deleteNews,
+    getAdminNewsByCategory,
+    getAdminNewsCategories,
+    updateNews,
+} from "./api.ts/api";
 import "../../css/pagesUnique.css"
+
+const DEFAULT_NEWS_IMAGE =
+    "https://res.cloudinary.com/dyxmtrlqg/image/upload/v1792822562/template-images/iv40i5ftwbxqtp7toy7r.jpg";
 
 
 // ======================================================
@@ -167,6 +181,24 @@ const AddNews = () => {
     >([]);
 
     const [newsList, setNewsList] = useState<News[]>([]);
+
+    const [categories, setCategories] = useState<string[]>([]);
+
+    const [selectedCategory, setSelectedCategory] = useState("");
+
+    const selectedCategoryRef = useRef("");
+
+    const [searchText, setSearchText] = useState("");
+
+    const [debouncedSearch, setDebouncedSearch] = useState("");
+
+    const searchRef = useRef("");
+
+    const [newsRefresh, setNewsRefresh] = useState(0);
+
+    const [hasMoreNews, setHasMoreNews] = useState(false);
+
+    const [loadingMoreNews, setLoadingMoreNews] = useState(false);
 
     const [loading, setLoading] = useState(false);
 
@@ -358,9 +390,16 @@ const AddNews = () => {
     const handleDelete = async (newsItem: News) => {
         try {
             await deleteNews(newsItem?._id);
-            fetchNews()
-        } catch {
-            return;
+            const updatedCategories = await getAdminNewsCategories();
+            setCategories(updatedCategories);
+            if (selectedCategory !== "all" && !updatedCategories.includes(selectedCategory)) {
+                selectedCategoryRef.current = "all";
+                setSelectedCategory("all");
+            } else {
+                setNewsRefresh((current) => current + 1);
+            }
+        } catch (err) {
+            setError(err instanceof Error ? err.message : "Failed to delete news.");
         }
     };
 
@@ -392,70 +431,131 @@ const AddNews = () => {
 
 
     // ==================================================
-    // FETCH ALL NEWS
-    // ==================================================
-
-    const fetchNews = async () => {
-
-        try {
-
-            setFetchingNews(true);
-
-            setError("");
-
-
-            const response = await getAllNews()
-
-            // const data = await response.json();
-            if (!response.success) {
-
-                throw new Error(
-                    response?.message ||
-                    "Failed to fetch news"
-                );
-            }
-
-
-            const news = response?.data || [];
-
-            setNewsList(Array.isArray(news) ? news : []);
-
-        } catch (err) {
-
-            const message =
-                err instanceof Error
-                    ? err.message
-                    : "Failed to fetch news";
-
-
-            setError(message);
-
-        } finally {
-
-            setFetchingNews(false);
-        }
-    };
-
-
-    // ==================================================
-    // INITIAL FETCH
+    // FETCH NEWS CATEGORIES
     // ==================================================
 
     useEffect(() => {
+        const timeout = window.setTimeout(() => {
+            setDebouncedSearch(searchText.trim());
+        }, 350);
+        return () => window.clearTimeout(timeout);
+    }, [searchText]);
 
-        fetchNews();
-
-
-        return () => {
-
-            imagePreviews.forEach((url) => {
-                URL.revokeObjectURL(url);
-            });
-
+    useEffect(() => {
+        let cancelled = false;
+        const fetchCategories = async () => {
+            try {
+                const result = await getAdminNewsCategories();
+                if (cancelled) return;
+                setCategories(result);
+                selectedCategoryRef.current = "all";
+                setSelectedCategory("all");
+            } catch (err) {
+                if (!cancelled) {
+                    setError(err instanceof Error ? err.message : "Failed to load news categories.");
+                }
+            }
         };
 
+        fetchCategories();
+
+        return () => {
+            cancelled = true;
+        };
     }, []);
 
+    useEffect(() => () => {
+        imagePreviews
+            .filter((url) => url.startsWith("blob:"))
+            .forEach((url) => URL.revokeObjectURL(url));
+    }, [imagePreviews]);
+
+    useEffect(() => {
+        if (!selectedCategory) return;
+
+        let cancelled = false;
+        const fetchCategoryNews = async () => {
+            setFetchingNews(true);
+            setError("");
+            setHasMoreNews(false);
+
+            try {
+                const response = await getAdminNewsByCategory(
+                    selectedCategory,
+                    0,
+                    9,
+                    debouncedSearch,
+                );
+                if (!response.success) {
+                    throw new Error(response.message || "Failed to fetch news.");
+                }
+                if (!cancelled) {
+                    const news = Array.isArray(response.data) ? response.data : [];
+                    setNewsList(news.map((item: News) => ({
+                        ...item,
+                        images: Array.isArray(item.images) && item.images.length > 0
+                            ? item.images
+                            : [DEFAULT_NEWS_IMAGE],
+                    })));
+                    setHasMoreNews(Boolean(response.hasMore));
+                }
+            } catch (err) {
+                if (!cancelled) {
+                    setError(err instanceof Error ? err.message : "Failed to fetch news.");
+                }
+            } finally {
+                if (!cancelled) {
+                    setFetchingNews(false);
+                }
+            }
+        };
+
+        fetchCategoryNews();
+        return () => {
+            cancelled = true;
+        };
+    }, [selectedCategory, debouncedSearch, newsRefresh]);
+
+    const handleLoadMoreNews = async () => {
+        if (!selectedCategory || loadingMoreNews || !hasMoreNews) return;
+
+        const category = selectedCategory;
+        const search = debouncedSearch;
+        setLoadingMoreNews(true);
+        setError("");
+        try {
+            const response = await getAdminNewsByCategory(
+                category,
+                newsList.length,
+                9,
+                search,
+            );
+            if (!response.success) {
+                throw new Error(response.message || "Failed to load more news.");
+            }
+            if (selectedCategoryRef.current !== category
+                || searchRef.current.trim() !== search) return;
+
+            const news = Array.isArray(response.data) ? response.data : [];
+            setNewsList((current) => [
+                ...current,
+                ...news.map((item: News) => ({
+                    ...item,
+                    images: Array.isArray(item.images) && item.images.length > 0
+                        ? item.images
+                        : [DEFAULT_NEWS_IMAGE],
+                })),
+            ]);
+            setHasMoreNews(Boolean(response.hasMore));
+        } catch (err) {
+            if (selectedCategoryRef.current === category
+                && searchRef.current.trim() === search) {
+                setError(err instanceof Error ? err.message : "Failed to load more news.");
+            }
+        } finally {
+            setLoadingMoreNews(false);
+        }
+    };
 
     // ==================================================
     // SUBMIT FORM
@@ -526,16 +626,7 @@ const AddNews = () => {
             return;
         }
 
-
-        if (!images.length) {
-
-            setError(
-                "At least one image is required."
-            );
-
-            return;
-        }
-
+        const submittedCategory = form.category.trim().toLowerCase();
 
         try {
 
@@ -751,7 +842,11 @@ const AddNews = () => {
             // REFRESH NEWS
             // ------------------------------------------
 
-            await fetchNews();
+            const updatedCategories = await getAdminNewsCategories();
+            setCategories(updatedCategories);
+            selectedCategoryRef.current = submittedCategory;
+            setSelectedCategory(submittedCategory);
+            setNewsRefresh((current) => current + 1);
 
         } catch (err) {
 
@@ -1282,7 +1377,7 @@ const AddNews = () => {
                                     mb: 2,
                                 }}
                             >
-                                Select multiple images.
+                                Optional for new stories. A default image is used when none is uploaded.
                                 Maximum 10 images.
                             </Typography>
 
@@ -1866,7 +1961,9 @@ const AddNews = () => {
                                     fontWeight: 700,
                                 }}
                             >
-                                All News
+                                {selectedCategory === "all"
+                                    ? "All News"
+                                    : `${selectedCategory.replace(/\b\w/g, (letter) => letter.toUpperCase())} News`}
                             </Typography>
 
 
@@ -1876,18 +1973,75 @@ const AddNews = () => {
                                     color: "text.secondary",
                                 }}
                             >
-                                {newsList.length} news
-                                articles
+                                Showing {newsList.length} articles
                             </Typography>
 
                         </Box>
 
                     </Box>
 
+                    <TextField
+                        fullWidth
+                        value={searchText}
+                        onChange={(event) => {
+                            searchRef.current = event.target.value;
+                            setSearchText(event.target.value);
+                        }}
+                        placeholder="Search title, content, category, author, tags..."
+                        aria-label="Search news articles"
+                        sx={{
+                            mb: 2.5,
+                            "& .MuiOutlinedInput-root": {
+                                borderRadius: 2,
+                            },
+                        }}
+                        slotProps={{
+                            input: {
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <Search color="action" />
+                                    </InputAdornment>
+                                ),
+                            },
+                        }}
+                    />
+
+                    <Tabs
+                        value={selectedCategory || "all"}
+                        onChange={(_, category: string) => {
+                            selectedCategoryRef.current = category;
+                            setSelectedCategory(category);
+                        }}
+                        variant="scrollable"
+                        scrollButtons="auto"
+                        allowScrollButtonsMobile
+                        sx={{
+                            mb: 3,
+                            borderBottom: 1,
+                            borderColor: "divider",
+                            "& .MuiTab-root": {
+                                textTransform: "capitalize",
+                                fontWeight: 700,
+                            },
+                        }}
+                    >
+                        <Tab value="all" label="All" />
+                        {categories.map((category) => (
+                            <Tab
+                                key={category}
+                                value={category}
+                                label={category.replace(/\b\w/g, (letter) => letter.toUpperCase())}
+                            />
+                        ))}
+                    </Tabs>
+
+                    {fetchingNews && (
+                        <LinearProgress sx={{ mb: 2, borderRadius: 1 }} />
+                    )}
 
                     {/* Loading */}
 
-                    {fetchingNews ? (
+                    {fetchingNews && newsList.length === 0 ? (
 
                         <Box
                             sx={{
@@ -2372,6 +2526,19 @@ const AddNews = () => {
 
                         </Box>
 
+                    )}
+
+                    {hasMoreNews && (
+                        <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+                            <Button
+                                variant="outlined"
+                                onClick={handleLoadMoreNews}
+                                disabled={loadingMoreNews}
+                                sx={{ textTransform: "none", fontWeight: 700 }}
+                            >
+                                {loadingMoreNews ? "Loading..." : "Load more news"}
+                            </Button>
+                        </Box>
                     )}
 
                 </Box>

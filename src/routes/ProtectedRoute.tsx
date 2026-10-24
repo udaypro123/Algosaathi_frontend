@@ -1,4 +1,4 @@
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { hasRole, isAuthenticated } from "../utils/auth";
 import { type Role } from "../redux/auth/authTypes";
 
@@ -7,10 +7,10 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute = ({ allowedRoles }: ProtectedRouteProps) => {
-
+  const location = useLocation();
 
   if (!isAuthenticated()) {
-    return <Navigate to="/home" replace />;
+    return <Navigate to="/login" replace state={{ from: location }} />;
   }
 
   if (allowedRoles && !hasRole(allowedRoles)) {

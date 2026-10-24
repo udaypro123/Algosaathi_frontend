@@ -1,4 +1,8 @@
 export const ADD_NEWS= '/news/addNews'
 export const GET_NEWS= '/news/getNews'
+export const GET_NEWS_CATEGORIES = '/news/categories'
+export const GET_NEWS_BY_CATEGORY = '/news/by-category'
+export const GET_ADMIN_NEWS_CATEGORIES = '/news/admin/categories'
+export const GET_ADMIN_NEWS_BY_CATEGORY = '/news/admin/by-category'
 export const DELETE_NEWS= '/news/deleteNews'
 export const UPDATE_NEWS= '/news/updateNews'

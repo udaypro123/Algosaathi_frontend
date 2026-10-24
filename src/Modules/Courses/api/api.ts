@@ -1,24 +1,36 @@
 import api from "../../../API/api";
+import publicApi from "../../../API/publicApi";
 import {
   ADD_COURSE,
   ADD_INTERVIEW_QUESTIONS,
   DELETE_COURSE,
   GET_ALL_COURSES,
+  GET_COURSE_CATALOG,
   GET_COURSE_BY_ID,
   UPDATE_COURSE,
   UPLOAD_TOPIC_IMAGES,
   SET_TOPIC_CONTENT_BLOCKS,
 } from "./routes";
-import type { AddInterviewQuestionsPayload, CourseItem, CoursePayload } from "./interface";
+import type {
+  AddInterviewQuestionsPayload,
+  CourseCatalogItem,
+  CourseItem,
+  CoursePayload,
+} from "./interface";
 
-export const getAllCourses = async () => {
-  const res = await api.get(GET_ALL_COURSES);
-  return res.data;
+export const getCourseCatalog = async (): Promise<CourseCatalogItem[]> => {
+  const res = await publicApi.get(GET_COURSE_CATALOG);
+  return res.data.data;
 };
 
-export const getCourseById = async (id: string) => {
+export const getAllCourses = async (): Promise<CourseItem[]> => {
+  const res = await api.get(GET_ALL_COURSES);
+  return res.data.data ?? res.data;
+};
+
+export const getCourseById = async (id: string): Promise<CourseItem> => {
   const res = await api.get(GET_COURSE_BY_ID.replace(":id", id));
-  return res.data;
+  return res.data.data ?? res.data;
 };
 
 export const addCourse = async (data: CoursePayload) => {
