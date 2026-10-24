@@ -50,7 +50,7 @@ Public pages include home, login/signup, contact, news, templates, and `/privacy
 
 ## Backend connection
 
-The frontend reads `VITE_API_URL`; the backend mounts its APIs under `/api`. For local development, start the backend from the sibling `algosaathi_backend` directory and set the frontend API URL to `http://localhost:5000/api`. Set the backend `FRONTEND_URL` to `http://localhost:5173` for local CORS.
+The frontend reads `VITE_API_URL` and defaults to the same-origin `/api` path, where the backend mounts its APIs. The deployment workflow sets `VITE_API_URL=/api`. For local development, start the backend from the sibling `algosaathi_backend` directory and set the frontend API URL to `http://localhost:5000/api`. Set the backend `FRONTEND_URL` to `http://localhost:5173` for local CORS.
 
 The deployed privacy policy URL is `https://algosaathi.com/privacy-policy`. A mobile app or Play Store listing can open this public HTTPS page after the frontend deployment supports SPA route rewrites to `index.html`.
 
