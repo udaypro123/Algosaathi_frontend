@@ -171,11 +171,6 @@ const Login = () => {
     const [error, setError] =
         useState<string | null>(null);
 
-    const [verificationPending, setVerificationPending] = useState(false);
-    const [verificationCode, setVerificationCode] = useState("");
-    const [verificationMessage, setVerificationMessage] = useState("");
-
-
     const [showPassword, setShowPassword] =
         useState(false);
 
@@ -310,76 +305,17 @@ const Login = () => {
 
 
         } catch (err: any) {
-            if (err?.response?.status === 403) {
-                setVerificationPending(true);
-                setVerificationMessage(
-                    "Verify your email address to finish signing in."
-                );
-            } else {
-                setError(
-                    err?.response?.data?.message ||
-                    "Invalid email or password."
-                );
-            }
-
-
-        } finally {
-
-            setLoading(false);
-        }
-    };
-
-    const handleVerifyEmail = async (
-        e: React.FormEvent<HTMLFormElement>
-    ) => {
-        e.preventDefault();
-        setError(null);
-
-        if (!/^\d{6}$/.test(verificationCode)) {
-            setError("Enter the six-digit verification code.");
-            return;
-        }
-
-        setLoading(true);
-        try {
-            const response = await api.post("/auth/verify-email-otp", {
-                email: form.email,
-                otp: verificationCode,
-            });
-            setAuthData(response.data.tokens.accessToken, response.data.user);
-            navigate(destination, { replace: true });
-        } catch (err: any) {
             setError(
                 err?.response?.data?.message ||
-                "Unable to verify your email. Please try again."
+                "Invalid email or password."
             );
+
+
         } finally {
+
             setLoading(false);
         }
     };
-
-    const handleResendVerificationCode = async () => {
-        setError(null);
-        setVerificationMessage("");
-        setLoading(true);
-        try {
-            const response = await api.post("/auth/resend-verification-otp", {
-                email: form.email,
-            });
-            setVerificationCode("");
-            setVerificationMessage(
-                response.data.message || "A new verification code has been requested."
-            );
-        } catch (err: any) {
-            setError(
-                err?.response?.data?.message ||
-                "Unable to resend the code. Please try again."
-            );
-        } finally {
-            setLoading(false);
-        }
-    };
-
 
     /* =====================================================
        NAVIGATION
@@ -885,99 +821,14 @@ const Login = () => {
                         </Alert>
                     )}
 
-                    {verificationMessage && (
-                        <Alert
-                            severity="info"
-                            sx={{ mb: 2.5, borderRadius: "12px", fontSize: 13 }}
-                        >
-                            {verificationMessage}
-                        </Alert>
-                    )}
-
                     {/* =================================================
                         FORM
                     ================================================= */}
 
                     <Box
                         component="form"
-                        onSubmit={verificationPending ? handleVerifyEmail : handleSubmit}
+                        onSubmit={handleSubmit}
                     >
-
-                        {verificationPending ? (
-                            <Stack spacing={2.2}>
-                                <TextField
-                                    label="Verification code"
-                                    placeholder="Enter 6-digit code"
-                                    value={verificationCode}
-                                    onChange={(event) => {
-                                        setVerificationCode(
-                                            event.target.value.replace(/\D/g, "").slice(0, 6)
-                                        );
-                                        setError(null);
-                                    }}
-                                    fullWidth
-                                    required
-                                    slotProps={{
-                                        inputLabel: { shrink: true },
-                                        htmlInput: {
-                                            inputMode: "numeric",
-                                            maxLength: 6,
-                                            autoComplete: "one-time-code",
-                                            style: {
-                                                textAlign: "center",
-                                                letterSpacing: "0.5em",
-                                                fontSize: "1.25rem",
-                                            },
-                                        },
-                                        input: {
-                                            startAdornment: (
-                                                <InputAdornment position="start">
-                                                    <EmailOutlined />
-                                                </InputAdornment>
-                                            ),
-                                        },
-                                    }}
-                                    sx={inputStyles}
-                                />
-
-                                <Button
-                                    type="submit"
-                                    fullWidth
-                                    variant="contained"
-                                    disabled={loading || verificationCode.length !== 6}
-                                    endIcon={!loading && <ArrowForwardRounded />}
-                                    sx={{
-                                        height: 54,
-                                        borderRadius: "14px",
-                                        textTransform: "none",
-                                        fontSize: 16,
-                                        fontWeight: 600,
-                                        background: "linear-gradient(135deg,#2563eb,#0284c7)",
-                                        boxShadow: "0 6px 16px rgba(37,99,235,0.16)",
-                                        "&:hover": {
-                                            background: "linear-gradient(135deg,#1d4ed8,#0369a1)",
-                                            boxShadow: "0 8px 20px rgba(37,99,235,0.2)",
-                                        },
-                                    }}
-                                >
-                                    {loading ? "Verifying..." : "Verify email"}
-                                </Button>
-
-                                <Button
-                                    type="button"
-                                    variant="text"
-                                    disabled={loading}
-                                    onClick={handleResendVerificationCode}
-                                    sx={{
-                                        textTransform: "none",
-                                        color: "#2563eb",
-                                        fontWeight: 600,
-                                    }}
-                                >
-                                    Resend verification code
-                                </Button>
-                            </Stack>
-                        ) : (
                         <Stack
                             spacing={2.2}
                         >
@@ -1343,9 +1194,7 @@ const Login = () => {
                                 </Button>
 
                             </motion.div>
-
                         </Stack>
-                        )}
 
                     </Box>
 
