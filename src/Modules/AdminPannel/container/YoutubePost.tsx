@@ -1550,12 +1550,16 @@ const YoutubePost = () => {
                     }}
                 >
 
-                    <Typography
+                    {/* <Typography
                         color="text.secondary"
                         variant="body2"
                     >
                         AlgoSaathi Administration Panel
+                    </Typography> */}
+                    <Typography className="footer-tagline">
+                        Learn. Communicate. Build. Grow.
                     </Typography>
+
 
                     <Typography
                         color="text.secondary"

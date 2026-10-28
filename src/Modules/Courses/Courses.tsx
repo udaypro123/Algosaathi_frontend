@@ -120,7 +120,7 @@ const Courses = () => {
     <Box className="containerClass" sx={{ pt: { xs: "96px", md: "112px" } }}>
       <Box className="SubContainerClass" sx={{
         mt: "0 !important",
-        margin:"0 auto"
+        margin: "0 auto"
       }} >
         {/* Hero */}
 
@@ -130,8 +130,8 @@ const Courses = () => {
             marginTop: -2,
             p: 5,
             textAlign: "center",
-            width:"95%",
-             margin:"0 auto",
+            width: "95%",
+            margin: "0 auto",
             color: "#fff",
             background: "linear-gradient(90deg, rgba(0, 0, 82, 1) 0%, rgba(25, 25, 158, 1) 60%, rgba(0, 0, 82, 1) 100%)",
           }}
@@ -165,8 +165,8 @@ const Courses = () => {
             mt: 4,
             p: { xs: 2, md: 4 },
             borderRadius: 3,
-            width:"95%",
-            margin:"10px auto",
+            width: "95%",
+            margin: "10px auto",
           }}
         >
           {loading ? (
@@ -180,74 +180,74 @@ const Courses = () => {
           ) : (
             <>
               <Box sx={{ maxWidth: { xs: "100%", md: "50%" } }}>
-                  <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 0.5 }}>
-                    Choose a course to start learning
-                  </Typography>
-                  <Typography variant="body2" sx={{ color: "text.secondary", mb: 2 }}>
-                    Select a course to view its learning content.
-                  </Typography>
-                  {courses.length ? (
-                    <Stack spacing={1.5}>
-                      {courses.map((course) => (
-                        <Paper
-                          key={course._id}
-                          variant="outlined"
-                          sx={{
-                            p: 2,
-                            borderRadius: 2,
-                            cursor: "pointer",
-                            border: "1px solid",
-                            borderColor: selectedCourse?._id === course._id ? "primary.main" : "divider",
-                            bgcolor: selectedCourse?._id === course._id ? "primary.main" : "background.paper",
-                            color: selectedCourse?._id === course._id ? "#fff" : "text.primary",
-                            "&:hover": {
-                              borderColor: "primary.main",
-                              bgcolor: "primary.main",
-                              color: "#fff",
-                              "& .course-chapter-count, & .course-access-icon": {
-                                color: "rgba(255,255,255,0.9)",
-                              },
+                <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 0.5 }}>
+                  Choose a course to start learning
+                </Typography>
+                <Typography variant="body2" sx={{ color: "text.secondary", mb: 2 }}>
+                  Select a course to view its learning content.
+                </Typography>
+                {courses.length ? (
+                  <Stack spacing={1.5}>
+                    {courses.map((course) => (
+                      <Paper
+                        key={course._id}
+                        variant="outlined"
+                        sx={{
+                          p: 2,
+                          borderRadius: 2,
+                          cursor: "pointer",
+                          border: "1px solid",
+                          borderColor: selectedCourse?._id === course._id ? "primary.main" : "divider",
+                          bgcolor: selectedCourse?._id === course._id ? "primary.main" : "background.paper",
+                          color: selectedCourse?._id === course._id ? "#fff" : "text.primary",
+                          "&:hover": {
+                            borderColor: "primary.main",
+                            bgcolor: "primary.main",
+                            color: "#fff",
+                            "& .course-chapter-count, & .course-access-icon": {
+                              color: "rgba(255,255,255,0.9)",
                             },
-                          }}
-                          role="button"
-                          tabIndex={0}
-                          onClick={() => handleCourseSelect(course)}
-                          onKeyDown={(event) => {
-                            if (event.key === "Enter" || event.key === " ") {
-                              event.preventDefault();
-                              handleCourseSelect(course);
-                            }
-                          }}
+                          },
+                        }}
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => handleCourseSelect(course)}
+                        onKeyDown={(event) => {
+                          if (event.key === "Enter" || event.key === " ") {
+                            event.preventDefault();
+                            handleCourseSelect(course);
+                          }
+                        }}
+                      >
+                        <Stack
+                          direction="row"
+                          sx={{ justifyContent: "space-between", alignItems: "center" }}
                         >
-                          <Stack
-                            direction="row"
-                            sx={{ justifyContent: "space-between", alignItems: "center" }}
-                          >
-                            <Box>
-                              <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                                {course.courseName}
-                              </Typography>
-                              <Typography
-                                className="course-chapter-count"
-                                variant="caption"
-                                sx={{
-                                  color: selectedCourse?._id === course._id
-                                    ? "rgba(255,255,255,0.9)"
-                                    : "text.secondary",
-                                }}
-                              >
-                                {course.chapters.length} chapters
-                              </Typography>
-                            </Box>
-                          </Stack>
-                        </Paper>
-                      ))}
-                    </Stack>
-                  ) : (
-                    <Typography sx={{ color: "text.secondary" }}>
-                      No courses are available yet.
-                    </Typography>
-                  )}
+                          <Box>
+                            <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                              {course.courseName}
+                            </Typography>
+                            <Typography
+                              className="course-chapter-count"
+                              variant="caption"
+                              sx={{
+                                color: selectedCourse?._id === course._id
+                                  ? "rgba(255,255,255,0.9)"
+                                  : "text.secondary",
+                              }}
+                            >
+                              {course.chapters.length} chapters
+                            </Typography>
+                          </Box>
+                        </Stack>
+                      </Paper>
+                    ))}
+                  </Stack>
+                ) : (
+                  <Typography sx={{ color: "text.secondary" }}>
+                    No courses are available yet.
+                  </Typography>
+                )}
               </Box>
 
               {selectedCourse && (
@@ -309,252 +309,252 @@ const Courses = () => {
                         >
                           <Stack spacing={1.5}>
                             {chapters.map((chapter, index) => {
-                            const panelId = `chapter-panel-${index}`;
-                            const isExpanded = expandedChapter === panelId;
-                            const complete = isChapterComplete(index);
+                              const panelId = `chapter-panel-${index}`;
+                              const isExpanded = expandedChapter === panelId;
+                              const complete = isChapterComplete(index);
 
-                            return (
-                              <Box
-                                key={chapter.title}
-                                sx={{
-                                  display: "flex",
-                                  gap: 1,
-                                  alignItems: "flex-start",
-                                  border: "1px solid",
-                                  borderColor: complete ? "#16a34a" : "divider",
-                                  borderRadius: "12px",
-                                  bgcolor: complete ? "rgba(22, 163, 74, 0.04)" : "background.paper",
-                                }}
-                              >
+                              return (
                                 <Box
+                                  key={chapter.title}
                                   sx={{
                                     display: "flex",
+                                    gap: 1,
                                     alignItems: "flex-start",
-                                    justifyContent: "center",
-                                    pt: 2,
-                                    pl: 1,
+                                    border: "1px solid",
+                                    borderColor: complete ? "#16a34a" : "divider",
+                                    borderRadius: "12px",
+                                    bgcolor: complete ? "rgba(22, 163, 74, 0.04)" : "background.paper",
                                   }}
                                 >
-                                  <Checkbox
-                                    size="small"
-                                    checked={complete}
-                                    onChange={() => toggleChapterComplete(index)}
-                                    icon={<RadioButtonUncheckedIcon fontSize="small" />}
-                                    checkedIcon={<CheckCircleIcon fontSize="small" />}
-                                    sx={{ p: 0.5 , mt:3 }}
-                                  />
-                                </Box>
-
-                                <Accordion
-                                  expanded={isExpanded}
-                                  onChange={handleChapterChange(panelId)}
-                                  sx={{
-                                    flex: 1,
-                                    boxShadow: "none",
-                                    border: "none",
-                                    borderRadius: "12px !important",
-                                    "&:before": {
-                                      display: "none",
-                                    },
-                                    "&.Mui-expanded": {
-                                      margin: 0,
-                                    },
-                                  }}
-                                >
-                                  <AccordionSummary
-                                    expandIcon={<ExpandMoreIcon />}
+                                  <Box
                                     sx={{
-                                      px: 1,
-                                      py: 1,
-                                      minHeight: 56,
-                                      "& .MuiAccordionSummary-content": {
-                                        alignItems: "center",
-                                        gap: 1,
+                                      display: "flex",
+                                      alignItems: "flex-start",
+                                      justifyContent: "center",
+                                      pt: 2,
+                                      pl: 1,
+                                    }}
+                                  >
+                                    <Checkbox
+                                      size="small"
+                                      checked={complete}
+                                      onChange={() => toggleChapterComplete(index)}
+                                      icon={<RadioButtonUncheckedIcon fontSize="small" />}
+                                      checkedIcon={<CheckCircleIcon fontSize="small" />}
+                                      sx={{ p: 0.5, mt: 3 }}
+                                    />
+                                  </Box>
+
+                                  <Accordion
+                                    expanded={isExpanded}
+                                    onChange={handleChapterChange(panelId)}
+                                    sx={{
+                                      flex: 1,
+                                      boxShadow: "none",
+                                      border: "none",
+                                      borderRadius: "12px !important",
+                                      "&:before": {
+                                        display: "none",
+                                      },
+                                      "&.Mui-expanded": {
+                                        margin: 0,
                                       },
                                     }}
                                   >
-                                    <Box sx={{ flex: 1 }}>
-                                      <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
-                                        {chapter.title}
-                                      </Typography>
-                                      <Typography
-                                        variant="caption"
-                                        sx={{ color: "text.secondary", display: { xs: "none", md: "block" } }}
-                                      >
-                                        {chapter.description}
-                                      </Typography>
-                                    </Box>
-                                  </AccordionSummary>
-                                  <AccordionDetails sx={{ px: 1, pb: 2, pt: 0 }}>
-                                    <Stack spacing={2.5} sx={{ pl: 0, m: 0 }}>
-                                      {chapter.topics.map((topic, topicIndex) => {
-                                        const topicComplete = undefined;
+                                    <AccordionSummary
+                                      expandIcon={<ExpandMoreIcon />}
+                                      sx={{
+                                        px: 1,
+                                        py: 1,
+                                        minHeight: 56,
+                                        "& .MuiAccordionSummary-content": {
+                                          alignItems: "center",
+                                          gap: 1,
+                                        },
+                                      }}
+                                    >
+                                      <Box sx={{ flex: 1 }}>
+                                        <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
+                                          {chapter.title}
+                                        </Typography>
+                                        <Typography
+                                          variant="caption"
+                                          sx={{ color: "text.secondary", display: { xs: "none", md: "block" } }}
+                                        >
+                                          {chapter.description}
+                                        </Typography>
+                                      </Box>
+                                    </AccordionSummary>
+                                    <AccordionDetails sx={{ px: 1, pb: 2, pt: 0 }}>
+                                      <Stack spacing={2.5} sx={{ pl: 0, m: 0 }}>
+                                        {chapter.topics.map((topic, topicIndex) => {
+                                          const topicComplete = undefined;
 
-                                        return (
-                                          <Box key={topicIndex} sx={{ mb: 1.5 }}>
-                                            <Box sx={{ display: "flex", gap: 1, alignItems: "flex-start", mb: 1 }}>
-                                              <Box sx={{ flex: 1 }}>
-                                                <Typography
-                                                  variant="h6"
-                                                  sx={{
-                                                    fontWeight: 700,
-                                                    color: "#fff",
-                                                    lineHeight: 1.6,
-                                                    minHeight: 24,
-                                                    px: 1.5,
-                                                    py: 0.75,
-                                                    borderRadius: 1,
-                                                    background: "linear-gradient(90deg, rgba(0, 0, 82, 1) 0%, rgba(25, 25, 158, 1) 60%, rgba(0, 0, 82, 1) 100%)",
-                                                    display: "inline-block",
-                                                  }}
-                                                >
-                                                  {topic.title}
-                                                </Typography>
+                                          return (
+                                            <Box key={topicIndex} sx={{ mb: 1.5 }}>
+                                              <Box sx={{ display: "flex", gap: 1, alignItems: "flex-start", mb: 1 }}>
+                                                <Box sx={{ flex: 1 }}>
+                                                  <Typography
+                                                    variant="h6"
+                                                    sx={{
+                                                      fontWeight: 700,
+                                                      color: "#fff",
+                                                      lineHeight: 1.6,
+                                                      minHeight: 24,
+                                                      px: 1.5,
+                                                      py: 0.75,
+                                                      borderRadius: 1,
+                                                      background: "linear-gradient(90deg, rgba(0, 0, 82, 1) 0%, rgba(25, 25, 158, 1) 60%, rgba(0, 0, 82, 1) 100%)",
+                                                      display: "inline-block",
+                                                    }}
+                                                  >
+                                                    {topic.title}
+                                                  </Typography>
 
-                                                <Box sx={{ mt: 1.5, p: 2, borderRadius: 1.5, bgcolor: "rgba(248, 250, 252, 0.8)", border: "1px solid", borderColor: "divider" }}>
-                                                  {topic.contentBlocks.map((block, blockIndex) => {
-                                                    if (block.type === "text") {
-                                                      const isHtml = block.format === "html";
+                                                  <Box sx={{ mt: 1.5, p: 2, borderRadius: 1.5, bgcolor: "rgba(248, 250, 252, 0.8)", border: "1px solid", borderColor: "divider" }}>
+                                                    {topic.contentBlocks.map((block, blockIndex) => {
+                                                      if (block.type === "text") {
+                                                        const isHtml = block.format === "html";
 
-                                                      if (isHtml) {
-                                                        return (
-                                                          <Box
-                                                            key={blockIndex}
-                                                            sx={{
-                                                              textDecoration: topicComplete ? "line-through" : "none",
-                                                              lineHeight: 1.8,
-                                                              minHeight: 40,
-                                                              mb: 1.5,
-                                                              p: 1,
-                                                              borderRadius: 1,
-                                                              whiteSpace: "pre-wrap",
-                                                              fontFamily: "monospace",
-                                                              "& mark": {
-                                                                backgroundColor: "#fef08a",
-                                                                color: "#713f12",
-                                                                padding: "2px 4px",
+                                                        if (isHtml) {
+                                                          return (
+                                                            <Box
+                                                              key={blockIndex}
+                                                              sx={{
+                                                                textDecoration: topicComplete ? "line-through" : "none",
+                                                                lineHeight: 1.8,
+                                                                minHeight: 40,
+                                                                mb: 1.5,
+                                                                p: 1,
                                                                 borderRadius: 1,
-                                                              },
-                                                            }}
-                                                            dangerouslySetInnerHTML={{ __html: block.content }}
-                                                          />
+                                                                whiteSpace: "pre-wrap",
+                                                                fontFamily: "monospace",
+                                                                "& mark": {
+                                                                  backgroundColor: "#fef08a",
+                                                                  color: "#713f12",
+                                                                  padding: "2px 4px",
+                                                                  borderRadius: 1,
+                                                                },
+                                                              }}
+                                                              dangerouslySetInnerHTML={{ __html: block.content }}
+                                                            />
+                                                          );
+                                                        }
+
+                                                        const blockStyle: React.CSSProperties = {
+                                                          textDecoration: topicComplete ? "line-through" : "none",
+                                                          lineHeight: 1.8,
+                                                          minHeight: 40,
+                                                          marginBottom: 12,
+                                                          padding: 8,
+                                                          borderRadius: 4,
+                                                          whiteSpace: "pre-wrap",
+                                                          fontFamily: "monospace",
+                                                        };
+
+                                                        if (block.textColor) {
+                                                          blockStyle.color = block.textColor;
+                                                        }
+
+                                                        if (block.backgroundColor) {
+                                                          blockStyle.backgroundColor = block.backgroundColor;
+                                                        }
+
+                                                        if (block.fontSize) {
+                                                          blockStyle.fontSize = block.fontSize;
+                                                        }
+
+                                                        return (
+                                                          <Typography
+                                                            key={blockIndex}
+                                                            variant="body2"
+                                                            sx={blockStyle}
+                                                          >
+                                                            {block.content}
+                                                          </Typography>
                                                         );
                                                       }
 
-                                                      const blockStyle: React.CSSProperties = {
-                                                        textDecoration: topicComplete ? "line-through" : "none",
-                                                        lineHeight: 1.8,
-                                                        minHeight: 40,
-                                                        marginBottom: 12,
-                                                        padding: 8,
-                                                        borderRadius: 4,
-                                                        whiteSpace: "pre-wrap",
-                                                        fontFamily: "monospace",
-                                                      };
-
-                                                      if (block.textColor) {
-                                                        blockStyle.color = block.textColor;
-                                                      }
-
-                                                      if (block.backgroundColor) {
-                                                        blockStyle.backgroundColor = block.backgroundColor;
-                                                      }
-
-                                                      if (block.fontSize) {
-                                                        blockStyle.fontSize = block.fontSize;
-                                                      }
-
-                                                      return (
-                                                        <Typography
-                                                          key={blockIndex}
-                                                          variant="body2"
-                                                          sx={blockStyle}
-                                                        >
-                                                          {block.content}
-                                                        </Typography>
-                                                      );
-                                                    }
-
-                                                    if (block.type === "image" && block.url) {
-                                                      return (
-                                                        <Box key={blockIndex} sx={{ mb: 1.5 }}>
-                                                          <Box
-                                                            component="img"
-                                                            src={block.url}
-                                                            alt={block.alt || "Topic image"}
-                                                            sx={{
-                                                              width: "100%",
-                                                              maxHeight: 420,
-                                                              objectFit: "contain",
-                                                              borderRadius: 2,
-                                                              border: "1px solid",
-                                                              borderColor: "divider",
-                                                              bgcolor: "background.default",
-                                                            }}
-                                                          />
-                                                          {block.caption ? (
-                                                            <Typography
-                                                              variant="caption"
+                                                      if (block.type === "image" && block.url) {
+                                                        return (
+                                                          <Box key={blockIndex} sx={{ mb: 1.5 }}>
+                                                            <Box
+                                                              component="img"
+                                                              src={block.url}
+                                                              alt={block.alt || "Topic image"}
                                                               sx={{
-                                                                color: "text.secondary",
-                                                                display: "block",
-                                                                textAlign: "center",
-                                                                mt: 0.75,
-                                                                fontStyle: "italic",
+                                                                width: "100%",
+                                                                maxHeight: 420,
+                                                                objectFit: "contain",
+                                                                borderRadius: 2,
+                                                                border: "1px solid",
+                                                                borderColor: "divider",
+                                                                bgcolor: "background.default",
                                                               }}
-                                                            >
-                                                              {block.caption}
-                                                            </Typography>
-                                                          ) : null}
-                                                        </Box>
-                                                      );
-                                                    }
-
-                                                    return null;
-                                                  })}
-                                                </Box>
-
-                                                {topic.interviewQuestions?.length ? (
-                                                  <Box sx={{ mt: 1.5 }}>
-                                                    <Typography variant="caption" sx={{
-                                                      fontWeight: 700, color: "text.secondary", display: "block", mb: 0.5, fontSize: {
-                                                        md: 16,
-                                                        xs: 13,
-                                                        lg: 20,
+                                                            />
+                                                            {block.caption ? (
+                                                              <Typography
+                                                                variant="caption"
+                                                                sx={{
+                                                                  color: "text.secondary",
+                                                                  display: "block",
+                                                                  textAlign: "center",
+                                                                  mt: 0.75,
+                                                                  fontStyle: "italic",
+                                                                }}
+                                                              >
+                                                                {block.caption}
+                                                              </Typography>
+                                                            ) : null}
+                                                          </Box>
+                                                        );
                                                       }
-                                                    }}>
-                                                      Interview Questions:
-                                                    </Typography>
-                                                    <Stack component="ul" spacing={0.5} sx={{ pl: 1.5, m: 0 }}>
-                                                      {topic.interviewQuestions.map((question, qIndex) => (
-                                                        <Typography
-                                                          key={qIndex}
-                                                          component="li"
-                                                          variant="body2"
-                                                          sx={{
-                                                            color: "text.primary", fontSize: {
-                                                              md: 14,
-                                                              xs: 12,
-                                                              lg: 16,
-                                                            }
-                                                          }}
-                                                        >
-                                                          {question}
-                                                        </Typography>
-                                                      ))}
-                                                    </Stack>
+
+                                                      return null;
+                                                    })}
                                                   </Box>
-                                                ) : null}
+
+                                                  {topic.interviewQuestions?.length ? (
+                                                    <Box sx={{ mt: 1.5 }}>
+                                                      <Typography variant="caption" sx={{
+                                                        fontWeight: 700, color: "text.secondary", display: "block", mb: 0.5, fontSize: {
+                                                          md: 16,
+                                                          xs: 13,
+                                                          lg: 20,
+                                                        }
+                                                      }}>
+                                                        Interview Questions:
+                                                      </Typography>
+                                                      <Stack component="ul" spacing={0.5} sx={{ pl: 1.5, m: 0 }}>
+                                                        {topic.interviewQuestions.map((question, qIndex) => (
+                                                          <Typography
+                                                            key={qIndex}
+                                                            component="li"
+                                                            variant="body2"
+                                                            sx={{
+                                                              color: "text.primary", fontSize: {
+                                                                md: 14,
+                                                                xs: 12,
+                                                                lg: 16,
+                                                              }
+                                                            }}
+                                                          >
+                                                            {question}
+                                                          </Typography>
+                                                        ))}
+                                                      </Stack>
+                                                    </Box>
+                                                  ) : null}
+                                                </Box>
                                               </Box>
                                             </Box>
-                                          </Box>
-                                        );
-                                      })}
-                                    </Stack>
-                                  </AccordionDetails>
-                                </Accordion>
-                              </Box>
-                            );
+                                          );
+                                        })}
+                                      </Stack>
+                                    </AccordionDetails>
+                                  </Accordion>
+                                </Box>
+                              );
                             })}
                           </Stack>
                         </Box>
@@ -581,12 +581,16 @@ const Courses = () => {
           }}
         >
 
-          <Typography
+          {/* <Typography
             color="text.secondary"
             variant="body2"
           >
             AlgoSaathi Administration Panel
+          </Typography> */}
+          <Typography className="footer-tagline">
+            Learn. Communicate. Build. Grow.
           </Typography>
+
 
           <Typography
             color="text.secondary"

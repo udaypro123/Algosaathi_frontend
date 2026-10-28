@@ -14,11 +14,27 @@ export interface RoadmapCourse {
   id: string;
   courseName: string;
   documents: RoadmapDocument[];
+  managed?: boolean;
 }
 
 export const getRoadmaps = async (): Promise<RoadmapCourse[]> => {
   const response = await api.get("/roadmaps");
   return response.data.data;
+};
+
+export const createRoadmapCourse = async (courseName: string) => {
+  const response = await api.post("/roadmaps/courses", { courseName });
+  return response.data;
+};
+
+export const updateRoadmapCourse = async (courseId: string, courseName: string) => {
+  const response = await api.put(`/roadmaps/courses/${courseId}`, { courseName });
+  return response.data;
+};
+
+export const deleteRoadmapCourse = async (courseId: string) => {
+  const response = await api.delete(`/roadmaps/courses/${courseId}`);
+  return response.data;
 };
 
 export const uploadRoadmapDocument = async (
@@ -34,6 +50,23 @@ export const uploadRoadmapDocument = async (
   formData.append("file", file);
 
   const response = await api.post("/roadmaps/documents", formData);
+  return response.data;
+};
+
+export const updateRoadmapDocument = async (
+  documentId: string,
+  courseName: string,
+  title: string,
+  description: string,
+  file?: File
+) => {
+  const formData = new FormData();
+  formData.append("courseName", courseName);
+  formData.append("title", title);
+  formData.append("description", description);
+  if (file) formData.append("file", file);
+
+  const response = await api.put(`/roadmaps/${documentId}`, formData);
   return response.data;
 };
 
