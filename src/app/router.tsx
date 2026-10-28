@@ -32,6 +32,8 @@ const Footer = lazyWithRetry(() => import("../common/Footer"));
 const SEO = lazyWithRetry(() => import("../seo/SEO"));
 const PublicHeader = lazyWithRetry(() => import("../common/PublicHeader"));
 const PrivacyPolicy = lazyWithRetry(() => import("../Modules/Privacy/PrivacyPolicy"));
+const Roadmaps = lazyWithRetry(() => import("../Modules/Roadmaps/Roadmaps"));
+const AdminRoadmapManager = lazyWithRetry(() => import("../Modules/Roadmaps/AdminRoadmapManager"));
 
 export const router = createBrowserRouter([
     {
@@ -207,6 +209,19 @@ export const router = createBrowserRouter([
                         ),
                     },
                     {
+                        path: "roadmaps",
+                        element: (
+                            <>
+                                <SEO
+                                    title="Course Roadmaps"
+                                    description="Download learning roadmaps and course guides from AlgoSaathi."
+                                    canonical="https://algosaathi.com/roadmaps"
+                                />
+                                <Roadmaps />
+                            </>
+                        ),
+                    },
+                    {
                         path: "dashboard",
                         element: (
                             <>
@@ -358,6 +373,19 @@ export const router = createBrowserRouter([
                                     canonical="https://algosaathi.com/admin/courses"
                                 />
                                 <AdminCourseManager />
+                            </>
+                        )
+                    },
+                    {
+                        path: "admin/roadmaps",
+                        element: (
+                            <>
+                                <SEO
+                                    title="Admin Roadmaps"
+                                    description="Upload and manage course roadmap documents."
+                                    canonical="https://algosaathi.com/admin/roadmaps"
+                                />
+                                <AdminRoadmapManager />
                             </>
                         )
                     },

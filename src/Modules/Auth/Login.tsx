@@ -2,7 +2,6 @@ import {
     Alert,
     Box,
     Button,
-    Divider,
     IconButton,
     InputAdornment,
     Stack,
@@ -50,19 +49,19 @@ interface LoginForm {
 
 const inputStyles = {
     "& .MuiOutlinedInput-root": {
-        minHeight: 52,
+        minHeight: 54,
 
-        borderRadius: "14px",
+        borderRadius: "13px",
 
         backgroundColor:
-            "#ffffff",
+            "#f8fafc",
 
         transition:
             "all 0.25s ease",
 
         "& fieldset": {
             borderColor:
-                "#e2e8f0",
+                "#dbe4f0",
 
             borderWidth:
                 "1px",
@@ -74,7 +73,7 @@ const inputStyles = {
 
             "& fieldset": {
                 borderColor:
-                    "#93c5fd",
+                    "#60a5fa",
             },
         },
 
@@ -98,10 +97,11 @@ const inputStyles = {
 
     "& .MuiInputLabel-root": {
         color:
-            "#64748b",
+        "#475569",
 
         fontWeight:
-            500,
+        400,
+    fontSize: "16px",
     },
 
 
@@ -116,10 +116,10 @@ const inputStyles = {
             "#0f172a",
 
         fontSize:
-            "14px",
+            "16px",
 
         fontWeight:
-            500,
+            400,
     },
 
 
@@ -170,6 +170,10 @@ const Login = () => {
 
     const [error, setError] =
         useState<string | null>(null);
+
+    const [verificationPending, setVerificationPending] = useState(false);
+    const [verificationCode, setVerificationCode] = useState("");
+    const [verificationMessage, setVerificationMessage] = useState("");
 
 
     const [showPassword, setShowPassword] =
@@ -306,14 +310,72 @@ const Login = () => {
 
 
         } catch (err: any) {
-            setError(
-                err?.response?.data?.message ||
-                "Invalid email or password."
-            );
+            if (err?.response?.status === 403) {
+                setVerificationPending(true);
+                setVerificationMessage(
+                    "Verify your email address to finish signing in."
+                );
+            } else {
+                setError(
+                    err?.response?.data?.message ||
+                    "Invalid email or password."
+                );
+            }
 
 
         } finally {
 
+            setLoading(false);
+        }
+    };
+
+    const handleVerifyEmail = async (
+        e: React.FormEvent<HTMLFormElement>
+    ) => {
+        e.preventDefault();
+        setError(null);
+
+        if (!/^\d{6}$/.test(verificationCode)) {
+            setError("Enter the six-digit verification code.");
+            return;
+        }
+
+        setLoading(true);
+        try {
+            const response = await api.post("/auth/verify-email-otp", {
+                email: form.email,
+                otp: verificationCode,
+            });
+            setAuthData(response.data.tokens.accessToken, response.data.user);
+            navigate(destination, { replace: true });
+        } catch (err: any) {
+            setError(
+                err?.response?.data?.message ||
+                "Unable to verify your email. Please try again."
+            );
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleResendVerificationCode = async () => {
+        setError(null);
+        setVerificationMessage("");
+        setLoading(true);
+        try {
+            const response = await api.post("/auth/resend-verification-otp", {
+                email: form.email,
+            });
+            setVerificationCode("");
+            setVerificationMessage(
+                response.data.message || "A new verification code has been requested."
+            );
+        } catch (err: any) {
+            setError(
+                err?.response?.data?.message ||
+                "Unable to resend the code. Please try again."
+            );
+        } finally {
             setLoading(false);
         }
     };
@@ -375,7 +437,12 @@ const Login = () => {
 
                 minHeight: {
                     xs: "auto",
-                    md: "100vh",
+                    md: "100%",
+                },
+
+                height: {
+                    xs: "auto",
+                    md: "100%",
                 },
 
                 width:
@@ -393,18 +460,18 @@ const Login = () => {
                 position:
                     "relative",
 
-                overflow:
-                    "hidden",
+                overflowX: "clip",
+                overflowY: "visible",
 
                 px: {
                     xs: 2,
                     sm: 3,
-                    md: 4,
+                    md: 2,
                 },
 
                 py: {
                     xs: 4,
-                    md: 6,
+                    md: 2,
                 },
 
 
@@ -515,9 +582,10 @@ const Login = () => {
 
                 style={{
                     width: "100%",
-                    maxWidth: 500,
+                    maxWidth: 520,
                     position: "relative",
                     zIndex: 2,
+                    minWidth: 0,
                 }}
             >
 
@@ -529,34 +597,55 @@ const Login = () => {
                 <Box
                     sx={{
                         width: "100%",
-                        background: "#ffffff",
+                        minWidth: 0,
+                        boxSizing: "border-box",
+                        fontFamily: "Inter, 'Segoe UI', system-ui, sans-serif",
+                        background: "linear-gradient(155deg, #ffffff 0%, #f9fbff 62%, #f2f7ff 100%)",
                         borderRadius: {
-                            xs: "24px",
-                            md: "32px",
+                            xs: "22px",
+                            md: "26px",
                         },
                         p: {
-                            xs: 3,
-                            sm: 4,
-                            md: 5,
+                            xs: 2.5,
+                            sm: 3.5,
+                            md: 3.5,
                         },
-                        boxShadow: "0 25px 70px rgba(15,23,42,0.08)",
+                        boxShadow: "0 20px 48px rgba(2,6,23,0.16), inset 0 1px 0 rgba(255,255,255,0.95)",
                         position: "relative",
                         overflow: "hidden",
-                        border: "1px solid rgba(226,232,240,0.8)",
+                        border: "none",
+                        "& .MuiTypography-root, & .MuiInputBase-root, & .MuiInputLabel-root, & .MuiButton-root": {
+                            fontFamily: "Inter, 'Segoe UI', system-ui, sans-serif",
+                        },
 
-                        "&::before": {
+                        "&::after": {
                             content: '""',
                             position: "absolute",
-                            top: 0,
-                            left: 0,
+                            width: 180,
+                            height: 180,
+                            top: -110,
                             right: 0,
-                            height: "5px",
-                            background: "linear-gradient(90deg,#2563eb,#0284c7,#06b6d4)",
+                            borderRadius: "50%",
+                            background: "rgba(59,130,246,0.07)",
+                            pointerEvents: "none",
                         },
                     }}
                 >
 
 
+                    <Box
+                        sx={{
+                            mx: { xs: -2.5, sm: -3.5, md: -3.5 },
+                            mt: { xs: -2.5, sm: -3.5, md: -3.5 },
+                            mb: 3,
+                            px: { xs: 2.5, sm: 3.5, md: 3.5 },
+                            pt: { xs: 2.5, sm: 3.5, md: 3.5 },
+                            pb: 2.5,
+                            background: "linear-gradient(135deg, #eff6ff 0%, #f8fbff 65%, #e0f2fe 100%)",
+                            borderBottom: "none",
+                            borderRadius: { xs: "21px 21px 16px 16px", md: "25px 25px 18px 18px" },
+                        }}
+                    >
                     {/* =================================================
                         LOGO
                     ================================================= */}
@@ -581,8 +670,9 @@ const Login = () => {
                             sx={{
                                 mb: 2.5,
                                 alignItems: "center",
-
-                                justifyContent: "center"
+                                justifyContent: "center",
+                                position: "relative",
+                                zIndex: 1,
                             }}
                         >
 
@@ -631,11 +721,9 @@ const Login = () => {
                             <Typography
                                 sx={{
 
-                                    fontSize:
-                                        23,
+                                    fontSize: 25,
 
-                                    fontWeight:
-                                        900,
+                                    fontWeight: 700,
 
                                     color:
                                         "#0f172a",
@@ -659,6 +747,24 @@ const Login = () => {
 
                             </Typography>
 
+                            <Box
+                                sx={{
+                                    ml: 0,
+                                    px: 1.25,
+                                    py: 0.65,
+                                    borderRadius: 99,
+                                    color: "#1d4ed8",
+                                    backgroundColor: "rgba(37,99,235,0.08)",
+                                    border: "1px solid rgba(37,99,235,0.12)",
+                                    fontSize: 10,
+                                    fontWeight: 800,
+                                    letterSpacing: "0.08em",
+                                    whiteSpace: "nowrap",
+                                }}
+                            >
+                                MEMBER SIGN IN
+                            </Box>
+
                         </Stack>
 
                     </motion.div>
@@ -680,26 +786,22 @@ const Login = () => {
 
                         <Typography
                             sx={{
-
-                                textAlign:
-                                    "center",
+                                textAlign: "center",
 
                                 fontSize: {
-                                    xs: 27,
-                                    sm: 32,
+                                    xs: 32,
+                                    sm: 36,
                                 },
 
-                                fontWeight:
-                                    900,
+                                fontWeight: 700,
 
                                 color:
                                     "#0f172a",
 
-                                letterSpacing:
-                                    "-1px",
+                                letterSpacing: "-1.2px",
 
                                 lineHeight:
-                                    1.15,
+                                    1.12,
                             }}
                         >
 
@@ -730,21 +832,18 @@ const Login = () => {
 
                         <Typography
                             sx={{
-
-                                textAlign:
-                                    "center",
+                                textAlign: "center",
 
                                 color:
                                     "#64748b",
 
-                                fontSize:
-                                    14,
+                                fontSize: 16,
+                                fontWeight: 400,
 
                                 mt:
-                                    1,
+                                    0.8,
 
-                                mb:
-                                    4,
+                                mb: 0,
 
                                 lineHeight:
                                     1.6,
@@ -755,6 +854,7 @@ const Login = () => {
                         </Typography>
 
                     </motion.div>
+                    </Box>
 
 
                     {/* =================================================
@@ -785,6 +885,14 @@ const Login = () => {
                         </Alert>
                     )}
 
+                    {verificationMessage && (
+                        <Alert
+                            severity="info"
+                            sx={{ mb: 2.5, borderRadius: "12px", fontSize: 13 }}
+                        >
+                            {verificationMessage}
+                        </Alert>
+                    )}
 
                     {/* =================================================
                         FORM
@@ -792,11 +900,84 @@ const Login = () => {
 
                     <Box
                         component="form"
-                        onSubmit={
-                            handleSubmit
-                        }
+                        onSubmit={verificationPending ? handleVerifyEmail : handleSubmit}
                     >
 
+                        {verificationPending ? (
+                            <Stack spacing={2.2}>
+                                <TextField
+                                    label="Verification code"
+                                    placeholder="Enter 6-digit code"
+                                    value={verificationCode}
+                                    onChange={(event) => {
+                                        setVerificationCode(
+                                            event.target.value.replace(/\D/g, "").slice(0, 6)
+                                        );
+                                        setError(null);
+                                    }}
+                                    fullWidth
+                                    required
+                                    slotProps={{
+                                        inputLabel: { shrink: true },
+                                        htmlInput: {
+                                            inputMode: "numeric",
+                                            maxLength: 6,
+                                            autoComplete: "one-time-code",
+                                            style: {
+                                                textAlign: "center",
+                                                letterSpacing: "0.5em",
+                                                fontSize: "1.25rem",
+                                            },
+                                        },
+                                        input: {
+                                            startAdornment: (
+                                                <InputAdornment position="start">
+                                                    <EmailOutlined />
+                                                </InputAdornment>
+                                            ),
+                                        },
+                                    }}
+                                    sx={inputStyles}
+                                />
+
+                                <Button
+                                    type="submit"
+                                    fullWidth
+                                    variant="contained"
+                                    disabled={loading || verificationCode.length !== 6}
+                                    endIcon={!loading && <ArrowForwardRounded />}
+                                    sx={{
+                                        height: 54,
+                                        borderRadius: "14px",
+                                        textTransform: "none",
+                                        fontSize: 16,
+                                        fontWeight: 600,
+                                        background: "linear-gradient(135deg,#2563eb,#0284c7)",
+                                        boxShadow: "0 6px 16px rgba(37,99,235,0.16)",
+                                        "&:hover": {
+                                            background: "linear-gradient(135deg,#1d4ed8,#0369a1)",
+                                            boxShadow: "0 8px 20px rgba(37,99,235,0.2)",
+                                        },
+                                    }}
+                                >
+                                    {loading ? "Verifying..." : "Verify email"}
+                                </Button>
+
+                                <Button
+                                    type="button"
+                                    variant="text"
+                                    disabled={loading}
+                                    onClick={handleResendVerificationCode}
+                                    sx={{
+                                        textTransform: "none",
+                                        color: "#2563eb",
+                                        fontWeight: 600,
+                                    }}
+                                >
+                                    Resend verification code
+                                </Button>
+                            </Stack>
+                        ) : (
                         <Stack
                             spacing={2.2}
                         >
@@ -1112,16 +1293,16 @@ const Login = () => {
                                             "none",
 
                                         fontSize:
-                                            15.5,
+                                            17.5,
 
                                         fontWeight:
-                                            800,
+                                            600,
 
                                         background:
                                             "linear-gradient(135deg,#2563eb,#0284c7)",
 
                                         boxShadow:
-                                            "0 12px 28px rgba(37,99,235,0.22)",
+                                            "0 7px 16px rgba(37,99,235,0.18)",
 
                                         transition:
                                             "all 0.25s ease",
@@ -1135,7 +1316,7 @@ const Login = () => {
                                                 "translateY(-2px)",
 
                                             boxShadow:
-                                                "0 16px 35px rgba(37,99,235,0.30)",
+                                                "0 9px 20px rgba(37,99,235,0.22)",
                                         },
 
                                         "&:active":
@@ -1164,64 +1345,9 @@ const Login = () => {
                             </motion.div>
 
                         </Stack>
+                        )}
 
                     </Box>
-
-
-                    {/* =================================================
-                        DIVIDER
-                    ================================================= */}
-
-                    <Stack
-                        direction="row"
-
-                        spacing={2}
-
-
-
-                        sx={{
-                            my: 3,
-                            alignItems: "center"
-                        }}
-                    >
-
-                        <Divider
-                            sx={{
-                                flex:
-                                    1,
-
-                                borderColor:
-                                    "#e2e8f0",
-                            }}
-                        />
-
-                        <Typography
-                            sx={{
-
-                                fontSize:
-                                    11,
-
-                                color:
-                                    "#94a3b8",
-
-                                fontWeight:
-                                    600,
-                            }}
-                        >
-                            OR
-                        </Typography>
-
-                        <Divider
-                            sx={{
-                                flex:
-                                    1,
-
-                                borderColor:
-                                    "#e2e8f0",
-                            }}
-                        />
-
-                    </Stack>
 
 
                     {/* =================================================
@@ -1248,8 +1374,7 @@ const Login = () => {
                             textAlign:
                                 "center",
 
-                            fontSize:
-                                13.5,
+                            fontSize: 15.5,
 
                             color:
                                 "#64748b",
@@ -1271,7 +1396,7 @@ const Login = () => {
                                     "#2563eb",
 
                                 fontWeight:
-                                    800,
+                                    600,
 
                                 cursor:
                                     "pointer",
@@ -1305,8 +1430,7 @@ const Login = () => {
                             color:
                                 "#94a3b8",
 
-                            fontSize:
-                                10.5,
+                            fontSize: 12.5,
 
                             mt:
                                 1.5,

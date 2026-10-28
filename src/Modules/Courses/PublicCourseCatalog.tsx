@@ -12,19 +12,19 @@ import {
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import SchoolIcon from "@mui/icons-material/School";
 import { useNavigate } from "react-router-dom";
-import systemDesignImage from "../../assets/cardone.png";
+import systemDesignImage from "../../assets/system_design.png";
 import frontendImage from "../../assets/front-end-programming.png";
-import backendImage from "../../assets/backend.png";
-import fullStackImage from "../../assets/cardtwo.png";
+import backendImage from "../../assets/backend.jpg";
+import fullStackImage from "../../assets/full stack.png";
 import dsaImage from "../../assets/DSA.png";
-import otherSkillsImage from "../../assets/cardthree.png";
+import otherSkillsImage from "../../assets/skills.png";
 
 const courseCategories = [
   {
     title: "System Design",
     description: "Learn to design scalable, reliable applications and services.",
     image: systemDesignImage,
-    imageFit: "cover",
+    imageFit: "contain",
   },
   {
     title: "Frontend Development",
@@ -42,7 +42,7 @@ const courseCategories = [
     title: "Full Stack Development",
     description: "Bring frontend and backend skills together in real projects.",
     image: fullStackImage,
-    imageFit: "cover",
+    imageFit: "contain",
   },
   {
     title: "Data Structures & Algorithms",
@@ -54,7 +54,7 @@ const courseCategories = [
     title: "Other Tech Skills",
     description: "Explore practical tools and skills for your software career.",
     image: otherSkillsImage,
-    imageFit: "cover",
+    imageFit: "contain",
   },
 ];
 
@@ -72,35 +72,75 @@ const PublicCourseCatalog = () => {
   };
 
   return (
-    <Box sx={{ minHeight: "70vh", bgcolor: "#f5f7fa", py: { xs: 5, md: 8 } }}>
+    <Box
+      sx={{
+        minHeight: "70vh",
+        background:
+          "radial-gradient(circle at 50% 0%, rgba(25, 118, 210, 0.08), transparent 30%), #f5f7fa",
+        pt: { xs: 12, md: 14 },
+        pb: { xs: 6, md: 10 },
+      }}
+    >
       <Container maxWidth="lg">
-        <Box sx={{ mb: { xs: 4, md: 6 }, textAlign: "center" }}>
-          <SchoolIcon sx={{ fontSize: 48, color: "primary.main" }} />
+        <Box sx={{ mb: { xs: 4, md: 7 }, textAlign: "center" }}>
+          <Box
+            sx={{
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: 58,
+              height: 58,
+              mb: 2,
+              borderRadius: 3,
+              color: "primary.main",
+              bgcolor: "rgba(25, 118, 210, 0.1)",
+            }}
+          >
+            <SchoolIcon sx={{ fontSize: 34 }} />
+          </Box>
           <Typography
+            component="h1"
             variant="h3"
-            sx={{ fontWeight: 800, mb: 1, fontSize: { xs: "2rem", md: "3rem" } }}
+            sx={{
+              fontWeight: 800,
+              letterSpacing: { xs: "-0.03em", md: "-0.045em" },
+              mb: 1.5,
+              fontSize: { xs: "2.1rem", sm: "2.6rem", md: "3.25rem" },
+              color: "#111827",
+            }}
           >
             Explore Our Courses
           </Typography>
-          <Typography color="text.secondary">
+          <Typography
+            color="text.secondary"
+            sx={{ maxWidth: 620, mx: "auto", lineHeight: 1.7, fontSize: { xs: 15, md: 17 } }}
+          >
             Choose a learning path. Sign in or create an account to access course content.
           </Typography>
         </Box>
 
-        <Grid container spacing={3}>
+        <Grid container spacing={{ xs: 2.5, md: 3 }}>
           {courseCategories.map((category) => (
             <Grid key={category.title} size={{ xs: 12, sm: 6, md: 4 }}>
               <Card
                 sx={{
                   height: "100%",
+                  minHeight: 405,
                   display: "flex",
                   flexDirection: "column",
                   overflow: "hidden",
-                  borderRadius: 3,
-                  transition: "transform 180ms ease, box-shadow 180ms ease",
+                  border: "1px solid rgba(15, 23, 42, 0.07)",
+                  borderRadius: 3.5,
+                  boxShadow: "0 4px 16px rgba(15, 23, 42, 0.05)",
+                  transition: "transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease",
                   "&:hover": {
-                    transform: "translateY(-4px)",
-                    boxShadow: 8,
+                    transform: "translateY(-5px)",
+                    borderColor: "rgba(25, 118, 210, 0.25)",
+                    boxShadow: "0 14px 32px rgba(15, 23, 42, 0.12)",
+                  },
+                  "&:focus-within": {
+                    outline: "3px solid rgba(25, 118, 210, 0.35)",
+                    outlineOffset: 2,
                   },
                 }}
               >
@@ -109,29 +149,44 @@ const PublicCourseCatalog = () => {
                   image={category.image}
                   alt={category.title}
                   sx={{
-                    height: 190,
-                    p: category.imageFit === "contain" ? 3 : 0,
+                    height: { xs: 190, md: 205 },
+                    width: "100%",
                     objectFit: category.imageFit,
-                    bgcolor: category.imageFit === "contain" ? "#eef3fb" : "grey.100",
+                    objectPosition: "center",
+                    display: "block",
+                    bgcolor: "#edf3fb",
                   }}
                 />
-                <CardContent sx={{ flexGrow: 1, p: 3 }}>
-                  <Typography variant="h5" sx={{ fontWeight: 700, mb: 1 }}>
+                <CardContent sx={{ flexGrow: 1, px: { xs: 2.5, md: 3 }, pt: 2.5, pb: 1 }}>
+                  <Typography
+                    component="h2"
+                    variant="h5"
+                    sx={{ fontWeight: 750, letterSpacing: "-0.02em", mb: 1, fontSize: { xs: 20, md: 22 } }}
+                  >
                     {category.title}
                   </Typography>
-                  <Typography color="text.secondary">
+                  <Typography color="text.secondary" sx={{ lineHeight: 1.65 }}>
                     {category.description}
                   </Typography>
                 </CardContent>
-                <CardActions sx={{ px: 3, pb: 3 }}>
+                <CardActions sx={{ px: { xs: 2.5, md: 3 }, pt: 1, pb: 3 }}>
                   <Button
                     fullWidth
                     variant="contained"
                     onClick={requestCourseAccess}
                     startIcon={<LockOutlinedIcon />}
-                    sx={{ textTransform: "none", fontWeight: 700 }}
+                    sx={{
+                      minHeight: 46,
+                      borderRadius: 2,
+                      textTransform: "none",
+                      fontWeight: 700,
+                      boxShadow: "0 4px 10px rgba(25, 118, 210, 0.2)",
+                      "&:hover": {
+                        boxShadow: "0 7px 16px rgba(25, 118, 210, 0.28)",
+                      },
+                    }}
                   >
-                    Login to access
+                    Sign in to explore
                   </Button>
                 </CardActions>
               </Card>

@@ -17,6 +17,7 @@ import YouTubeIcon from '@mui/icons-material/YouTube';
 import PaletteIcon from '@mui/icons-material/Palette';
 import NewspaperIcon from "@mui/icons-material/Newspaper";
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
+import RouteRoundedIcon from '@mui/icons-material/RouteRounded';
 import LogoutIcon from "@mui/icons-material/Logout";
 import logo from "../assets/gene-structure-svgrepo-com.svg"
 
@@ -46,6 +47,12 @@ const menuItems: Array<{
             allowedRoles: [Roles.STUDENT]
         },
         {
+            name: "Roadmaps",
+            path: "/roadmaps",
+            icon: <RouteRoundedIcon />,
+            allowedRoles: [Roles.USERS, Roles.ADMIN, Roles.STUDENT]
+        },
+        {
             name: "You Tube",
             path: "/youtubepost",
             icon: <YouTubeIcon />,
@@ -61,6 +68,12 @@ const menuItems: Array<{
             name: "Courses",
             path: "/admin/courses",
             icon: <SchoolIcon />,
+            allowedRoles: [Roles.ADMIN]
+        },
+        {
+            name: "Roadmap Manager",
+            path: "/admin/roadmaps",
+            icon: <RouteRoundedIcon />,
             allowedRoles: [Roles.ADMIN]
         },
         {

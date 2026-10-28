@@ -2,11 +2,9 @@ import {
     Alert,
     Box,
     Button,
-    Divider,
     IconButton,
     InputAdornment,
     LinearProgress,
-    MenuItem,
     Stack,
     TextField,
     Typography,
@@ -43,6 +41,7 @@ interface SignupForm {
     phoneNumber: string;
 }
 
+type SignupStep = "email" | "otp" | "details";
 
 const Signup = () => {
     const navigate = useNavigate();
@@ -65,6 +64,10 @@ const Signup = () => {
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [signupStep, setSignupStep] = useState<SignupStep>("email");
+    const [verificationCode, setVerificationCode] = useState("");
+    const [registrationVerificationToken, setRegistrationVerificationToken] = useState("");
+    const [verificationMessage, setVerificationMessage] = useState("");
 
     const [showPassword, setShowPassword] =
         useState(false);
@@ -200,11 +203,41 @@ const Signup = () => {
        SUBMIT
     ========================================================= */
 
+    const handleSendVerificationCode = async (
+        e: React.FormEvent<HTMLFormElement>
+    ) => {
+        e.preventDefault();
+        setError(null);
+
+        if (!form.email.trim()) {
+            setError("Enter your email address.");
+            return;
+        }
+
+        setLoading(true);
+        try {
+            const result = await api.post("/auth/register/request-otp", {
+                email: form.email.trim().toLowerCase(),
+            });
+            setSignupStep("otp");
+            setVerificationCode("");
+            setVerificationMessage(
+                result.data.message || "Enter the verification code sent to your email."
+            );
+        } catch (err: any) {
+            setError(
+                err?.response?.data?.message ||
+                "Unable to send a verification code. Please try again."
+            );
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const handleSubmit = async (
         e: React.FormEvent<HTMLFormElement>
     ) => {
         e.preventDefault();
-
         setError(null);
 
         if (
@@ -215,83 +248,102 @@ const Signup = () => {
             !form.confirmPassword ||
             !form.phoneNumber
         ) {
-            setError(
-                "Please fill in all required fields."
-            );
-
+            setError("Please fill in all required fields.");
             return;
         }
-
 
         if (form.phoneNumber.length < 10) {
-            setError(
-                "Please enter a valid phone number."
-            );
-
+            setError("Please enter a valid phone number.");
             return;
         }
-
 
         if (form.password.length < 6) {
-            setError(
-                "Password must be at least 6 characters."
-            );
-
+            setError("Password must be at least 6 characters.");
             return;
         }
 
-
-        if (
-            form.password !==
-            form.confirmPassword
-        ) {
-            setError(
-                "Password and confirm password do not match."
-            );
-
+        if (form.password !== form.confirmPassword) {
+            setError("Password and confirm password do not match.");
             return;
         }
-
 
         setLoading(true);
-
         try {
-            await api.post(
-                "/auth/register",
+            const result = await api.post(
+                "/auth/register/complete",
                 {
-                    firstName:
-                        form.firstName,
-
-                    role:
-                        form.Role,
-
-                    lastName:
-                        form.lastName,
-
-                    email:
-                        form.email,
-
-                    password:
-                        form.password,
-
-                    confirmPassword:
-                        form.confirmPassword,
-
-                    phoneNumber:
-                        form.phoneNumber,
+                    firstName: form.firstName,
+                    role: form.Role,
+                    lastName: form.lastName,
+                    email: form.email.trim().toLowerCase(),
+                    password: form.password,
+                    confirmPassword: form.confirmPassword,
+                    phoneNumber: form.phoneNumber,
+                    verificationToken: registrationVerificationToken,
                 }
             );
-
-
-            navigate("/login", { state: location.state });
-
+            setAuthData(result.data.tokens.accessToken, result.data.user);
+            navigate(destination, { replace: true });
         } catch (err: any) {
-
             setError(
                 err?.response?.data?.message ||
-                "Unable to create account. Please try again."
+                "Unable to create your account. Please try again."
             );
+        } finally {
+            setLoading(false);
+        }
+    };
 
+    const handleVerifyEmail = async (
+        e: React.FormEvent<HTMLFormElement>
+    ) => {
+        e.preventDefault();
+        setError(null);
+
+        if (!/^\d{6}$/.test(verificationCode)) {
+            setError("Enter the six-digit verification code.");
+            return;
+        }
+
+        setLoading(true);
+        try {
+            const result = await api.post("/auth/register/verify-otp", {
+                email: form.email.trim().toLowerCase(),
+                otp: verificationCode,
+            });
+
+            setRegistrationVerificationToken(result.data.verificationToken);
+            setSignupStep("details");
+            setVerificationMessage(
+                result.data.message || "Email verified. Complete your account details."
+            );
+        } catch (err: any) {
+            setError(
+                err?.response?.data?.message ||
+                "Unable to verify your email. Please try again."
+            );
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleResendVerificationCode = async () => {
+        setError(null);
+        setVerificationMessage("");
+        setLoading(true);
+        try {
+            const result = await api.post("/auth/register/resend-otp", {
+                email: form.email.trim().toLowerCase(),
+            });
+            setVerificationCode("");
+            setVerificationMessage(
+                result.data.message || "A new verification code has been requested."
+            );
+        } catch (err: any) {
+            setError(
+                err?.response?.data?.message ||
+                "Unable to resend the code. Please try again."
+            );
         } finally {
             setLoading(false);
         }
@@ -340,16 +392,16 @@ const Signup = () => {
 
     const inputStyles = {
         "& .MuiOutlinedInput-root": {
-            minHeight: 52,
+            minHeight: 54,
 
-            borderRadius: "14px",
+            borderRadius: "13px",
 
-            backgroundColor: "#ffffff",
+            backgroundColor: "#f8fafc",
 
             transition: "all 0.25s ease",
 
             "& fieldset": {
-                borderColor: "#e2e8f0",
+                borderColor: "#dbe4f0",
                 borderWidth: "1px",
             },
 
@@ -357,7 +409,7 @@ const Signup = () => {
                 backgroundColor: "#ffffff",
 
                 "& fieldset": {
-                    borderColor: "#93c5fd",
+                    borderColor: "#60a5fa",
                 },
             },
 
@@ -374,8 +426,9 @@ const Signup = () => {
         },
 
         "& .MuiInputLabel-root": {
-            color: "#64748b",
-            fontWeight: 500,
+            color: "#475569",
+            fontWeight: 400,
+            fontSize: "16px",
         },
 
         "& .MuiInputLabel-root.Mui-focused": {
@@ -384,8 +437,8 @@ const Signup = () => {
 
         "& .MuiOutlinedInput-input": {
             color: "#0f172a",
-            fontSize: "14px",
-            fontWeight: 500,
+            fontSize: "16px",
+            fontWeight: 400,
         },
 
         "& .MuiOutlinedInput-input::placeholder": {
@@ -408,7 +461,12 @@ const Signup = () => {
             sx={{
                 minHeight: {
                     xs: "auto",
-                    md: "100vh",
+                    md: "100%",
+                },
+
+                height: {
+                    xs: "auto",
+                    md: "100%",
                 },
 
                 width: "100%",
@@ -421,17 +479,18 @@ const Signup = () => {
 
                 position: "relative",
 
-                overflow: "hidden",
+                overflowX: "clip",
+                overflowY: "visible",
 
                 px: {
                     xs: 2,
                     sm: 3,
-                    md: 4,
+                    md: 2,
                 },
 
                 py: {
                     xs: 4,
-                    md: 6,
+                    md: 2,
                 },
 
                 // background:
@@ -513,9 +572,10 @@ const Signup = () => {
 
                 style={{
                     width: "100%",
-                    maxWidth: 760,
+                    maxWidth: 660,
                     position: "relative",
                     zIndex: 2,
+                    minWidth: 0,
                 }}
             >
 
@@ -526,33 +586,54 @@ const Signup = () => {
                 <Box
                     sx={{
                         width: "100%",
-                        background: "#ffffff",
+                        minWidth: 0,
+                        boxSizing: "border-box",
+                        fontFamily: "Inter, 'Segoe UI', system-ui, sans-serif",
+                        background: "linear-gradient(155deg, #ffffff 0%, #f9fbff 62%, #f2f7ff 100%)",
                         borderRadius: {
-                            xs: "24px",
-                            md: "32px",
+                            xs: "22px",
+                            md: "26px",
                         },
                         p: {
-                            xs: 3,
-                            sm: 4,
-                            md: 5,
+                            xs: 2.5,
+                            sm: 3,
+                            md: 3,
                         },
-                        boxShadow: "0 25px 70px rgba(15,23,42,0.08)",
+                        boxShadow: "0 20px 48px rgba(2,6,23,0.16), inset 0 1px 0 rgba(255,255,255,0.95)",
                         position: "relative",
                         overflow: "hidden",
-                        border: "1px solid rgba(226,232,240,0.8)",
+                        border: "none",
+                        "& .MuiTypography-root, & .MuiInputBase-root, & .MuiInputLabel-root, & .MuiButton-root": {
+                            fontFamily: "Inter, 'Segoe UI', system-ui, sans-serif",
+                        },
 
-                        "&::before": {
+                        "&::after": {
                             content: '""',
                             position: "absolute",
-                            top: 0,
-                            left: 0,
+                            width: 180,
+                            height: 180,
+                            top: -110,
                             right: 0,
-                            height: "5px",
-                            background: "linear-gradient(90deg,#2563eb,#0284c7,#06b6d4)",
+                            borderRadius: "50%",
+                            background: "rgba(59,130,246,0.07)",
+                            pointerEvents: "none",
                         },
                     }}
                 >
 
+                    <Box
+                        sx={{
+                            mx: { xs: -2.5, sm: -3, md: -3 },
+                            mt: { xs: -2.5, sm: -3, md: -3 },
+                            mb: 2.5,
+                            px: { xs: 2.5, sm: 3, md: 3 },
+                            pt: { xs: 2.5, sm: 3, md: 3 },
+                            pb: 2.25,
+                            background: "linear-gradient(135deg, #eff6ff 0%, #f8fbff 65%, #e0f2fe 100%)",
+                            borderBottom: "none",
+                            borderRadius: { xs: "21px 21px 16px 16px", md: "25px 25px 18px 18px" },
+                        }}
+                    >
                     {/* =================================================
                         LOGO / BRAND
                     ================================================= */}
@@ -569,7 +650,9 @@ const Signup = () => {
                             sx={{
                                 mb: 2,
                                 alignItems: "center",
-                                justifyContent: "center"
+                                justifyContent: "center",
+                                position: "relative",
+                                zIndex: 1,
                             }}
                         >
                             <Box
@@ -598,11 +681,9 @@ const Signup = () => {
 
                             <Typography
                                 sx={{
-                                    fontSize:
-                                        23,
+                                    fontSize: 25,
 
-                                    fontWeight:
-                                        900,
+                                    fontWeight: 700,
 
                                     color:
                                         "#0f172a",
@@ -622,6 +703,24 @@ const Signup = () => {
                                     Saathi
                                 </Box>
                             </Typography>
+
+                            <Box
+                                sx={{
+                                    ml: 0,
+                                    px: 1.25,
+                                    py: 0.65,
+                                    borderRadius: 99,
+                                    color: "#1d4ed8",
+                                    backgroundColor: "rgba(37,99,235,0.08)",
+                                    border: "1px solid rgba(37,99,235,0.12)",
+                                    fontSize: 10,
+                                    fontWeight: 800,
+                                    letterSpacing: "0.08em",
+                                    whiteSpace: "nowrap",
+                                }}
+                            >
+                                FREE ACCOUNT
+                            </Box>
                         </Stack>
                     </motion.div>
 
@@ -637,26 +736,23 @@ const Signup = () => {
                     >
                         <Typography
                             sx={{
-                                textAlign:
-                                    "center",
+                                textAlign: "center",
 
                                 fontSize: {
-                                    xs: 27,
-                                    sm: 32,
-                                    md: 38,
+                                    xs: 30,
+                                    sm: 34,
+                                    md: 36,
                                 },
 
-                                fontWeight:
-                                    900,
+                                fontWeight: 700,
 
                                 color:
                                     "#0f172a",
 
-                                letterSpacing:
-                                    "-1.2px",
+                                letterSpacing: "-1.2px",
 
                                 lineHeight:
-                                    1.15,
+                                    1.12,
                             }}
                         >
                             Create your{" "}
@@ -683,18 +779,17 @@ const Signup = () => {
 
                         <Typography
                             sx={{
-                                textAlign:
-                                    "center",
+                                textAlign: "center",
 
                                 color:
                                     "#64748b",
 
-                                fontSize:
-                                    14,
+                                fontSize: 16,
+                                fontWeight: 400,
 
-                                mt: 1,
+                                mt: 0.8,
 
-                                mb: 4,
+                                mb: 0,
 
                                 lineHeight:
                                     1.6,
@@ -704,6 +799,7 @@ const Signup = () => {
                             AlgoSaathi today.
                         </Typography>
                     </motion.div>
+                    </Box>
 
 
                     {/* =================================================
@@ -730,6 +826,14 @@ const Signup = () => {
                         </Alert>
                     )}
 
+                    {verificationMessage && (
+                        <Alert
+                            severity="success"
+                            sx={{ mb: 2, borderRadius: "12px", fontSize: 13 }}
+                        >
+                            {verificationMessage}
+                        </Alert>
+                    )}
 
                     {/* =================================================
                         FORM
@@ -737,21 +841,197 @@ const Signup = () => {
 
                     <Box
                         component="form"
-                        onSubmit={handleSubmit}
+                        onSubmit={
+                            signupStep === "email"
+                                ? handleSendVerificationCode
+                                : signupStep === "otp"
+                                    ? handleVerifyEmail
+                                    : handleSubmit
+                        }
                     >
 
+                        {signupStep === "email" ? (
+                            <Stack spacing={2.25}>
+                                <Typography
+                                    sx={{
+                                        color: "#475569",
+                                        textAlign: "center",
+                                        fontSize: 14,
+                                        lineHeight: 1.7,
+                                    }}
+                                >
+                                    Start by verifying your email. We will send you a one-time code.
+                                </Typography>
+
+                                <TextField
+                                    label="Email address"
+                                    name="email"
+                                    type="email"
+                                    placeholder="you@example.com"
+                                    value={form.email}
+                                    onChange={handleChange}
+                                    fullWidth
+                                    required
+                                    autoComplete="email"
+                                    sx={inputStyles}
+                                    slotProps={{
+                                        inputLabel: { shrink: true },
+                                        input: {
+                                            startAdornment: (
+                                                <InputAdornment position="start">
+                                                    <EmailOutlined />
+                                                </InputAdornment>
+                                            ),
+                                        },
+                                    }}
+                                />
+
+                                <Button
+                                    type="submit"
+                                    fullWidth
+                                    variant="contained"
+                                    disabled={loading}
+                                    endIcon={!loading && <ArrowForwardRounded />}
+                                    sx={{
+                                        height: 54,
+                                        borderRadius: "14px",
+                                        textTransform: "none",
+                                        fontSize: 16,
+                                        fontWeight: 600,
+                                        background: "linear-gradient(135deg,#2563eb,#0284c7)",
+                                        boxShadow: "0 6px 16px rgba(37,99,235,0.16)",
+                                        "&:hover": {
+                                            background: "linear-gradient(135deg,#1d4ed8,#0369a1)",
+                                            boxShadow: "0 8px 20px rgba(37,99,235,0.2)",
+                                        },
+                                    }}
+                                >
+                                    {loading ? "Sending code..." : "Send verification code"}
+                                </Button>
+                            </Stack>
+                        ) : signupStep === "otp" ? (
+                            <Stack spacing={2.25}>
+                                <Typography
+                                    sx={{
+                                        color: "#475569",
+                                        textAlign: "center",
+                                        fontSize: 14,
+                                        lineHeight: 1.7,
+                                    }}
+                                >
+                                    We sent a six-digit code to{" "}
+                                    <Box component="strong" sx={{ color: "#172033" }}>
+                                        {form.email}
+                                    </Box>
+                                    . Enter it below to verify your account.
+                                </Typography>
+
+                                <TextField
+                                    label="Verification code"
+                                    placeholder="Enter 6-digit code"
+                                    value={verificationCode}
+                                    onChange={(event) => {
+                                        setVerificationCode(
+                                            event.target.value.replace(/\D/g, "").slice(0, 6)
+                                        );
+                                        setError(null);
+                                    }}
+                                    fullWidth
+                                    required
+                                    slotProps={{
+                                        inputLabel: { shrink: true },
+                                        htmlInput: {
+                                            inputMode: "numeric",
+                                            maxLength: 6,
+                                            autoComplete: "one-time-code",
+                                            style: {
+                                                textAlign: "center",
+                                                letterSpacing: "0.5em",
+                                                fontSize: "1.25rem",
+                                            },
+                                        },
+                                        input: {
+                                            startAdornment: (
+                                                <InputAdornment position="start">
+                                                    <EmailOutlined />
+                                                </InputAdornment>
+                                            ),
+                                        },
+                                    }}
+                                    sx={inputStyles}
+                                />
+
+                                <Button
+                                    type="submit"
+                                    fullWidth
+                                    variant="contained"
+                                    disabled={loading || verificationCode.length !== 6}
+                                    endIcon={!loading && <ArrowForwardRounded />}
+                                    sx={{
+                                        height: 54,
+                                        borderRadius: "14px",
+                                        textTransform: "none",
+                                        fontSize: 16,
+                                        fontWeight: 600,
+                                        background: "linear-gradient(135deg,#2563eb,#0284c7)",
+                                        boxShadow: "0 6px 16px rgba(37,99,235,0.16)",
+                                        "&:hover": {
+                                            background: "linear-gradient(135deg,#1d4ed8,#0369a1)",
+                                            boxShadow: "0 8px 20px rgba(37,99,235,0.2)",
+                                        },
+                                    }}
+                                >
+                                    {loading ? "Verifying..." : "Verify email"}
+                                </Button>
+
+                                <Button
+                                    type="button"
+                                    variant="text"
+                                    disabled={loading}
+                                    onClick={handleResendVerificationCode}
+                                    sx={{
+                                        textTransform: "none",
+                                        color: "#2563eb",
+                                        fontWeight: 600,
+                                    }}
+                                >
+                                    Resend verification code
+                                </Button>
+
+                                <Button
+                                    type="button"
+                                    variant="text"
+                                    disabled={loading}
+                                    onClick={() => {
+                                        setSignupStep("email");
+                                        setVerificationCode("");
+                                        setVerificationMessage("");
+                                        setError(null);
+                                    }}
+                                    sx={{
+                                        textTransform: "none",
+                                        color: "#64748b",
+                                    }}
+                                >
+                                    Change email address
+                                </Button>
+                            </Stack>
+                        ) : (
                         <Stack
-                            spacing={2.2}
+                            spacing={{ xs: 1.8, sm: 2 }}
                         >
+                            <Alert severity="success" sx={{ borderRadius: "12px" }}>
+                                Email verified: {form.email}
+                            </Alert>
 
                             {/* FIRST + LAST */}
 
                             <Stack
                                 direction={{
                                     xs: "column",
-                                    sm: "row",
+                                    md: "row",
                                 }}
-                                spacing={2}
+                                spacing={{ xs: 1.5, sm: 1.75 }}
                             >
 
                                 <motion.div
@@ -760,6 +1040,8 @@ const Signup = () => {
                                     animate="visible"
                                     style={{
                                         width: "100%",
+                                        flex: 1,
+                                        minWidth: 0,
                                     }}
                                 >
                                     <TextField
@@ -806,6 +1088,8 @@ const Signup = () => {
                                     }}
                                     style={{
                                         width: "100%",
+                                        flex: 1,
+                                        minWidth: 0,
                                     }}
                                 >
                                     <TextField
@@ -834,56 +1118,14 @@ const Signup = () => {
                             </Stack>
 
 
-                            {/* EMAIL */}
-
-                            <motion.div
-                                variants={fieldVariants}
-                                initial="hidden"
-                                animate="visible"
-                            >
-                                <TextField
-                                    label="Email address"
-                                    name="email"
-                                    type="email"
-                                    placeholder="you@example.com"
-                                    value={
-                                        form.email
-                                    }
-                                    onChange={
-                                        handleChange
-                                    }
-                                    fullWidth
-                                    required
-                                    sx={
-                                        inputStyles
-                                    }
-                                    slotProps={{
-                                        inputLabel: {
-                                            shrink:
-                                                true,
-                                        },
-
-                                        input: {
-                                            startAdornment:
-                                                (
-                                                    <InputAdornment position="start">
-                                                        <EmailOutlined />
-                                                    </InputAdornment>
-                                                ),
-                                        },
-                                    }}
-                                />
-                            </motion.div>
-
-
                             {/* PHONE + ROLE */}
 
                             <Stack
                                 direction={{
                                     xs: "column",
-                                    sm: "row",
+                                    md: "row",
                                 }}
-                                spacing={2}
+                                spacing={{ xs: 1.5, sm: 1.75 }}
                             >
 
                                 <motion.div
@@ -892,6 +1134,8 @@ const Signup = () => {
                                     animate="visible"
                                     style={{
                                         width: "100%",
+                                        flex: 1,
+                                        minWidth: 0,
                                     }}
                                 >
                                     <TextField
@@ -929,62 +1173,6 @@ const Signup = () => {
                                 </motion.div>
 
 
-                                <motion.div
-                                    variants={fieldVariants}
-                                    initial="hidden"
-                                    animate="visible"
-                                    transition={{
-                                        delay:
-                                            0.05,
-                                    }}
-                                    style={{
-                                        width: "100%",
-                                    }}
-                                >
-                                    <TextField
-                                        select
-                                        label="Select role"
-                                        name="Role"
-                                        value={
-                                            form.Role
-                                        }
-                                        onChange={
-                                            handleChange
-                                        }
-                                        fullWidth
-                                        required
-                                        sx={
-                                            inputStyles
-                                        }
-                                        slotProps={{
-                                            inputLabel: {
-                                                shrink:
-                                                    true,
-                                            },
-
-                                            input: {
-                                                startAdornment:
-                                                    (
-                                                        <InputAdornment position="start">
-                                                            <PersonOutlined />
-                                                        </InputAdornment>
-                                                    ),
-                                            },
-                                        }}
-                                    >
-                                        {/* <MenuItem value="users">
-                                            User
-                                        </MenuItem> */}
-
-                                        <MenuItem value="student">
-                                            Student
-                                        </MenuItem>
-                                        {/* <MenuItem value="admin">
-                                            admin
-                                        </MenuItem> */}
-                                    </TextField>
-                                </motion.div>
-
                             </Stack>
 
 
@@ -993,9 +1181,9 @@ const Signup = () => {
                             <Stack
                                 direction={{
                                     xs: "column",
-                                    sm: "row",
+                                    md: "row",
                                 }}
-                                spacing={2}
+                                spacing={{ xs: 1.5, sm: 1.75 }}
                                 sx={{ alignItems: "flex-start" }}
                             >
 
@@ -1007,6 +1195,8 @@ const Signup = () => {
                                     animate="visible"
                                     style={{
                                         width: "100%",
+                                        flex: 1,
+                                        minWidth: 0,
                                     }}
                                 >
                                     <TextField
@@ -1017,7 +1207,7 @@ const Signup = () => {
                                                 ? "text"
                                                 : "password"
                                         }
-                                        placeholder="Create a password"
+                                        placeholder="Create password"
                                         value={
                                             form.password
                                         }
@@ -1166,6 +1356,8 @@ const Signup = () => {
                                     }}
                                     style={{
                                         width: "100%",
+                                        flex: 1,
+                                        minWidth: 0,
                                     }}
                                 >
                                     <TextField
@@ -1176,7 +1368,7 @@ const Signup = () => {
                                                 ? "text"
                                                 : "password"
                                         }
-                                        placeholder="Repeat your password"
+                                        placeholder="Confirm password"
                                         value={
                                             form.confirmPassword
                                         }
@@ -1338,10 +1530,10 @@ const Signup = () => {
                                             "none",
 
                                         fontSize:
-                                            15,
+                                            17,
 
                                         fontWeight:
-                                            800,
+                                            600,
 
                                         background:
                                             "linear-gradient(135deg,#2563eb,#0284c7)",
@@ -1379,58 +1571,8 @@ const Signup = () => {
                             </motion.div>
 
                         </Stack>
+                        )}
                     </Box>
-
-
-                    {/* =================================================
-                        DIVIDER
-                    ================================================= */}
-
-                    <Stack
-                        direction="row"
-                        spacing={2}
-
-                        sx={{
-                            my:
-                                3,
-                            alignItems: "center"
-                        }}
-                    >
-                        <Divider
-                            sx={{
-                                flex:
-                                    1,
-
-                                borderColor:
-                                    "#e2e8f0",
-                            }}
-                        />
-
-                        <Typography
-                            sx={{
-                                fontSize:
-                                    11,
-
-                                color:
-                                    "#94a3b8",
-
-                                fontWeight:
-                                    600,
-                            }}
-                        >
-                            OR
-                        </Typography>
-
-                        <Divider
-                            sx={{
-                                flex:
-                                    1,
-
-                                borderColor:
-                                    "#e2e8f0",
-                            }}
-                        />
-                    </Stack>
 
 
                     {/* =================================================
@@ -1456,8 +1598,7 @@ const Signup = () => {
                             textAlign:
                                 "center",
 
-                            fontSize:
-                                13.5,
+                            fontSize: 15.5,
 
                             color:
                                 "#64748b",
@@ -1475,7 +1616,7 @@ const Signup = () => {
                                     "#2563eb",
 
                                 fontWeight:
-                                    800,
+                                    600,
 
                                 cursor:
                                     "pointer",
@@ -1506,8 +1647,7 @@ const Signup = () => {
                             color:
                                 "#94a3b8",
 
-                            fontSize:
-                                10.5,
+                            fontSize: 12.5,
 
                             mt:
                                 1.5,

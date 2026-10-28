@@ -171,54 +171,44 @@ const SendQuery = () => {
             sx={{
                 minHeight: "100vh",
                 background:
-                    "linear-gradient(135deg, #fff7ed 0%, #f8fafc 45%, #eef2ff 100%)",
-
-                color: "#0f172a",
-
+                    "radial-gradient(ellipse at 18% 18%, rgba(37, 99, 235, 0.28), transparent 35%), radial-gradient(ellipse at 84% 78%, rgba(124, 58, 237, 0.24), transparent 34%), linear-gradient(135deg, #080d20 0%, #111a38 52%, #0b1024 100%)",
+                color: "#f8fafc",
                 position: "relative",
-
                 overflow: "hidden",
-
                 display: "flex",
-
                 alignItems: "center",
-
                 justifyContent: "center",
-
                 px: {
                     xs: 2,
                     sm: 4,
                     md: 6,
                 },
-
                 py: {
                     xs: 12,
-                    md: 8,
+                    md: 14,
                 },
-
                 "&::before": {
                     content: '""',
                     position: "absolute",
-                    width: 450,
-                    height: 450,
+                    width: 520,
+                    height: 520,
                     borderRadius: "50%",
                     background:
-                        "radial-gradient(circle, rgba(234,88,12,0.12), transparent 70%)",
-                    top: -180,
-                    right: -120,
+                        "radial-gradient(circle, rgba(56,189,248,0.12), transparent 68%)",
+                    top: -220,
+                    right: -160,
                     pointerEvents: "none",
                 },
-
                 "&::after": {
                     content: '""',
                     position: "absolute",
-                    width: 400,
-                    height: 400,
+                    width: 460,
+                    height: 460,
                     borderRadius: "50%",
                     background:
-                        "radial-gradient(circle, rgba(37,99,235,0.08), transparent 70%)",
-                    bottom: -180,
-                    left: -120,
+                        "radial-gradient(circle, rgba(168,85,247,0.14), transparent 70%)",
+                    bottom: -240,
+                    left: -180,
                     pointerEvents: "none",
                 },
 
@@ -248,10 +238,6 @@ const SendQuery = () => {
             }}
         >
 
-            {/* =========================
-                FLOATING BUBBLES
-            ========================= */}
-
             {bubbles.map((bubble, index) => (
                 <Box
                     key={index}
@@ -263,23 +249,14 @@ const SendQuery = () => {
 
                         left: bubble.left,
                         top: bubble.top,
-
                         borderRadius: "50%",
-
                         background:
-                            "radial-gradient(circle at 30% 25%, rgb(23,38,255), rgb(255,82,2) 35%, rgba(81,1,255,1) 70%)",
-
-                        border:
-                            "1px solid rgba(255,152,17,0.7)",
-
-                        backdropFilter: "blur(3px)",
-
-                        opacity: 0.22,
-
+                            "radial-gradient(circle at 30% 25%, rgba(125,211,252,0.75), rgba(59,130,246,0.22) 42%, rgba(124,58,237,0.08) 72%)",
+                        border: "1px solid rgba(191,219,254,0.28)",
+                        boxShadow: "inset -8px -10px 24px rgba(8,13,32,0.32), 0 12px 40px rgba(59,130,246,0.12)",
+                        opacity: 0.18,
                         pointerEvents: "none",
-
                         zIndex: 0,
-
                         animation: `
                             bubbleFloat ${bubble.duration}
                             ease-in-out infinite,
@@ -288,10 +265,8 @@ const SendQuery = () => {
 
                         animationDelay:
                             `${bubble.delay}, ${bubble.delay}`,
-
                         "@media (max-width: 600px)": {
-                            opacity: 0.12,
-                            transform: "scale(0.7)",
+                            opacity: 0.1,
                         },
                     }}
                 />
@@ -307,166 +282,150 @@ const SendQuery = () => {
                 animate="visible"
                 style={{
                     width: "100%",
-                    maxWidth: 850,
-                    marginTop: 50,
+                    maxWidth: 1120,
                     position: "relative",
                     zIndex: 2,
+                    perspective: 1400,
                 }}
             >
-
                 <Box
                     sx={{
                         width: "100%",
-
-                        background:
-                            "rgba(255,255,255,0.92)",
-
-                        backdropFilter:
-                            "blur(18px)",
-
-                        WebkitBackdropFilter:
-                            "blur(18px)",
-
-                        border:
-                            "1px solid rgba(234,88,12,0.25)",
-
-                        borderRadius: {
-                            xs: "20px",
-                            md: "28px",
-                        },
-
-                        p: {
-                            xs: 2.5,
-                            sm: 4,
-                            md: 5,
-                        },
-
-                        boxShadow:
-                            "0 30px 100px rgba(15,23,42,0.12)",
-
+                        display: "grid",
+                        gridTemplateColumns: { xs: "1fr", md: "0.82fr 1.18fr" },
+                        background: "rgba(255,255,255,0.96)",
+                        border: "1px solid rgba(191,219,254,0.34)",
+                        borderRadius: { xs: "24px", md: "32px" },
+                        boxShadow: "0 34px 90px rgba(0,0,0,0.42), 0 10px 30px rgba(59,130,246,0.12), inset 0 1px 0 rgba(255,255,255,0.85)",
                         position: "relative",
-
                         overflow: "hidden",
-
-                        "&::before": {
-                            content: '""',
-
-                            position: "absolute",
-
-                            top: 0,
-                            left: 0,
-                            right: 0,
-
-                            height: "4px",
-
-                            background:
-                                "linear-gradient(90deg, #ea580c, #f97316, #fb923c)",
-                        },
                     }}
                 >
-
-                    {/* =========================
-                        HEADING
-                    ========================= */}
-
                     <motion.div
                         variants={headingVariants}
                         initial="hidden"
                         animate="visible"
+                        style={{ display: "flex" }}
                     >
-                        <Typography
+                        <Box
                             sx={{
-                                textAlign: "center",
-
-                                fontSize: {
-                                    xs: 28,
-                                    sm: 34,
-                                    md: 42,
+                                width: "100%",
+                                p: { xs: 3, sm: 4, md: 5 },
+                                display: "flex",
+                                flexDirection: "column",
+                                justifyContent: "space-between",
+                                color: "#fff",
+                                background: "linear-gradient(145deg, #172554 0%, #1d4ed8 48%, #6d28d9 100%)",
+                                position: "relative",
+                                overflow: "hidden",
+                                "&::before": {
+                                    content: '""',
+                                    position: "absolute",
+                                    width: 260,
+                                    height: 260,
+                                    right: -115,
+                                    top: -95,
+                                    borderRadius: "50%",
+                                    border: "1px solid rgba(255,255,255,0.18)",
+                                    boxShadow: "0 0 0 24px rgba(255,255,255,0.035), 0 0 0 52px rgba(255,255,255,0.025)",
                                 },
-
-                                fontWeight: 900,
-
-                                lineHeight: 1.15,
-
-                                letterSpacing: "-1px",
                             }}
                         >
-                            Send Your{" "}
+                            <Box sx={{ position: "relative", zIndex: 1 }}>
+                                <Box
+                                    sx={{
+                                        width: 62,
+                                        height: 62,
+                                        display: "grid",
+                                        placeItems: "center",
+                                        mb: 3.5,
+                                        borderRadius: "19px",
+                                        color: "#bfdbfe",
+                                        background: "linear-gradient(145deg, rgba(255,255,255,0.24), rgba(255,255,255,0.07))",
+                                        border: "1px solid rgba(255,255,255,0.28)",
+                                        boxShadow: "8px 10px 22px rgba(8,13,32,0.28), inset 2px 2px 5px rgba(255,255,255,0.24)",
+                                        transform: "rotate(-7deg)",
+                                    }}
+                                >
+                                    <MessageOutlined sx={{ fontSize: 30 }} />
+                                </Box>
+                                <Typography
+                                    component="h1"
+                                    sx={{
+                                        fontSize: { xs: 34, sm: 40, md: 44 },
+                                        fontWeight: 900,
+                                        lineHeight: 1.08,
+                                        letterSpacing: "-1.8px",
+                                        textShadow: "0 4px 18px rgba(8,13,32,0.28)",
+                                    }}
+                                >
+                                    Let&apos;s build
+                                    <Box component="span" sx={{ display: "block", color: "#bfdbfe" }}>
+                                        something
+                                    </Box>
+                                    great.
+                                </Typography>
+                                <Typography
+                                    sx={{
+                                        color: "rgba(239,246,255,0.82)",
+                                        mt: 2.5,
+                                        maxWidth: 360,
+                                        fontSize: { xs: 14, md: 15 },
+                                        lineHeight: 1.8,
+                                    }}
+                                >
+                                    Tell us what you have in mind. Share your goals and our team will help you find the right next step.
+                                </Typography>
+                            </Box>
 
                             <Box
-                                component="span"
                                 sx={{
-                                    background:
-                                        "linear-gradient(135deg, #ea580c, #f97316)",
-
-                                    backgroundClip:
-                                        "text",
-
-                                    WebkitBackgroundClip:
-                                        "text",
-
-                                    WebkitTextFillColor:
-                                        "transparent",
+                                    mt: 5,
+                                    p: 2.5,
+                                    borderRadius: 3,
+                                    background: "linear-gradient(145deg, rgba(255,255,255,0.17), rgba(255,255,255,0.06))",
+                                    border: "1px solid rgba(255,255,255,0.2)",
+                                    boxShadow: "0 14px 28px rgba(8,13,32,0.18), inset 1px 1px 0 rgba(255,255,255,0.16)",
+                                    transform: { md: "perspective(700px) rotateY(5deg)" },
+                                    position: "relative",
+                                    zIndex: 1,
                                 }}
                             >
-                                Request
+                                <Typography sx={{ fontWeight: 750, mb: 0.5 }}>
+                                    A real person, ready to help
+                                </Typography>
+                                <Typography sx={{ color: "rgba(239,246,255,0.76)", fontSize: 13, lineHeight: 1.65 }}>
+                                    Complete the form and we&apos;ll follow up about your request.
+                                </Typography>
                             </Box>
-                        </Typography>
-
-                        <Typography
-                            sx={{
-                                textAlign: "center",
-
-                                color: "#64748b",
-
-                                mt: 1.5,
-
-                                mb: {
-                                    xs: 3,
-                                    md: 4,
-                                },
-
-                                fontSize: {
-                                    xs: 14,
-                                    sm: 16,
-                                },
-
-                                maxWidth: 550,
-
-                                mx: "auto",
-
-                                lineHeight: 1.7,
-                            }}
-                        >
-                            Tell us about yourself and what
-                            you want to build, learn, or
-                            achieve. Let's turn your idea
-                            into something meaningful.
-                        </Typography>
+                        </Box>
                     </motion.div>
-
-
-                    {/* =========================
-                        FORM
-                    ========================= */}
 
                     <Box
                         component="form"
                         onSubmit={handleSubmit}
                         sx={{
+                            p: { xs: 2.5, sm: 4, md: 5 },
                             display: "grid",
-
                             gridTemplateColumns: {
                                 xs: "1fr",
                                 sm: "repeat(2, 1fr)",
                             },
-
                             gap: {
                                 xs: 2,
                                 sm: 2.5,
                             },
+                            alignContent: "center",
                         }}
                     >
+                        <Box sx={{ gridColumn: "1 / -1", mb: 0.5 }}>
+                            <Typography component="h2" sx={{ color: "#111827", fontSize: { xs: 22, md: 26 }, fontWeight: 850, letterSpacing: "-0.6px", textalign: "center" }}>
+                                Send your request
+                            </Typography>
+                            <Typography sx={{ color: "#64748b", mt: 0.5, fontSize: 14, textalign: { xs: "center", sm: "left", md:"center" } }}>
+                                Fill in your details and we&apos;ll get back to you.
+                            </Typography>
+                        </Box>
 
                         {/* FULL NAME */}
 
@@ -479,10 +438,12 @@ const SendQuery = () => {
                                 required
                                 fullWidth
                                 label="Full Name"
+                                placeholder="Enter your full name"
                                 name="fullName"
                                 value={formData.fullName}
                                 onChange={handleChange}
                                 slotProps={{
+                                    inputLabel: { shrink: true },
                                     input: {
                                         startAdornment: (
                                             <PersonOutlined
@@ -513,12 +474,14 @@ const SendQuery = () => {
                                 required
                                 fullWidth
                                 label="Mobile Number"
+                                placeholder="Enter your mobile number"
                                 name="mobile"
                                 type="tel"
 
                                 value={formData.mobile}
                                 onChange={handleChange}
                                 slotProps={{
+                                    inputLabel: { shrink: true },
                                     input: {
 
                                         startAdornment: (
@@ -549,11 +512,13 @@ const SendQuery = () => {
                             <TextField
                                 fullWidth
                                 label="Email Address"
+                                placeholder="Enter your email address"
                                 name="email"
                                 type="email"
                                 value={formData.email}
                                 onChange={handleChange}
                                 slotProps={{
+                                    inputLabel: { shrink: true },
                                     input: {
                                         startAdornment: (
                                             <EmailOutlined
@@ -585,11 +550,17 @@ const SendQuery = () => {
                                 select
                                 fullWidth
                                 label="Education / Professional Level"
+                                slotProps={{
+                                    inputLabel: { shrink: true },
+                                }}
                                 name="educationLevel"
                                 value={formData.educationLevel}
                                 onChange={handleChange}
                                 sx={inputStyle}
                             >
+                                <MenuItem value="" disabled>
+                                    Select your education level
+                                </MenuItem>
                                 <MenuItem value="10th">
                                     10th
                                 </MenuItem>
@@ -626,15 +597,20 @@ const SendQuery = () => {
                             transition={{
                                 delay: 0.15,
                             }}
+                            style={{
+                                gridColumn: "1 / -1",
+                            }}
                         >
                             <TextField
                                 required
                                 fullWidth
                                 label="College / School Name"
+                                placeholder="Enter your school or college name"
                                 name="schoolname"
                                 value={formData.schoolname}
                                 onChange={handleChange}
                                 slotProps={{
+                                    inputLabel: { shrink: true },
                                     input: {
                                         startAdornment: (
                                             <SchoolOutlined
@@ -675,6 +651,7 @@ const SendQuery = () => {
                                 onChange={handleChange}
                                 placeholder="Tell us what you want to build, learn, or achieve..."
                                 slotProps={{
+                                    inputLabel: { shrink: true },
                                     input: {
                                         startAdornment: (
                                             <MessageOutlined
@@ -715,7 +692,8 @@ const SendQuery = () => {
                             }}
                             style={{
                                 gridColumn: "1 / -1",
-                                
+                                display: "flex",
+                                justifyContent: "flex-end",
                             }}
                         >
                             <Button
@@ -739,43 +717,33 @@ const SendQuery = () => {
                                     mt: 1,
 
                                     minHeight: 56,
-                                    float:"right",
                                     borderRadius: "50px",
-                                    width:"30%",
-                                    margin:"auto",
-                                    background:
-                                        "linear-gradient(135deg, #ea580c, #f97316)",
-
+                                    width: { xs: "100%", sm: "auto" },
+                                    minWidth: { sm: 240 },
+                                    justifySelf: { sm: "end" },
+                                    background: "linear-gradient(135deg, #2563eb, #7c3aed)",
                                     fontSize: 14,
-
-                                    fontWeight: 600,
-
+                                    fontWeight: 700,
                                     textTransform: "none",
-
                                     letterSpacing: "0.2px",
-
-                                    boxShadow:
-                                        "0 12px 30px rgba(234,88,12,0.25)",
-
-                                    transition:
-                                        "all 0.3s ease",
-
-                                    "&:hover": {
-                                        background:
-                                            "linear-gradient(135deg, #c2410c, #ea580c)",
-
-                                        transform:
-                                            "translateY(-3px)",
-
-                                        boxShadow:
-                                            "0 18px 35px rgba(234,88,12,0.32)",
+                                    boxShadow: "0 4px 0 #1e40af, 0 8px 16px rgba(37,99,235,0.16)",
+                                    transition: "transform 0.2s ease, box-shadow 0.2s ease",
+                                    "&:active": {
+                                        transform: "translateY(2px)",
+                                        boxShadow: "0 2px 0 #1e40af, 0 4px 10px rgba(37,99,235,0.12)",
                                     },
-
+                                    "&:hover": {
+                                        background: "linear-gradient(135deg, #1d4ed8, #6d28d9)",
+                                        transform: "translateY(-1px)",
+                                        boxShadow: "0 5px 0 #1e40af, 0 10px 18px rgba(37,99,235,0.2)",
+                                    },
                                     "&:disabled": {
-                                        background:
-                                            "#fdba74",
-
+                                        background: "#94a3b8",
                                         color: "#fff",
+                                        boxShadow: "none",
+                                    },
+                                    "@media (max-width: 600px)": {
+                                        width: "100%",
                                     },
                                 }}
                             >
@@ -794,13 +762,13 @@ const SendQuery = () => {
 
                     <Typography
                         sx={{
+                            gridColumn: "1 / -1",
                             textAlign: "center",
-
                             color: "#94a3b8",
-
                             fontSize: 12,
-
-                            mt: 3,
+                            px: { xs: 2.5, sm: 4, md: 5 },
+                            pt: 0,
+                            pb: 2.5,
                         }}
                     >
                         Your information is used only to
@@ -860,35 +828,26 @@ const SendQuery = () => {
 const inputStyle = {
     "& .MuiOutlinedInput-root": {
         borderRadius: "14px",
-        maxLength: 10,
-        backgroundColor:
-            "rgba(248,250,252,0.75)",
-
+        backgroundColor: "#f8fafc",
+        boxShadow: "inset 0 2px 4px rgba(15,23,42,0.035), 0 2px 0 rgba(15,23,42,0.025)",
         transition: "all 0.25s ease",
-
         "& fieldset": {
-            borderColor: "#e2e8f0",
+            borderColor: "#dbe3ef",
         },
-
         "&:hover fieldset": {
-            borderColor: "#fb923c",
+            borderColor: "#60a5fa",
         },
-
         "&.Mui-focused": {
             backgroundColor: "#fff",
-
-            boxShadow:
-                "0 0 0 4px rgba(234,88,12,0.08)",
+            boxShadow: "0 0 0 4px rgba(59,130,246,0.1), 0 5px 12px rgba(15,23,42,0.06)",
         },
-
         "&.Mui-focused fieldset": {
-            borderColor: "#ea580c",
+            borderColor: "#2563eb",
             borderWidth: "1.5px",
         },
     },
-
     "& .MuiInputLabel-root.Mui-focused": {
-        color: "#ea580c",
+        color: "#2563eb",
     },
 };
 

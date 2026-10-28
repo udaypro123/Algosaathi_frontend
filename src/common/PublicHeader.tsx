@@ -33,9 +33,9 @@ const PublicHeader = () => {
 
     const navLinkStyles = (isActive: boolean) => ({
         fontSize:{
-            md:15,
-            xs:15,
-            lg:18
+            md:14,
+            xs:14,
+            lg:16
         },
         color: "#fefefe",
         cursor: "pointer",
@@ -162,7 +162,7 @@ const PublicHeader = () => {
                         display: "flex",
                         overflow: "hidden",
                         textDecoration: "none",
-                        fontSize: { xs: 24, md: 32 },
+                        fontSize: { xs: 22, md: 28 },
                         color: "inherit",
                         whiteSpace: "nowrap",
                     }}
